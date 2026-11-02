@@ -1,0 +1,611 @@
+{
+  "program": "Castellers Training Program",
+  "program_id": "castellers",
+  "author": "Victor Solé Ferioli",
+  "version": "2.0_standardized",
+  "duration_weeks": 8,
+  "session_duration_minutes": {
+    "min": 45,
+    "max": 60
+  },
+  "frequency_per_week": 2,
+  "level": "Intermediate",
+  "settings": ["Gym", "Outdoor", "Home"],
+  "equipment": ["Barbell", "Dumbbells", "Pull-up Bar", "Cable Machine", "Mat", "Kettlebells"],
+  "goal": {
+    "outcome_goal": "Develop position-specific strength for human tower construction",
+    "progress_goals": [
+      "Build maximum leg strength for baixos position",
+      "Develop overhead pressing strength for primeres mans",
+      "Improve grip endurance for extended holds",
+      "Enhance balance and proprioception for climbers"
+    ]
+  },
+
+  "training_days": [
+    {
+      "day": 1,
+      "day_name": "Baixos Foundation - Gym Session 1",
+      "focus": "Maximum Strength & Isometric Endurance",
+      "position": "Baixos",
+      "exercises": [
+        {
+          "exercise_id": "elliptical-warmup",
+          "exercise_name": "Elliptical or Bike Warm-Up",
+          "order": 1,
+          "sets": 1,
+          "reps": "5 min",
+          "rest_seconds": 0,
+          "notes": "Light intensity warm-up",
+          "primary_muscle_groups": ["cardiovascular"],
+          "equipment": ["elliptical", "bike"]
+        },
+        {
+          "exercise_id": "leg-swing",
+          "exercise_name": "Leg Swings",
+          "order": 2,
+          "sets": 2,
+          "reps": "10 each side",
+          "rest_seconds": 30,
+          "notes": "Forward/back and side-to-side",
+          "primary_muscle_groups": ["hip_flexors", "hamstrings"],
+          "equipment": ["bodyweight"]
+        },
+        {
+          "exercise_id": "back-squat",
+          "exercise_name": "Back Squats",
+          "order": 3,
+          "sets": 4,
+          "reps": "6-8",
+          "rest_seconds": 180,
+          "tempo": "3-1-1",
+          "notes": "Focus on depth and control. 3 seconds down, 1 second pause at bottom, 1 second up. Builds maximum leg strength for supporting tower weight.",
+          "primary_muscle_groups": ["quadriceps", "glutes", "hamstrings", "core"],
+          "equipment": ["barbell", "squat_rack"]
+        },
+        {
+          "exercise_id": "wall-sit",
+          "exercise_name": "Isometric Wall Sits",
+          "order": 4,
+          "sets": 4,
+          "reps": "30-60 sec",
+          "rest_seconds": 120,
+          "notes": "Hold squat position with back against wall. Thighs parallel to ground. Essential for building hold endurance during castell construction.",
+          "primary_muscle_groups": ["quadriceps", "glutes", "core"],
+          "equipment": ["wall"]
+        },
+        {
+          "exercise_id": "romanian-deadlift",
+          "exercise_name": "Romanian Deadlifts",
+          "order": 5,
+          "sets": 3,
+          "reps": "10-12",
+          "rest_seconds": 90,
+          "notes": "Focus on hip hinge pattern. Keep back neutral. Strengthens posterior chain for stability.",
+          "primary_muscle_groups": ["hamstrings", "glutes", "lower_back"],
+          "equipment": ["barbell"]
+        },
+        {
+          "exercise_id": "barbell-shrug",
+          "exercise_name": "Barbell Shrugs",
+          "order": 6,
+          "sets": 3,
+          "reps": "12-15",
+          "rest_seconds": 60,
+          "notes": "Shoulder elevation strength for supporting weight on shoulders during castell.",
+          "primary_muscle_groups": ["trapezius", "upper_back"],
+          "equipment": ["barbell"]
+        },
+        {
+          "exercise_id": "front-plank",
+          "exercise_name": "Front Plank",
+          "order": 7,
+          "sets": 3,
+          "reps": "45-60 sec",
+          "rest_seconds": 60,
+          "notes": "Maintain rigid torso position. Core stability prevents spinal flexion under load.",
+          "primary_muscle_groups": ["core", "abs", "obliques"],
+          "equipment": ["yoga_mat"]
+        },
+        {
+          "exercise_id": "dead-hang",
+          "exercise_name": "Dead Hangs",
+          "order": 8,
+          "sets": 3,
+          "reps": "30-45 sec",
+          "rest_seconds": 60,
+          "notes": "Grip endurance essential for extended holds. Decompress spine.",
+          "primary_muscle_groups": ["forearms", "grip", "lats"],
+          "equipment": ["pull_up_bar"]
+        }
+      ]
+    },
+    {
+      "day": 2,
+      "day_name": "Baixos Foundation - Gym Session 2",
+      "focus": "Power & Stability Training",
+      "position": "Baixos",
+      "exercises": [
+        {
+          "exercise_id": "rowing-warmup",
+          "exercise_name": "Rowing Machine Warm-Up",
+          "order": 1,
+          "sets": 1,
+          "reps": "5 min",
+          "rest_seconds": 0,
+          "notes": "Light intensity warm-up",
+          "primary_muscle_groups": ["cardiovascular", "full_body"],
+          "equipment": ["rowing_machine"]
+        },
+        {
+          "exercise_id": "hip-circle",
+          "exercise_name": "Hip Circles",
+          "order": 2,
+          "sets": 2,
+          "reps": "10 each direction",
+          "rest_seconds": 30,
+          "notes": "Warm up hip joints",
+          "primary_muscle_groups": ["hips", "glutes"],
+          "equipment": ["bodyweight"]
+        },
+        {
+          "exercise_id": "goblet-squat",
+          "exercise_name": "Goblet Squats",
+          "order": 3,
+          "sets": 4,
+          "reps": "10-12",
+          "rest_seconds": 120,
+          "notes": "Hold dumbbell or kettlebell at chest. Front-loaded position mimics castell loading pattern.",
+          "primary_muscle_groups": ["quadriceps", "glutes", "core"],
+          "equipment": ["dumbbell", "kettlebell"]
+        },
+        {
+          "exercise_id": "bulgarian-split-squat",
+          "exercise_name": "Bulgarian Split Squats",
+          "order": 4,
+          "sets": 3,
+          "reps": "8-10 each side",
+          "rest_seconds": 90,
+          "notes": "Rear foot elevated. Unilateral strength and balance for asymmetric loading.",
+          "primary_muscle_groups": ["quadriceps", "glutes", "balance"],
+          "equipment": ["dumbbells", "bench"]
+        },
+        {
+          "exercise_id": "farmer-walk",
+          "exercise_name": "Farmer's Walks",
+          "order": 5,
+          "sets": 4,
+          "reps": "40m",
+          "rest_seconds": 90,
+          "notes": "Heavy dumbbells or kettlebells. Total body stability and grip endurance under load. Keep shoulders back and core tight.",
+          "primary_muscle_groups": ["grip", "forearms", "traps", "core", "legs"],
+          "equipment": ["dumbbells", "kettlebells"]
+        },
+        {
+          "exercise_id": "single-leg-rdl",
+          "exercise_name": "Single-Leg Romanian Deadlifts",
+          "order": 6,
+          "sets": 3,
+          "reps": "8-10 each side",
+          "rest_seconds": 60,
+          "notes": "Balance and posterior chain. Focus on hip hinge with controlled movement.",
+          "primary_muscle_groups": ["hamstrings", "glutes", "balance", "core"],
+          "equipment": ["dumbbells"]
+        },
+        {
+          "exercise_id": "pallof-press",
+          "exercise_name": "Pallof Press",
+          "order": 7,
+          "sets": 3,
+          "reps": "12-15 each side",
+          "rest_seconds": 45,
+          "notes": "Anti-rotation core strength. Resist cable pulling you sideways.",
+          "primary_muscle_groups": ["core", "obliques"],
+          "equipment": ["cable_machine"]
+        },
+        {
+          "exercise_id": "wrist-curl",
+          "exercise_name": "Wrist Curls & Reverse Wrist Curls",
+          "order": 8,
+          "sets": 3,
+          "reps": "15-20",
+          "rest_seconds": 45,
+          "notes": "Grip and forearm strength. Do both flexion (palms up) and extension (palms down).",
+          "primary_muscle_groups": ["forearms", "wrists"],
+          "equipment": ["dumbbells"]
+        }
+      ]
+    },
+    {
+      "day": 3,
+      "day_name": "Baixos Foundation - Bodyweight Session",
+      "focus": "Leg Strength & Isometric Endurance",
+      "position": "Baixos",
+      "exercises": [
+        {
+          "exercise_id": "bodyweight-squat",
+          "exercise_name": "Bodyweight Squats",
+          "order": 1,
+          "sets": 5,
+          "reps": "20-25",
+          "rest_seconds": 90,
+          "notes": "High volume for muscular endurance. Progression: Add 3-second pause at bottom.",
+          "primary_muscle_groups": ["quadriceps", "glutes", "core"],
+          "equipment": ["bodyweight"]
+        },
+        {
+          "exercise_id": "wall-sit",
+          "exercise_name": "Wall Sits",
+          "order": 2,
+          "sets": 5,
+          "reps": "45-75 sec",
+          "rest_seconds": 90,
+          "notes": "Essential isometric hold training. Back against wall, thighs parallel to ground.",
+          "primary_muscle_groups": ["quadriceps", "glutes"],
+          "equipment": ["wall"]
+        },
+        {
+          "exercise_id": "reverse-lunge",
+          "exercise_name": "Reverse Lunges (Alternating)",
+          "order": 3,
+          "sets": 4,
+          "reps": "12-15 each side",
+          "rest_seconds": 60,
+          "notes": "Controlled tempo. Step back, drop knee toward ground, push through front heel to return.",
+          "primary_muscle_groups": ["quadriceps", "glutes", "balance"],
+          "equipment": ["bodyweight"]
+        },
+        {
+          "exercise_id": "single-leg-glute-bridge",
+          "exercise_name": "Single-Leg Glute Bridges",
+          "order": 4,
+          "sets": 3,
+          "reps": "12-15 each side",
+          "rest_seconds": 45,
+          "notes": "Lie on back, one foot on ground, other leg extended. Lift hips by squeezing glutes.",
+          "primary_muscle_groups": ["glutes", "hamstrings", "core"],
+          "equipment": ["yoga_mat"]
+        },
+        {
+          "exercise_id": "front-plank",
+          "exercise_name": "Front Plank",
+          "order": 5,
+          "sets": 3,
+          "reps": "60 sec",
+          "rest_seconds": 30,
+          "notes": "Part of plank series - maintain rigid body position.",
+          "primary_muscle_groups": ["core", "abs", "obliques"],
+          "equipment": ["yoga_mat"]
+        },
+        {
+          "exercise_id": "side-plank",
+          "exercise_name": "Side Planks",
+          "order": 6,
+          "sets": 3,
+          "reps": "45 sec each side",
+          "rest_seconds": 30,
+          "notes": "Complete both sides before resting. Maintain rigid body position.",
+          "primary_muscle_groups": ["obliques", "core"],
+          "equipment": ["yoga_mat"]
+        },
+        {
+          "exercise_id": "dead-hang",
+          "exercise_name": "Pull-up Bar Hangs",
+          "order": 7,
+          "sets": 4,
+          "reps": "30-60 sec",
+          "rest_seconds": 90,
+          "notes": "If no pull-up bar available, substitute with towel wringing or hand grippers.",
+          "primary_muscle_groups": ["grip", "forearms", "lats"],
+          "equipment": ["pull_up_bar"]
+        }
+      ]
+    },
+    {
+      "day": 4,
+      "day_name": "Contrafort Support Training - Gym Session",
+      "focus": "Upper Body Pushing & Anti-Extension Core",
+      "position": "Contrafort",
+      "exercises": [
+        {
+          "exercise_id": "bench-press",
+          "exercise_name": "Bench Press",
+          "order": 1,
+          "sets": 4,
+          "reps": "8-10",
+          "rest_seconds": 120,
+          "notes": "Horizontal pushing strength. Retract shoulder blades, controlled descent.",
+          "primary_muscle_groups": ["pectorals", "triceps", "anterior_deltoids"],
+          "equipment": ["barbell", "bench"]
+        },
+        {
+          "exercise_id": "overhead-press",
+          "exercise_name": "Overhead Press",
+          "order": 2,
+          "sets": 3,
+          "reps": "8-10",
+          "rest_seconds": 120,
+          "notes": "Vertical pushing strength. Brace core to prevent back extension.",
+          "primary_muscle_groups": ["deltoids", "triceps", "core"],
+          "equipment": ["barbell"]
+        },
+        {
+          "exercise_id": "cable-chest-press-hold",
+          "exercise_name": "Cable Chest Press Holds (Isometric)",
+          "order": 3,
+          "sets": 3,
+          "reps": "20-30 sec",
+          "rest_seconds": 90,
+          "notes": "Press cables to mid-extension and hold. Simulates sustained bracing against castell.",
+          "primary_muscle_groups": ["pectorals", "triceps", "core"],
+          "equipment": ["cable_machine"]
+        },
+        {
+          "exercise_id": "dead-bug",
+          "exercise_name": "Dead Bugs",
+          "order": 4,
+          "sets": 4,
+          "reps": "12-15 each side",
+          "rest_seconds": 60,
+          "notes": "Anti-extension core work. Press lower back into floor. Prevent spinal extension.",
+          "primary_muscle_groups": ["core", "hip_flexors"],
+          "equipment": ["yoga_mat"]
+        },
+        {
+          "exercise_id": "farmer-walk",
+          "exercise_name": "Farmer's Walks",
+          "order": 5,
+          "sets": 4,
+          "reps": "40m",
+          "rest_seconds": 90,
+          "notes": "Grip endurance and postural strength. Keep chest up, shoulders back.",
+          "primary_muscle_groups": ["grip", "traps", "core", "posture"],
+          "equipment": ["dumbbells"]
+        },
+        {
+          "exercise_id": "face-pull",
+          "exercise_name": "Face Pulls",
+          "order": 6,
+          "sets": 3,
+          "reps": "15-20",
+          "rest_seconds": 45,
+          "notes": "Shoulder health and posterior chain. Pull rope to face level, externally rotate.",
+          "primary_muscle_groups": ["rear_delts", "rhomboids", "rotator_cuff"],
+          "equipment": ["cable_machine"]
+        }
+      ]
+    },
+    {
+      "day": 5,
+      "day_name": "Primeres Mans Overhead Training - Gym Session",
+      "focus": "Overhead Pressing Strength & Shoulder Stability",
+      "position": "Primeres Mans",
+      "exercises": [
+        {
+          "exercise_id": "overhead-press",
+          "exercise_name": "Overhead Press",
+          "order": 1,
+          "sets": 4,
+          "reps": "6-8",
+          "rest_seconds": 150,
+          "notes": "Primary shoulder strength. Press bar from shoulders to lockout overhead. No leg drive.",
+          "primary_muscle_groups": ["deltoids", "triceps", "core"],
+          "equipment": ["barbell"]
+        },
+        {
+          "exercise_id": "landmine-press",
+          "exercise_name": "Landmine Press",
+          "order": 2,
+          "sets": 3,
+          "reps": "8-10 each side",
+          "rest_seconds": 90,
+          "notes": "Angle-specific pressing. Mimics upward pressing angle of supporting segons.",
+          "primary_muscle_groups": ["deltoids", "core", "serratus_anterior"],
+          "equipment": ["landmine", "barbell"]
+        },
+        {
+          "exercise_id": "lateral-raise",
+          "exercise_name": "Lateral Raises",
+          "order": 3,
+          "sets": 3,
+          "reps": "12-15",
+          "rest_seconds": 60,
+          "notes": "Side deltoid development for shoulder width and strength.",
+          "primary_muscle_groups": ["lateral_deltoids"],
+          "equipment": ["dumbbells"]
+        },
+        {
+          "exercise_id": "face-pull",
+          "exercise_name": "Face Pulls",
+          "order": 4,
+          "sets": 3,
+          "reps": "15-20",
+          "rest_seconds": 60,
+          "notes": "Shoulder health and posterior chain balance. Critical for injury prevention.",
+          "primary_muscle_groups": ["rear_delts", "rotator_cuff"],
+          "equipment": ["cable_machine"]
+        },
+        {
+          "exercise_id": "overhead-carry",
+          "exercise_name": "Overhead Carries",
+          "order": 5,
+          "sets": 4,
+          "reps": "30m",
+          "rest_seconds": 90,
+          "notes": "Stability under load. Walk with weight(s) locked out overhead. Maintain vertical alignment.",
+          "primary_muscle_groups": ["deltoids", "core", "traps"],
+          "equipment": ["dumbbells", "kettlebells"]
+        },
+        {
+          "exercise_id": "dead-hang",
+          "exercise_name": "Dead Hangs",
+          "order": 6,
+          "sets": 3,
+          "reps": "30-60 sec",
+          "rest_seconds": 90,
+          "notes": "Grip endurance for holding legs/ankles of segons during long holds.",
+          "primary_muscle_groups": ["grip", "forearms", "lats"],
+          "equipment": ["pull_up_bar"]
+        }
+      ]
+    },
+    {
+      "day": 6,
+      "day_name": "Segons Tower Climber Training - Gym Session",
+      "focus": "Climbing Strength, Balance & Grip",
+      "position": "Segons/Terços/Quarts",
+      "exercises": [
+        {
+          "exercise_id": "pull-up",
+          "exercise_name": "Pull-ups",
+          "order": 1,
+          "sets": 4,
+          "reps": "8-12",
+          "rest_seconds": 90,
+          "notes": "Upper body pulling for climbing. If unable to complete reps, use lat pulldown.",
+          "primary_muscle_groups": ["lats", "biceps", "grip", "core"],
+          "equipment": ["pull_up_bar"]
+        },
+        {
+          "exercise_id": "bulgarian-split-squat",
+          "exercise_name": "Bulgarian Split Squats",
+          "order": 2,
+          "sets": 3,
+          "reps": "10-12 each side",
+          "rest_seconds": 60,
+          "notes": "Single-leg strength for climbing and balancing on shoulders.",
+          "primary_muscle_groups": ["quadriceps", "glutes", "balance"],
+          "equipment": ["dumbbells", "bench"]
+        },
+        {
+          "exercise_id": "cable-woodchop",
+          "exercise_name": "Cable Woodchops",
+          "order": 3,
+          "sets": 3,
+          "reps": "12-15 each side",
+          "rest_seconds": 45,
+          "notes": "Rotational core strength for climbing and stabilizing.",
+          "primary_muscle_groups": ["obliques", "core", "rotation"],
+          "equipment": ["cable_machine"]
+        },
+        {
+          "exercise_id": "single-leg-rdl",
+          "exercise_name": "Single-Leg Romanian Deadlifts",
+          "order": 4,
+          "sets": 3,
+          "reps": "10-12 each side",
+          "rest_seconds": 60,
+          "notes": "Balance and posterior chain. Essential for standing on unstable shoulders.",
+          "primary_muscle_groups": ["hamstrings", "glutes", "balance"],
+          "equipment": ["dumbbells"]
+        },
+        {
+          "exercise_id": "hanging-knee-raise",
+          "exercise_name": "Hanging Knee Raises",
+          "order": 5,
+          "sets": 3,
+          "reps": "12-15",
+          "rest_seconds": 90,
+          "notes": "Core strength and grip endurance combined. Hanging from bar simulates climbing.",
+          "primary_muscle_groups": ["core", "hip_flexors", "grip"],
+          "equipment": ["pull_up_bar"]
+        },
+        {
+          "exercise_id": "box-step-up",
+          "exercise_name": "Box Step-ups with Knee Drive",
+          "order": 6,
+          "sets": 3,
+          "reps": "10-12 each side",
+          "rest_seconds": 60,
+          "notes": "Simulates climbing motion. Step up with power, drive opposite knee up.",
+          "primary_muscle_groups": ["quadriceps", "glutes", "balance", "power"],
+          "equipment": ["box", "bench"]
+        }
+      ]
+    },
+    {
+      "day": 7,
+      "day_name": "Pom de Dalt Balance & Control - Bodyweight Session",
+      "focus": "Balance, Core Control & Proprioception",
+      "position": "Dosos/Aixecador/Enxaneta",
+      "exercises": [
+        {
+          "exercise_id": "bodyweight-squat",
+          "exercise_name": "Bodyweight Squats (Controlled Tempo)",
+          "order": 1,
+          "sets": 4,
+          "reps": "20-25",
+          "rest_seconds": 60,
+          "tempo": "3-1-1",
+          "notes": "Perfect form and control. 3-second descent, 1-second pause, 1-second ascent.",
+          "primary_muscle_groups": ["quadriceps", "glutes", "balance"],
+          "equipment": ["bodyweight"]
+        },
+        {
+          "exercise_id": "single-leg-balance",
+          "exercise_name": "Single-Leg Balance Holds",
+          "order": 2,
+          "sets": 3,
+          "reps": "45-60 sec each side",
+          "rest_seconds": 30,
+          "notes": "Stand on one leg, maintain balance. Progress to eyes closed.",
+          "primary_muscle_groups": ["core", "stabilizers", "proprioception"],
+          "equipment": ["bodyweight"]
+        },
+        {
+          "exercise_id": "v-sit",
+          "exercise_name": "V-Sits",
+          "order": 3,
+          "sets": 4,
+          "reps": "20-30 sec",
+          "rest_seconds": 60,
+          "notes": "Sit on ground, lift legs and torso to create V-shape. Hold position.",
+          "primary_muscle_groups": ["core", "hip_flexors", "balance"],
+          "equipment": ["yoga_mat"]
+        },
+        {
+          "exercise_id": "crab-walk",
+          "exercise_name": "Crab Walks",
+          "order": 4,
+          "sets": 4,
+          "reps": "20m",
+          "rest_seconds": 60,
+          "notes": "Reverse tabletop position. Walk forward and backward. Shoulder stability.",
+          "primary_muscle_groups": ["shoulders", "triceps", "core", "glutes"],
+          "equipment": ["bodyweight"]
+        },
+        {
+          "exercise_id": "hollow-body-rock",
+          "exercise_name": "Hollow Body Rocks",
+          "order": 5,
+          "sets": 3,
+          "reps": "30-45 sec",
+          "rest_seconds": 60,
+          "notes": "Core control and stability. Press lower back into ground, rock slightly.",
+          "primary_muscle_groups": ["core", "hip_flexors"],
+          "equipment": ["yoga_mat"]
+        },
+        {
+          "exercise_id": "tree-pose",
+          "exercise_name": "Tree Pose (Yoga Balance)",
+          "order": 6,
+          "sets": 3,
+          "reps": "60 sec each side",
+          "rest_seconds": 30,
+          "notes": "Stand on one leg, other foot on inner thigh. Arms overhead. Focus and balance.",
+          "primary_muscle_groups": ["balance", "core", "stabilizers"],
+          "equipment": ["bodyweight"]
+        }
+      ]
+    }
+  ],
+
+  "program_notes": {
+    "frequency": "Train 2-3 times per week with at least 48 hours between sessions targeting the same muscle groups",
+    "progression": "Increase weight by 2.5-5% when all prescribed reps/sets completed with good form. For isometric holds, increase duration by 5-10 seconds.",
+    "nutrition": "Aim for 1.6-2.2g protein per kg bodyweight daily. Stay well hydrated with 3-4 liters water per day.",
+    "recovery": "Prioritize 7-9 hours sleep nightly. Include stretching and foam rolling after workouts.",
+    "customization": "Choose gym or bodyweight versions based on available equipment and training location. Both are equally effective when performed consistently.",
+    "periodization": "Follow 8-week training blocks: Weeks 1-2 adaptation, Weeks 3-5 strength building, Weeks 6-7 peak strength, Week 8 deload (reduce volume 40-50%)."
+  }
+}

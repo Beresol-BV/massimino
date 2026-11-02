@@ -1,0 +1,186 @@
+/** @type {import('next').NextConfig} */
+const nextConfig = {
+    experimental: {
+      serverActions: {
+        bodySizeLimit: '12mb',
+      },
+      // Server-only knowledge files read at runtime with fs (Massichat, workout suggestions).
+      // They live outside public/ so they are never served; ship them with the API functions.
+      outputFileTracingIncludes: {
+        '/api/**/*': ['./data/knowledge/**/*'],
+      },
+    },
+    // Note: outputFileTracingRoot and serverExternalPackages are not used on Next 14
+  
+    // Security headers for safety-first approach
+    async headers() {
+      const isProd = process.env.NODE_ENV === 'production'
+      // Build a shared CSP value
+      const cspValue = [
+        "default-src 'self'",
+        "script-src 'self' 'unsafe-eval' 'unsafe-inline' https://connect.facebook.net https://accounts.google.com https://apis.google.com",
+        "style-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net",
+        "img-src 'self' data: https: https://i.ytimg.com https://*.tile.openstreetmap.org",
+        "font-src 'self' https://cdn.jsdelivr.net",
+        "connect-src 'self' https://api.openai.com https://accounts.google.com https://oauth2.googleapis.com https://www.googleapis.com https://www.facebook.com https://graph.facebook.com https://www.linkedin.com https://api.linkedin.com https://cdn.jsdelivr.net https://*.tile.openstreetmap.org",
+        "frame-src 'self' https://accounts.google.com https://www.facebook.com https://staticxx.facebook.com https://www.linkedin.com",
+        "form-action 'self' https://accounts.google.com https://www.facebook.com https://www.linkedin.com",
+        "worker-src 'self' blob:",
+      ].join('; ')
+      return [
+        {
+          source: '/(.*)',
+          headers: [
+            // Prevent clickjacking
+            {
+              key: 'X-Frame-Options',
+              value: 'DENY',
+            },
+            // XSS Protection
+            {
+              key: 'X-XSS-Protection',
+              value: '1; mode=block',
+            },
+            // Prevent MIME type sniffing
+            {
+              key: 'X-Content-Type-Options',
+              value: 'nosniff',
+            },
+            // Referrer Policy for privacy
+            {
+              key: 'Referrer-Policy',
+              value: 'strict-origin-when-cross-origin',
+            },
+            // Content Security Policy
+            // In production, enforce CSP; in development, use Report-Only for easier debugging
+            isProd
+              ? { key: 'Content-Security-Policy', value: cspValue }
+              : { key: 'Content-Security-Policy-Report-Only', value: cspValue },
+          ],
+        },
+        // Only the canonical host may be indexed. Every other host that serves this app
+        // (massimino.vercel.app, preview deployments, a hosting provider's temporary URL)
+        // tells search engines not to index it.
+        {
+          source: '/:path*',
+          missing: [{ type: 'host', value: 'massimino.fitness' }],
+          headers: [{ key: 'X-Robots-Tag', value: 'noindex, nofollow' }],
+        },
+      ];
+    },
+  
+    // Image optimization
+    images: {
+      // Disable image optimization during development to avoid 400s when sharp is unavailable
+      unoptimized: process.env.NODE_ENV !== 'production',
+      remotePatterns: [
+        {
+          protocol: 'https',
+          hostname: 'lh3.googleusercontent.com', // Google OAuth profile images
+        },
+        {
+          protocol: 'https',
+          hostname: 'avatars.githubusercontent.com', // GitHub profile images (backup auth)
+        },
+        {
+          protocol: 'https',
+          hostname: 'static.exercisedb.dev', // ExerciseDB exercise images/GIFs
+        },
+        {
+          protocol: 'https',
+          hostname: 'images.pexels.com', // Pexels stock photos
+        },
+      ],
+      formats: ['image/webp', 'image/avif'],
+    },
+    // Environment variables validation
+    env: {
+      CUSTOM_KEY: process.env.NODE_ENV,
+      NEXTAUTH_URL: process.env.NEXTAUTH_URL,
+    },
+  
+    // Redirects for safety
+    async redirects() {
+      const redirects = [
+        // One canonical host: www redirects to the apex
+        {
+          source: '/:path*',
+          has: [{ type: 'host', value: 'www.massimino.fitness' }],
+          destination: 'https://massimino.fitness/:path*',
+          permanent: true,
+        },
+        // Redirect HTTP to HTTPS in production
+        ...(process.env.NODE_ENV === 'production'
+          ? [
+              {
+                source: '/(.*)',
+                has: [
+                  {
+                    type: 'header',
+                    key: 'x-forwarded-proto',
+                    value: 'http',
+                  },
+                ],
+                destination: 'https://:host/:path*',
+                permanent: true,
+              },
+            ]
+          : []),
+        // Redirect missing /bio routes to /login
+        {
+          source: '/bio/signup',
+          destination: '/signup',
+          permanent: false,
+        },
+        {
+          source: '/bio/forgot-password',
+          destination: '/forgot-password',
+          permanent: false,
+        },
+        // Old registration URL (e.g. links in bio pages and emails)
+        {
+          source: '/register',
+          destination: '/signup',
+          permanent: true,
+        },
+        // The dashboard AI Coach and Massichat were the same chat; one page now
+        {
+          source: '/dashboard/ai-coach',
+          destination: '/massichat',
+          permanent: true,
+        },
+        // Bare usernames (massimino.fitness/{username}) are handled by src/app/[username]/page.tsx,
+        // which only redirects when the username exists and 404s otherwise.
+      ];
+      return redirects;
+    },
+  
+    // Logging configuration
+    logging: {
+      fetches: {
+        fullUrl: process.env.NODE_ENV === 'development',
+      },
+    },
+  
+    // Disable powered by header for security
+    poweredByHeader: false,
+  
+    // Enable strict mode
+    reactStrictMode: true,
+  
+    // SWC minifier is enabled by default in Next.js 15
+  
+    // TypeScript configuration
+    typescript: {
+      // Type checking is handled by CI/CD pipeline
+      ignoreBuildErrors: false,
+    },
+  
+    // ESLint configuration
+    eslint: {
+      // Lint during builds
+      ignoreDuringBuilds: false,
+    },
+  };
+  
+  module.exports = nextConfig;

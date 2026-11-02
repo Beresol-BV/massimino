@@ -1,0 +1,36 @@
+# Dependencies
+node_modules
+
+# Secrets: never commit these. Copy .env.example to .env for local setup.
+.env
+.env.*
+!.env.example
+*.env
+
+# Cloud credentials
+*-firebase-adminsdk-*.json
+firebase-adminsdk-*.json
+*serviceAccount*.json
+google-credentials.json
+gcp-credentials.json
+
+# Next.js build output
+.next*
+tsconfig.tsbuildinfo
+
+# User uploads written by a local instance
+public/uploads/
+
+# OS and editor files
+.DS_Store
+.vscode/
+*.swp
+*.log
+
+# macOS Finder duplicates and backups
+* 2.*
+*.backup
+*.bak
+
+# Design prototypes
+mockups/

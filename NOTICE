@@ -1,0 +1,31 @@
+Massimino
+Copyright 2025-2026 Beresol BV
+
+This product is licensed under the Apache License, Version 2.0. See LICENSE.
+
+NAMES AND LOGOS
+
+The Massimino and Beresol names and logos belong to Beresol BV. As section 6 of
+the licence states, it grants no permission to use them, except as needed to
+describe where the work comes from. If you run a public fork, replace the
+branding, the legal pages (src/app/privacy, src/app/terms, src/app/cookies,
+src/app/legal) and the contact addresses with your own.
+
+CONTENT NOT COVERED BY THE APACHE LICENCE
+
+- public/images/programs and public/images/background: third-party photographs
+  and videos, kept under their owners' terms so that the app renders out of the
+  box. Replace them with your own media before you reuse or redistribute them.
+- public/massimino*, public/beresol-logo.png, public/favicon.ico, public/icons:
+  Massimino and Beresol branding.
+- Flat-colour images marked "Placeholder" stand in for partner logos and for
+  photographs that are not part of this repository.
+
+THIRD-PARTY CONTENT
+
+- public/exercises: images from free-exercise-db
+  (https://github.com/yuhonas/free-exercise-db), released under the Unlicense.
+- public/ionicons.designerpack: Ionicons (https://github.com/ionic-team/ionicons),
+  under the MIT licence. See LICENSE in that directory.
+- src/components/assessments/par_q_plus.json: based on the PAR-Q+ questionnaire,
+  (c) the PAR-Q+ Collaboration, and remaining under its terms.
