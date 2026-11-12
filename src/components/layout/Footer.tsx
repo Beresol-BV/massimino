@@ -4,19 +4,14 @@ import { notify } from '@/lib/notify';
 
 import Link from 'next/link';
 import { useState } from 'react';
-import { usePathname } from 'next/navigation';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { ChevronUp, ChevronDown } from 'lucide-react';
 import { openCookieSettings } from '@/components/ui/cookie_consent';
 
 export default function Footer() {
-  const pathname = usePathname();
-  const isLandingPage = pathname === '/';
-  const [isExpanded, setIsExpanded] = useState(false);
   const [open, setOpen] = useState(false);
   const [submitting, setSubmitting] = useState(false);
   const [type, setType] = useState<'BUG' | 'FEATURE' | 'GENERAL' | 'NPS'>('GENERAL');
@@ -61,33 +56,10 @@ export default function Footer() {
       setSubmitting(false);
     }
   }
-  // Determine if content should be shown
-  const showContent = isLandingPage || isExpanded;
-
   return (
     <footer className="bg-brand-secondary-dark border-t border-brand-primary-dark">
-      {/* Collapsible toggle bar - only show on non-landing pages */}
-      {!isLandingPage && (
-        <button
-          onClick={() => setIsExpanded(!isExpanded)}
-          className="w-full py-2 px-4 flex items-center justify-center gap-2 text-gray-500 hover:text-brand-primary transition-colors text-sm"
-        >
-          {isExpanded ? (
-            <>
-              <ChevronDown className="h-4 w-4" />
-              <span>Hide footer</span>
-            </>
-          ) : (
-            <>
-              <ChevronUp className="h-4 w-4" />
-              <span>Show footer</span>
-            </>
-          )}
-        </button>
-      )}
-
-      {/* Footer content - always visible on landing page, toggleable elsewhere */}
-      <div className={`overflow-hidden transition-all duration-300 ease-in-out ${showContent ? 'max-h-[1000px] opacity-100' : 'max-h-0 opacity-0'}`}>
+      {/* Footer content - always visible */}
+      <div>
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
             {/* Brand */}
