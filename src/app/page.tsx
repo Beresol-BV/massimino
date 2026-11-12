@@ -346,7 +346,7 @@ export default function HomePage() {
       </section>
 
       {/* ════════ FEATURED PROGRAMS (Schedule-style) ════════ */}
-      <section id="programs" className="py-28 md:py-36 px-6 md:px-12 bg-[#2b5069]/[0.04]">
+      <section id="programs" className="scroll-mt-16 py-28 md:py-36 px-6 md:px-12 bg-[#2b5069]/[0.04]">
         <div className="max-w-[1200px] mx-auto">
           <motion.div
             className="text-center mb-14"
@@ -449,18 +449,20 @@ export default function HomePage() {
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             {[
-              { title: 'Safety First', detail: 'AI moderation & anti-harassment', tag: 'Protection', icon: Shield, img: pexelsImages.features[0] },
-              { title: 'Expert Guidance', detail: 'NASM-certified programming', tag: 'Coaching', icon: Users, img: pexelsImages.features[1] },
-              { title: 'Smart Tracking', detail: 'Intelligent workout logging', tag: 'Analytics', icon: Dumbbell, img: pexelsImages.features[2] },
+              { title: 'Safety First', detail: 'AI moderation & anti-harassment', tag: 'Protection', icon: Shield, img: pexelsImages.features[0], href: '/safety' },
+              { title: 'Expert Guidance', detail: 'NASM-certified programming', tag: 'Coaching', icon: Users, img: pexelsImages.features[1], href: '#programs' },
+              { title: 'Smart Tracking', detail: 'Intelligent workout logging', tag: 'Analytics', icon: Dumbbell, img: pexelsImages.features[2], href: '/workout-log' },
             ].map((feature, i) => (
               <motion.article
                 key={feature.title}
-                className="relative overflow-hidden rounded-xl cursor-pointer group"
+                className="relative overflow-hidden rounded-xl group focus-within:ring-2 focus-within:ring-brand-primary focus-within:ring-offset-4 focus-within:ring-offset-brand-secondary"
                 initial={{ opacity: 0, y: 30 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
                 transition={{ delay: i * 0.1 }}
               >
+                {/* The whole card links to its section */}
+                <Link href={feature.href} className="block focus-visible:outline-none" aria-label={`${feature.title}: ${feature.detail}`}>
                 <div className="aspect-[3/4] overflow-hidden">
                   <Image
                     src={feature.img}
@@ -480,6 +482,7 @@ export default function HomePage() {
                 <span className="absolute top-4 left-4 rounded-full px-3 py-1.5 bg-brand-primary text-white font-display text-[0.65rem] font-bold uppercase tracking-wider">
                   {feature.tag}
                 </span>
+                </Link>
               </motion.article>
             ))}
           </div>
