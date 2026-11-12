@@ -268,14 +268,14 @@ export function MyAthletesDashboard({ userId }: MyAthletesDashboardProps) {
           <div className="flex overflow-x-auto border-b -mx-2 px-2">
             <button
               onClick={() => setActiveTab('active')}
-              className={`py-3 px-3 sm:px-6 font-medium text-xs sm:text-sm transition-colors whitespace-nowrap ${
+              className={`flex-1 sm:flex-none py-3 px-1.5 sm:px-6 font-medium text-xs sm:text-sm transition-colors whitespace-nowrap ${
                 activeTab === 'active'
                   ? 'border-b-2 border-brand-primary text-brand-primary'
                   : 'text-gray-500 hover:text-gray-700'
               }`}
             >
-              <div className="flex items-center">
-                <Users className="h-4 w-4 mr-1 sm:mr-2" />
+              <div className="flex items-center justify-center">
+                <Users className="hidden sm:block h-4 w-4 mr-1 sm:mr-2" />
                 <span className="hidden sm:inline">Active Athletes</span>
                 <span className="sm:hidden">Active</span>
                 {' '}({stats.activeAthletes})
@@ -283,27 +283,27 @@ export function MyAthletesDashboard({ userId }: MyAthletesDashboardProps) {
             </button>
             <button
               onClick={() => setActiveTab('invited')}
-              className={`py-3 px-3 sm:px-6 font-medium text-xs sm:text-sm transition-colors whitespace-nowrap ${
+              className={`flex-1 sm:flex-none py-3 px-1.5 sm:px-6 font-medium text-xs sm:text-sm transition-colors whitespace-nowrap ${
                 activeTab === 'invited'
                   ? 'border-b-2 border-brand-primary text-brand-primary'
                   : 'text-gray-500 hover:text-gray-700'
               }`}
             >
-              <div className="flex items-center">
-                <Mail className="h-4 w-4 mr-1 sm:mr-2" />
+              <div className="flex items-center justify-center">
+                <Mail className="hidden sm:block h-4 w-4 mr-1 sm:mr-2" />
                 Invited ({stats.pendingInvitations})
               </div>
             </button>
             <button
               onClick={() => setActiveTab('requests')}
-              className={`py-3 px-3 sm:px-6 font-medium text-xs sm:text-sm transition-colors whitespace-nowrap ${
+              className={`flex-1 sm:flex-none py-3 px-1.5 sm:px-6 font-medium text-xs sm:text-sm transition-colors whitespace-nowrap ${
                 activeTab === 'requests'
                   ? 'border-b-2 border-brand-primary text-brand-primary'
                   : 'text-gray-500 hover:text-gray-700'
               }`}
             >
-              <div className="flex items-center">
-                <MessageSquare className="h-4 w-4 mr-1 sm:mr-2" />
+              <div className="flex items-center justify-center">
+                <MessageSquare className="hidden sm:block h-4 w-4 mr-1 sm:mr-2" />
                 Requests ({stats.pendingRequests})
               </div>
             </button>

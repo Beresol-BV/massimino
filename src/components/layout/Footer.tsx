@@ -4,19 +4,15 @@ import { notify } from '@/lib/notify';
 
 import Link from 'next/link';
 import { useState } from 'react';
-import { usePathname } from 'next/navigation';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { ChevronUp, ChevronDown } from 'lucide-react';
 import { openCookieSettings } from '@/components/ui/cookie_consent';
+import { MobileCollapsible } from '@/components/ui/mobile_collapsible';
 
 export default function Footer() {
-  const pathname = usePathname();
-  const isLandingPage = pathname === '/';
-  const [isExpanded, setIsExpanded] = useState(false);
   const [open, setOpen] = useState(false);
   const [submitting, setSubmitting] = useState(false);
   const [type, setType] = useState<'BUG' | 'FEATURE' | 'GENERAL' | 'NPS'>('GENERAL');
@@ -61,52 +57,52 @@ export default function Footer() {
       setSubmitting(false);
     }
   }
-  // Determine if content should be shown
-  const showContent = isLandingPage || isExpanded;
-
   return (
     <footer className="bg-brand-secondary-dark border-t border-brand-primary-dark">
-      {/* Collapsible toggle bar - only show on non-landing pages */}
-      {!isLandingPage && (
-        <button
-          onClick={() => setIsExpanded(!isExpanded)}
-          className="w-full py-2 px-4 flex items-center justify-center gap-2 text-gray-500 hover:text-brand-primary transition-colors text-sm"
-        >
-          {isExpanded ? (
-            <>
-              <ChevronDown className="h-4 w-4" />
-              <span>Hide footer</span>
-            </>
-          ) : (
-            <>
-              <ChevronUp className="h-4 w-4" />
-              <span>Show footer</span>
-            </>
-          )}
-        </button>
-      )}
-
-      {/* Footer content - always visible on landing page, toggleable elsewhere */}
-      <div className={`overflow-hidden transition-all duration-300 ease-in-out ${showContent ? 'max-h-[1000px] opacity-100' : 'max-h-0 opacity-0'}`}>
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
+      {/* Footer content - always visible */}
+      <div>
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 md:py-8">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-0 md:gap-8">
             {/* Brand */}
-            <div className="col-span-1 md:col-span-2">
-              <h3 className="text-lg font-semibold text-brand-primary mb-4">Massimino</h3>
-              <p className="text-gray-600 mb-4">
+            <div className="col-span-1 md:col-span-2 pb-4 md:pb-0">
+              <h3 className="text-lg font-semibold text-brand-primary mb-1 md:mb-4">Massimino</h3>
+              {/* Mobile: long description and ownership line hidden; name and email stay */}
+              <p className="hidden md:block text-gray-600 mb-4">
                 The safety-first fitness community platform for trainers and enthusiasts.
                 Safe workouts for everyone.
               </p>
-              <p className="text-sm text-gray-500">
+              <p className="hidden md:block text-sm text-gray-500">
                 Massimino is a product of Beresol BV. Copyright of Beresol BV
+              </p>
+              {/* Contact links stay visible on mobile too (outside the folded columns) */}
+              <p className="md:mt-2 text-sm">
+                <a
+                  href="mailto:hello@beresol.eu"
+                  className="rounded-sm text-brand-primary underline underline-offset-2 hover:decoration-2 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-primary"
+                >
+                  hello@beresol.eu
+                </a>
+              </p>
+              <p className="mt-1 text-sm">
+                <a
+                  href="tel:+32493365423"
+                  className="rounded-sm text-brand-primary underline underline-offset-2 hover:decoration-2 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-primary"
+                >
+                  +32 493 36 5423
+                </a>
               </p>
             </div>
 
             {/* Quick Links */}
-            <div>
-              <h4 className="text-sm font-semibold text-brand-primary uppercase tracking-wider mb-4">
-                Quick Links
-              </h4>
+            {/* Mobile: folded column with the title as the toggle; desktop unchanged */}
+            <MobileCollapsible
+              trigger="title"
+              title="Quick Links"
+              titleAs="h4"
+              titleClassName="text-sm font-semibold text-brand-primary uppercase tracking-wider md:mb-4"
+              className="border-t border-gray-200 md:border-0"
+              contentClassName="pb-3 md:pb-0"
+            >
               <ul className="space-y-2">
                 <li>
                   <Link href="/dashboard" className="text-gray-600 hover:text-brand-primary transition-colors">
@@ -128,14 +124,29 @@ export default function Footer() {
                     Community
                   </Link>
                 </li>
+                <li>
+                  <Link href="/about" className="text-gray-600 hover:text-brand-primary transition-colors">
+                    About
+                  </Link>
+                </li>
+                <li>
+                  <Link href="/contact" className="text-gray-600 hover:text-brand-primary transition-colors">
+                    Contact
+                  </Link>
+                </li>
               </ul>
-            </div>
+            </MobileCollapsible>
 
             {/* Partnerships */}
-            <div>
-              <h4 className="text-sm font-semibold text-brand-primary uppercase tracking-wider mb-4">
-                Partnerships
-              </h4>
+            {/* Mobile: folded column with the title as the toggle; desktop unchanged */}
+            <MobileCollapsible
+              trigger="title"
+              title="Partnerships"
+              titleAs="h4"
+              titleClassName="text-sm font-semibold text-brand-primary uppercase tracking-wider md:mb-4"
+              className="border-t border-gray-200 md:border-0"
+              contentClassName="pb-3 md:pb-0"
+            >
               <ul className="space-y-2">
                 <li>
                   <Link href="/partnerships" className="text-gray-600 hover:text-brand-primary transition-colors">
@@ -158,35 +169,37 @@ export default function Footer() {
                   </button>
                 </li>
               </ul>
-            </div>
+            </MobileCollapsible>
           </div>
 
-          <div className="mt-8 pt-8 border-t border-gray-200">
-            <div className="flex flex-col md:flex-row justify-between items-center">
-              <p className="text-sm text-gray-500">
-                © 2025–2026 Beresol BV. All rights reserved.
+          {/* Mobile: one compact block with the copyright and the legal links */}
+          <div className="mt-0 pt-4 md:mt-8 md:pt-8 border-t border-gray-200">
+            <div className="flex flex-wrap justify-center gap-x-3 gap-y-1 text-xs md:text-sm md:flex-nowrap md:justify-between md:gap-0 items-center">
+              <p className="text-xs md:text-sm text-gray-500">
+                <span className="md:hidden">© Beresol BV</span>
+                <span className="hidden md:inline">© 2025–2026 Beresol BV. All rights reserved.</span>
               </p>
-              <div className="flex flex-wrap justify-center gap-2 sm:gap-4 md:gap-6 mt-4 md:mt-0">
-                <Link href="/privacy" className="text-sm text-gray-500 hover:text-gray-700">
+              <div className="contents md:flex md:flex-wrap md:justify-center md:gap-6 md:mt-0">
+                <Link href="/privacy" className="text-xs md:text-sm text-gray-500 hover:text-gray-700">
                   Privacy Policy
                 </Link>
-                <Link href="/terms" className="text-sm text-gray-500 hover:text-gray-700">
+                <Link href="/terms" className="text-xs md:text-sm text-gray-500 hover:text-gray-700">
                   Terms of Service
                 </Link>
-                <Link href="/safety" className="text-sm text-gray-500 hover:text-gray-700">
+                <Link href="/safety" className="text-xs md:text-sm text-gray-500 hover:text-gray-700">
                   Safety Guidelines
                 </Link>
-                <Link href="/cookies" className="text-sm text-gray-500 hover:text-gray-700">
+                <Link href="/cookies" className="text-xs md:text-sm text-gray-500 hover:text-gray-700">
                   Cookies
                 </Link>
                 <button
                   type="button"
                   onClick={openCookieSettings}
-                  className="text-sm text-gray-500 hover:text-gray-700"
+                  className="text-xs md:text-sm text-gray-500 hover:text-gray-700"
                 >
                   Cookie Settings
                 </button>
-                <Link href="/legal/subprocessors" className="text-sm text-gray-500 hover:text-gray-700">
+                <Link href="/legal/subprocessors" className="text-xs md:text-sm text-gray-500 hover:text-gray-700">
                   Subprocessors
                 </Link>
               </div>

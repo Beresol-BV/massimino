@@ -23,7 +23,7 @@ import { WorkoutEmptyState } from '@/components/workout-log/workout_empty_state'
 import { FloatingActionButton } from '@/components/workout-log/floating_action_button';
 import { SessionStatusBar, SessionTimerBadge } from '@/components/workout-log/session_status_bar';
 import { startOfMonth, endOfMonth, format, subMonths, addMonths } from 'date-fns';
-import { Plus, Calendar, Dumbbell, Clock, Weight, MessageCircle, Edit, Trash2, Search, Info, Target, Zap, ChevronLeft, ChevronRight, ChevronDown, Sparkles, Trophy, ListChecks, LineChart, Users, LayoutGrid, TableIcon, Moon, Play, Eye, X } from 'lucide-react';
+import { Plus, Calendar, Dumbbell, Clock, Weight, MessageCircle, Edit, Trash2, Search, Info, Target, Zap, ChevronLeft, ChevronRight, ChevronDown, Sparkles, Trophy, ListChecks, LineChart, Users, LayoutGrid, TableIcon, Moon, Play, Eye, X, ClipboardList, MessageSquare } from 'lucide-react';
 import Link from 'next/link';
 import { useSearchParams } from 'next/navigation';
 import { RestTimerBar } from '@/components/workout-log/rest_timer_bar';
@@ -35,6 +35,8 @@ import { FormGuideModal } from '@/components/workout-log/form_guide_modal';
 import { MyPrograms } from '@/components/programs/my_programs';
 import { UserProgram } from '@/types/program';
 import { AthleteGallery } from '@/components/periodization/athlete_gallery';
+import { PageHero } from '@/components/layout/page_hero';
+import { GuestIntro } from '@/components/layout/guest_intro';
 // Use a relaxed exercise type matching what the UI actually uses
 type ExerciseListItem = {
   id: string;
@@ -1699,17 +1701,20 @@ function WorkoutLogPageContent() {
     <>
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {/* Header */}
-        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-8">
-          <div>
-            <h1 className="text-3xl font-bold text-gray-900">Workout Log</h1>
-            <p className="text-gray-600 mt-2">
-              {activeTab === 'today' ? (
-                <>Today &mdash; {new Date().toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric', year: 'numeric' })}</>
-              ) : (
-                'Track your workouts and see coach feedback'
-              )}
-            </p>
-          </div>
+        <PageHero
+          image="/images/programs/performance.jpg"
+          imagePosition="center 60%"
+          title="Workout Log"
+          description={
+            activeTab === 'today' ? (
+              <>Today &mdash; {new Date().toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric', year: 'numeric' })}</>
+            ) : (
+              'Track your workouts and see coach feedback'
+            )
+          }
+          className="mb-5"
+        />
+        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-end gap-4 mb-8">
           <div className="flex flex-wrap gap-2">
             {selectedEntries.size > 0 && (
               <Button onClick={() => setShowSaveTemplateModal(true)} variant="outline" size="sm" className="text-xs sm:text-sm">
@@ -1733,7 +1738,7 @@ function WorkoutLogPageContent() {
                   <span className="hidden sm:inline">Add Workout Entry</span>
                   <span className="sm:hidden">Add</span>
                 </Button>
-                <span className="text-xs text-gray-400 hidden sm:inline">Start a session first</span>
+                <span className="text-xs text-muted-foreground hidden sm:inline">Start a session first</span>
               </div>
             ) : (
               <Button onClick={() => setIsAddingEntry(true)} size="sm" className="text-xs sm:text-sm">
@@ -1929,7 +1934,7 @@ function WorkoutLogPageContent() {
                           <Button
                             size="sm"
                             variant="ghost"
-                            className="text-gray-400 hover:text-red-500"
+                            className="text-muted-foreground hover:text-red-500"
                             onClick={() => setDismissedTodayWorkout(true)}
                           >
                             <Trash2 className="h-4 w-4 mr-1" />
@@ -1964,7 +1969,7 @@ function WorkoutLogPageContent() {
                           <Button
                             size="sm"
                             variant="ghost"
-                            className="text-gray-400 hover:text-red-500 hover:bg-red-50 p-2"
+                            className="text-muted-foreground hover:text-red-500 hover:bg-red-50 p-2"
                             onClick={async () => {
                               if (await confirmAction('Dismiss today\'s workout? You can still access it from My Programs.')) {
                                 setDismissedTodayWorkout(true);
@@ -2123,7 +2128,7 @@ function WorkoutLogPageContent() {
                                     <div className="font-medium text-sm">{exerciseName}</div>
                                     <div className="text-xs text-muted-foreground mt-1">
                                       {ex.section && <span>{ex.section}</span>}
-                                      {ex.notes && <span className="ml-2 text-gray-400">• {ex.notes}</span>}
+                                      {ex.notes && <span className="ml-2 text-muted-foreground">• {ex.notes}</span>}
                                     </div>
                                   </div>
                                   <div className="text-sm font-medium text-gray-900 ml-4">
@@ -3934,10 +3939,33 @@ function WorkoutLogPageContent() {
   );
 }
 
+function WorkoutLogGate() {
+  const { status } = useSession();
+  if (status === 'loading') return <div className="flex items-center justify-center min-h-screen"><div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div></div>;
+  // Signed-out visitors get a presentation of the Workout Log instead of failing API calls
+  if (status === 'unauthenticated') {
+    return (
+      <GuestIntro
+        image="/images/programs/performance.jpg"
+        imagePosition="center 60%"
+        eyebrow="Workout Log"
+        title="Every session, logged"
+        description="Track your workouts and see coach feedback."
+        features={[
+          { icon: Dumbbell, title: 'Log every set', text: 'Record exercises, sets, reps and weight as you train, or start a timed session.' },
+          { icon: ClipboardList, title: 'Follow programmes', text: 'Join evidence-based programmes and follow them day by day from your log.' },
+          { icon: MessageSquare, title: 'Coach feedback', text: 'Your trainer sees your sessions and leaves feedback, and you watch your progress grow.' },
+        ]}
+      />
+    );
+  }
+  return <WorkoutLogPageContent />;
+}
+
 export default function WorkoutLogPage() {
   return (
     <Suspense fallback={<div className="flex items-center justify-center min-h-screen"><div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div></div>}>
-      <WorkoutLogPageContent />
+      <WorkoutLogGate />
     </Suspense>
   );
 }

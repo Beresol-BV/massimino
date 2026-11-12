@@ -19,6 +19,23 @@ module.exports = {
       extend: {
         // Massimino brand colors - fitness focused palette
         colors: {
+          // The electric blue is retired: every `blue-*` utility resolves to this petrol
+          // scale built around the brand primary #2B5069 (600). Purple/violet/indigo are untouched.
+          blue: {
+            50: '#F1F5F8',
+            100: '#E0E9EF',
+            200: '#C1D3DF',
+            300: '#94B2C6',
+            400: '#6489A3',
+            500: '#3D6A85',
+            600: '#2B5069',
+            700: '#24475D',
+            800: '#1E3D52',
+            900: '#172F40',
+            950: '#0F202C',
+          },
+          // Warm white for cards and surfaces, so they read apart from the cream page background
+          white: '#FFFDF8',
           border: 'hsl(var(--border))',
           input: 'hsl(var(--input))',
           ring: 'hsl(var(--ring))',
@@ -26,6 +43,7 @@ module.exports = {
           foreground: 'hsl(var(--foreground))',
           primary: {
             DEFAULT: 'hsl(var(--primary))',
+            hover: 'hsl(var(--primary-hover))',
             foreground: 'hsl(var(--primary-foreground))',
           },
           secondary: {
@@ -57,7 +75,7 @@ module.exports = {
             green: '#10b981', // Safe content
             yellow: '#f59e0b', // Flagged for review
             red: '#ef4444', // Blocked content
-            blue: '#3b82f6', // Trainer verified
+            blue: '#2b5069', // Trainer verified
           },
           // Fitness-themed colors
           fitness: {
@@ -69,22 +87,31 @@ module.exports = {
           // User role colors
           role: {
             client: '#64748b',
-            trainer: '#2563eb',
+            trainer: '#2b5069',
             admin: '#7c3aed',
           },
           // Massimino brand colors from logo
           brand: {
             primary: '#2b5069',    // Massimino primary blue
-            secondary: '#fcfaf5',  // Massimino warm cream
+            secondary: '#FBF8F2',  // Massimino warm cream (page background)
             'primary-light': '#3d6a85',  // Lighter variant of primary
             'primary-dark': '#1e3d52',  // Darker variant of primary
-            'secondary-dark': '#f5f0e8', // Slightly darker cream
+            'secondary-dark': '#F3EEE4', // Slightly darker cream
+            card: '#FFFDF8',       // Warm white for cards
           },
         },
         borderRadius: {
+          // Softer scale: lg = fields/small boxes, xl = images, 2xl = cards/large boxes
+          sm: '6px',
+          md: '10px',
           lg: 'var(--radius)',
-          md: 'calc(var(--radius) - 2px)',
-          sm: 'calc(var(--radius) - 4px)',
+          xl: 'var(--radius-image)',
+          '2xl': 'var(--radius-card)',
+          '3xl': '32px',
+          field: 'var(--radius-field)',
+          image: 'var(--radius-image)',
+          card: 'var(--radius-card)',
+          pill: '9999px',
         },
         // Custom animations for safety feedback and page effects
         keyframes: {
@@ -161,8 +188,8 @@ module.exports = {
             '50%': { backgroundPosition: '100% 50%' },
           },
           'glow-pulse': {
-            '0%, 100%': { boxShadow: '0 0 20px rgba(59, 130, 246, 0.5)' },
-            '50%': { boxShadow: '0 0 40px rgba(59, 130, 246, 0.8)' },
+            '0%, 100%': { boxShadow: '0 0 20px rgba(43, 80, 105, 0.35)' },
+            '50%': { boxShadow: '0 0 40px rgba(43, 80, 105, 0.55)' },
           },
           'slide-in-bottom': {
             '0%': { opacity: '0', transform: 'translateY(100%)' },
@@ -235,9 +262,9 @@ module.exports = {
         // Typography for safety messaging
         fontFamily: {
           // CSS variables are set by next/font in src/app/layout.tsx
-          sans: ['var(--font-nunito-sans)', 'var(--font-lato)', 'system-ui', 'sans-serif'],
-          display: ['var(--font-nunito-sans)', 'sans-serif'],
-          body: ['var(--font-lato)', 'sans-serif'],
+          sans: ['var(--font-inter)', 'system-ui', 'sans-serif'],
+          display: ['var(--font-inter-tight)', 'var(--font-inter)', 'sans-serif'],
+          body: ['var(--font-inter)', 'sans-serif'],
           mono: ['JetBrains Mono', 'monospace'],
         },
         // Spacing for safety elements
@@ -247,6 +274,14 @@ module.exports = {
         },
         // Custom shadows for depth and safety indicators
         boxShadow: {
+          // Soft, diffuse petrol-tinted shadows replace hard card borders
+          sm: '0 1px 2px rgba(30, 61, 82, 0.04), 0 4px 14px -4px rgba(30, 61, 82, 0.08)',
+          DEFAULT: '0 1px 2px rgba(30, 61, 82, 0.04), 0 6px 20px -6px rgba(30, 61, 82, 0.10)',
+          md: '0 2px 4px rgba(30, 61, 82, 0.04), 0 10px 30px -8px rgba(30, 61, 82, 0.12)',
+          lg: '0 4px 8px rgba(30, 61, 82, 0.04), 0 18px 44px -12px rgba(30, 61, 82, 0.16)',
+          xl: '0 6px 12px rgba(30, 61, 82, 0.05), 0 28px 60px -16px rgba(30, 61, 82, 0.20)',
+          soft: '0 1px 2px rgba(30, 61, 82, 0.04), 0 8px 24px -6px rgba(30, 61, 82, 0.10)',
+          'soft-lg': '0 2px 6px rgba(30, 61, 82, 0.05), 0 20px 48px -12px rgba(30, 61, 82, 0.16)',
           'safety-glow': '0 0 20px rgba(16, 185, 129, 0.3)',
           'warning-glow': '0 0 20px rgba(245, 158, 11, 0.3)',
           'danger-glow': '0 0 20px rgba(239, 68, 68, 0.3)',
@@ -268,7 +303,7 @@ module.exports = {
             border: '2px solid #ef4444',
           },
           '.trainer-badge': {
-            background: 'linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%)',
+            background: 'linear-gradient(135deg, #2b5069 0%, #1e3d52 100%)',
             color: '#ffffff',
           },
           '.safety-gradient': {

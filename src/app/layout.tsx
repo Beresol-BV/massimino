@@ -1,37 +1,56 @@
 // src/app/layout.tsx
 
 import './globals.css'
+import type { Metadata } from 'next'
 import Layout from '@/components/layout/Layout'
 import SessionProvider from '@/components/providers/SessionProvider'
 import Script from 'next/script'
-import { Nunito_Sans, Lato } from 'next/font/google'
+import { Inter, Inter_Tight } from 'next/font/google'
 import { ConsentGatedScripts } from '@/components/layout/consent_gated_scripts'
 import { NotifyHost } from '@/components/ui/notify_host'
 
 // Brand fonts are self-hosted by next/font (served from /_next/static), so no request
 // goes to Google and the CSP needs no third-party font or style origins.
-const nunitoSans = Nunito_Sans({
+// Inter Tight for headings (font-display), Inter for body text (font-sans / font-body).
+// Both are variable fonts, so every weight is available without listing them.
+const interTight = Inter_Tight({
   subsets: ['latin', 'latin-ext'],
   style: ['normal', 'italic'],
-  axes: ['opsz', 'wdth', 'YTLC'],
-  variable: '--font-nunito-sans',
-  display: 'swap',
-  // next/font has no metric overrides for Nunito Sans, so skip the generated fallback face
-  adjustFontFallback: false,
-})
-
-const lato = Lato({
-  subsets: ['latin', 'latin-ext'],
-  weight: ['100', '300', '400', '700', '900'],
-  style: ['normal', 'italic'],
-  variable: '--font-lato',
+  variable: '--font-inter-tight',
   display: 'swap',
 })
 
-export const metadata = {
+const inter = Inter({
+  subsets: ['latin', 'latin-ext'],
+  style: ['normal', 'italic'],
+  variable: '--font-inter',
+  display: 'swap',
+})
+
+const siteDescription = 'The safety-first fitness community platform where trainers and athletes connect, track workouts, and achieve goals together.'
+
+// Pages set only the first part of the title ("Safety Guidelines"); the template adds the brand.
+// No canonical here: it would be inherited by every page. Each public page sets its own.
+export const metadata: Metadata = {
   metadataBase: new URL('https://massimino.fitness'),
-  title: 'Massimino - Safe Workouts for Everyone',
-  description: 'The safety-first fitness community platform where trainers and athletes connect, track workouts, and achieve goals together.',
+  title: {
+    default: 'Massimino - Safe Workouts for Everyone',
+    template: '%s | Massimino',
+  },
+  description: siteDescription,
+  // Defaults for link previews; the image comes from src/app/opengraph-image.tsx
+  openGraph: {
+    type: 'website',
+    siteName: 'Massimino',
+    locale: 'en_US',
+    title: 'Massimino - Safe Workouts for Everyone',
+    description: siteDescription,
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'Massimino - Safe Workouts for Everyone',
+    description: siteDescription,
+  },
   manifest: '/manifest.json',
   appleWebApp: {
     capable: true,
@@ -63,7 +82,7 @@ export default function RootLayout({
   children: React.ReactNode
 }) {
   return (
-    <html lang="en" className={`${nunitoSans.variable} ${lato.variable}`}>
+    <html lang="en" className={`${interTight.variable} ${inter.variable}`}>
       <head>
         <link rel="alternate" type="text/plain" href="/llms.txt" title="LLMs.txt" />
       </head>

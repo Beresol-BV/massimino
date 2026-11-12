@@ -102,7 +102,7 @@ export default function SchedulePage() {
 
       <div className="grid grid-cols-1 lg:grid-cols-[1fr_320px] gap-6">
         {/* Calendar */}
-        <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6">
+        <div className="bg-white rounded-2xl shadow-sm p-6">
           <div className="flex items-center justify-between mb-4">
             <div className="flex items-center gap-3">
               <button
@@ -125,7 +125,7 @@ export default function SchedulePage() {
 
           <div className="grid grid-cols-7 gap-1">
             {dayNames.map((d) => (
-              <div key={d} className="text-center text-xs font-medium text-gray-400 py-2">
+              <div key={d} className="text-center text-xs font-medium text-muted-foreground py-2">
                 {d}
               </div>
             ))}
@@ -161,14 +161,14 @@ export default function SchedulePage() {
           <h3 className="text-base font-semibold text-gray-900">Active Programmes</h3>
           {loading ? (
             [1, 2].map((i) => (
-              <div key={i} className="bg-white rounded-xl shadow-sm border border-gray-100 p-4 border-l-[3px] border-l-gray-200 animate-pulse">
+              <div key={i} className="bg-white rounded-xl shadow-sm p-4 border-l-[3px] border-l-gray-200 animate-pulse">
                 <div className="h-3 bg-gray-100 rounded w-1/2 mb-2" />
                 <div className="h-4 bg-gray-100 rounded w-3/4 mb-1" />
                 <div className="h-3 bg-gray-100 rounded w-1/3" />
               </div>
             ))
           ) : programs.length === 0 ? (
-            <div className="flex flex-col items-center justify-center py-8 text-center bg-white rounded-xl shadow-sm border border-gray-100">
+            <div className="flex flex-col items-center justify-center py-8 text-center bg-white rounded-xl shadow-sm">
               <CalendarDays className="w-8 h-8 text-gray-300 mb-2" />
               <p className="text-sm text-gray-500">No active programmes</p>
               <a
@@ -186,7 +186,7 @@ export default function SchedulePage() {
                   key={p.id}
                   className={`bg-white rounded-xl shadow-sm border border-gray-100 p-4 border-l-[3px] ${borderColour}`}
                 >
-                  <p className="text-xs text-gray-400 mb-1">
+                  <p className="text-xs text-muted-foreground mb-1">
                     Week {p.currentWeek} · {p.program_templates.duration}
                   </p>
                   <p className="font-medium text-gray-900 mb-0.5">{p.program_templates.name}</p>

@@ -1,21 +1,18 @@
 'use client';
 
 import { useSession } from 'next-auth/react';
-import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import { DashboardSidebar } from '@/components/dashboard/DashboardSidebar';
 import { DashboardHeader } from '@/components/dashboard/DashboardHeader';
+import Header from '@/components/layout/Header';
+import Footer from '@/components/layout/Footer';
+import { AppFooter } from '@/components/layout/app_footer';
+import { GuestIntro } from '@/components/layout/guest_intro';
+import { BarChart3, CalendarDays, Utensils } from 'lucide-react';
 
 export default function DashboardLayout({ children }: { children: React.ReactNode }) {
   const { data: session, status } = useSession();
-  const router = useRouter();
   const [sidebarOpen, setSidebarOpen] = useState(false);
-
-  useEffect(() => {
-    if (status === 'unauthenticated') {
-      router.push('/login');
-    }
-  }, [status, router]);
 
   // Close sidebar on route change (mobile)
   useEffect(() => {
@@ -24,19 +21,40 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
 
   if (status === 'loading') {
     return (
-      <div className="min-h-screen bg-[#fcfaf5] flex items-center justify-center font-sans">
+      <div className="min-h-screen bg-brand-secondary flex items-center justify-center font-sans">
         <div className="flex flex-col items-center gap-3">
           <div className="animate-spin rounded-full h-10 w-10 border-2 border-gray-200 border-t-[#2b5069]" />
-          <p className="text-sm text-gray-400">Loading...</p>
+          <p className="text-sm text-muted-foreground">Loading...</p>
         </div>
       </div>
     );
   }
 
-  if (!session) return null;
+  // Signed-out visitors get a presentation of the dashboard instead of a redirect to /login
+  if (!session) {
+    return (
+      <div className="min-h-screen bg-brand-secondary flex flex-col font-sans">
+        <Header />
+        <main className="flex-1">
+          <GuestIntro
+            image="/images/background/dumbells_gloves_02.jpg"
+            eyebrow="Dashboard"
+            title="Your training at a glance"
+            description="Workouts, progress, nutrition and your schedule in one place."
+            features={[
+              { icon: BarChart3, title: 'Activity and statistics', text: 'See your weekly workouts, total volume and streaks, and how they compare with last month.' },
+              { icon: Utensils, title: 'Nutrition', text: 'Log your meals and keep an eye on calories and macros through the day.' },
+              { icon: CalendarDays, title: 'Schedule', text: 'Plan your sessions and keep your training week on track.' },
+            ]}
+          />
+        </main>
+        <Footer />
+      </div>
+    );
+  }
 
   return (
-    <div className="min-h-screen bg-[#fcfaf5] flex font-sans">
+    <div className="min-h-screen bg-brand-secondary flex font-sans">
       {/* Mobile overlay */}
       {sidebarOpen && (
         <div
@@ -55,7 +73,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
       />
 
       {/* Main content area */}
-      <div className="flex-1 min-w-0 lg:ml-[200px] md:ml-[70px] ml-0 min-h-screen flex flex-col transition-[margin] duration-300 overflow-x-hidden">
+      <div className="flex-1 min-w-0 lg:ml-[200px] md:ml-[70px] ml-0 min-h-screen flex flex-col transition-[margin] duration-300 overflow-x-clip">
         <DashboardHeader
           onMenuToggle={() => setSidebarOpen(!sidebarOpen)}
           userName={session.user?.name || ''}
@@ -65,6 +83,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
         <main className="flex-1 p-4 sm:p-5 md:p-6 lg:p-8">
           {children}
         </main>
+        <AppFooter />
       </div>
 
       {/* Mobile FAB */}

@@ -23,6 +23,7 @@ import { Exercise } from '@/types/workout';
 import { motion, AnimatePresence } from 'framer-motion';
 import { heroVariants, fadeInVariants, staggerContainerVariants, staggerItemVariants, scaleVariants } from '@/lib/animations/variants';
 import { useReducedMotion } from '@/hooks/use_reduced_motion';
+import { PageHero } from '@/components/layout/page_hero';
 
 interface ExerciseFilters {
   search: string;
@@ -418,25 +419,25 @@ export default function ExercisesPage() {
         initial={!prefersReducedMotion ? "hidden" : undefined}
         animate={!prefersReducedMotion ? "visible" : undefined}
       >
-        <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-3 sm:gap-4">
-          <div>
-            <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 mb-2">Exercise Database</h1>
-            <p className="text-sm sm:text-base text-gray-600">
-              Browse and search through our comprehensive database of fitness exercises
-            </p>
+        <PageHero
+          image="/images/background/dumbells_gloves_01.jpg"
+          eyebrow="Exercises"
+          title="Exercise Database"
+          description="Browse and search through our comprehensive database of fitness exercises"
+        />
+        <div className="mt-5 flex flex-col-reverse sm:flex-row sm:items-center sm:justify-between gap-3">
+          <div className="flex flex-wrap gap-2">
+            <Button variant={activeTab==='all' ? 'default' : 'outline'} onClick={() => setActiveTab('all')}>All Exercises</Button>
+            <Button variant={activeTab==='mine' ? 'default' : 'outline'} onClick={() => setActiveTab('mine')}><span className="sm:hidden">My Library</span><span className="hidden sm:inline">My Exercise Library</span></Button>
+            {activeTab==='mine' && (
+              <Button onClick={() => setShowCreateModal(true)}>Create Exercise</Button>
+            )}
           </div>
-          <Button asChild className="bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 self-start flex-shrink-0">
+          <Button asChild className="bg-gradient-to-r from-brand-primary to-brand-primary-dark hover:from-brand-primary-dark hover:to-blue-900 self-start sm:self-auto flex-shrink-0">
             <a href="/exercises/contribute">
               🏋️ Fill the Gym
             </a>
           </Button>
-        </div>
-        <div className="mt-4 flex flex-wrap gap-2">
-          <Button variant={activeTab==='all' ? 'default' : 'outline'} onClick={() => setActiveTab('all')}>All Exercises</Button>
-          <Button variant={activeTab==='mine' ? 'default' : 'outline'} onClick={() => setActiveTab('mine')}><span className="sm:hidden">My Library</span><span className="hidden sm:inline">My Exercise Library</span></Button>
-          {activeTab==='mine' && (
-            <Button onClick={() => setShowCreateModal(true)}>Create Exercise</Button>
-          )}
         </div>
       </motion.div>
 
@@ -736,7 +737,7 @@ export default function ExercisesPage() {
                           // eslint-disable-next-line @next/next/no-img-element
                           <img src={coverUrl} alt={exercise.name} className="absolute inset-0 h-full w-full object-cover" />
                         ) : (
-                          <div className="absolute inset-0 flex items-center justify-center text-gray-400">No image</div>
+                          <div className="absolute inset-0 flex items-center justify-center text-muted-foreground">No image</div>
                         )}
                         <div className="absolute top-2 right-2 flex items-center gap-1">
                           {mediaCount !== undefined && mediaCount > 0 && (

@@ -5,6 +5,7 @@ import { usePathname } from 'next/navigation';
 import { useState } from 'react';
 import Header from './Header';
 import Footer from './Footer';
+import { AppFooter } from './app_footer';
 import DynamicBackground from './dynamic_background';
 import { CookieConsent } from '@/components/ui/cookie_consent';
 import { DashboardSidebar } from '@/components/dashboard/DashboardSidebar';
@@ -24,6 +25,7 @@ const publicRoutes = [
   '/safety',
   '/cookies',
   '/contact',
+  '/about',
   '/forgot-password',
   '/reset-password',
   '/legal',
@@ -56,7 +58,7 @@ export default function Layout({ children }: LayoutProps) {
 
   if (shouldUseDashboardShell) {
     return (
-      <div className="min-h-screen bg-[#fcfaf5] flex font-sans">
+      <div className="min-h-screen bg-brand-secondary flex font-sans">
         {/* Mobile overlay */}
         {sidebarOpen && (
           <div
@@ -75,7 +77,7 @@ export default function Layout({ children }: LayoutProps) {
         />
 
         {/* Main content area */}
-        <div className="flex-1 min-w-0 lg:ml-[200px] md:ml-[70px] ml-0 min-h-screen flex flex-col transition-[margin] duration-300 overflow-x-hidden">
+        <div className="flex-1 min-w-0 lg:ml-[200px] md:ml-[70px] ml-0 min-h-screen flex flex-col transition-[margin] duration-300 overflow-x-clip">
           <DashboardHeader
             onMenuToggle={() => setSidebarOpen(!sidebarOpen)}
             userName={session.user?.name || ''}
@@ -85,6 +87,7 @@ export default function Layout({ children }: LayoutProps) {
           <main className="flex-1 p-4 sm:p-5 md:p-6 lg:p-8">
             {children}
           </main>
+          <AppFooter />
         </div>
 
         {/* Mobile FAB */}

@@ -6,6 +6,8 @@ import Image from 'next/image';
 import { EUROPE_FITNESS_DATA_2024, getByPenetrationRate, getByMarketSize, getByGrowthRate } from '@/data/fitness/europe_2024';
 import { EUROPE_TOTALS } from '@/types/fitness_data';
 import { FitnessMapSection } from './components/fitness_map_section';
+import { ScrollCue } from '@/components/ui/scroll_cue';
+import { MobileCollapsible } from '@/components/ui/mobile_collapsible';
 import {
   PenetrationTable,
   MarketTable,
@@ -28,12 +30,16 @@ import {
 } from '@/data/fitness/industry_2024';
 
 export const metadata: Metadata = {
-  title: 'Fitness Intelligence - Massimino',
+  title: 'Fitness Intelligence',
+  alternates: { canonical: '/fitness-intelligence' },
   description: 'European fitness industry data visualization. Explore gym penetration rates, market sizes, and growth trends across Europe.',
   openGraph: {
-    title: 'Fitness Intelligence - Massimino',
+    title: 'Fitness Intelligence | Massimino',
     description: 'European fitness industry data visualization with interactive maps.',
     type: 'website',
+    url: '/fitness-intelligence',
+    // Setting openGraph here replaces the layout's, so point back to the default card
+    images: ['/opengraph-image'],
   },
 };
 
@@ -85,7 +91,7 @@ function Section({
 }) {
   return (
     <section
-      className="mt-8 overflow-hidden rounded-2xl border border-gray-200/70 bg-white shadow-sm transition-shadow duration-300 hover:shadow-md animate-fade-in-up"
+      className="min-w-0 overflow-hidden rounded-card bg-white shadow-soft animate-fade-in-up"
       style={{ animationDelay: `${delay}s` }}
     >
       <div className="border-b border-gray-100 p-4 sm:p-6">
@@ -94,7 +100,7 @@ function Section({
             <Icon path={icon} size={24} className={iconColor} />
           </div>
           <div>
-            <h2 className="text-base font-bold text-brand-primary sm:text-xl">{title}</h2>
+            <h3 className="font-display text-base font-bold text-brand-primary sm:text-xl">{title}</h3>
             <p className="text-sm text-gray-600 sm:text-base">{subtitle}</p>
           </div>
         </div>
@@ -119,68 +125,88 @@ export default function FitnessIntelligencePage() {
   const totalChainMembers = EUROPE_GYM_CHAINS_2024.reduce((sum, c) => sum + c.members, 0);
 
   return (
-    <main className="min-h-screen overflow-x-hidden bg-brand-secondary">
-      {/* Hero band */}
-      <div className="bg-gradient-to-br from-brand-primary to-brand-primary-dark">
-        <div className="mx-auto max-w-7xl px-4 py-10 sm:px-6 sm:py-12 lg:px-8">
-          <div className="animate-fade-in-up">
-            <span className="inline-flex items-center gap-1.5 rounded-full bg-white/15 px-3 py-1 text-xs font-medium uppercase tracking-wide text-white/90">
+    <main className="min-h-screen overflow-x-clip bg-brand-secondary">
+      {/* ════════ Full-screen hero ════════ */}
+      <div className="px-4 pt-4 sm:px-6 lg:px-8">
+        <section className="fi-hero-h relative isolate mx-auto flex max-w-[1600px] flex-col overflow-hidden rounded-card shadow-soft">
+          <Image
+            src="/images/background/athletism_red.jpg"
+            alt=""
+            fill
+            priority
+            sizes="100vw"
+            className="-z-10 object-cover"
+            style={{ objectPosition: 'center 70%' }}
+          />
+          {/* Dark petrol overlay so the white text passes AA */}
+          <div aria-hidden="true" className="absolute inset-0 -z-10 bg-gradient-to-b from-[#0f202c]/80 via-[#1e3d52]/75 to-[#0f202c]/90" />
+
+          <div className="mx-auto flex w-full max-w-6xl flex-1 flex-col justify-center px-5 py-10 sm:px-8 sm:py-14">
+            <span className="inline-flex w-fit items-center gap-1.5 rounded-full bg-white/15 px-3 py-1 text-xs font-medium uppercase tracking-wide text-white">
               <Icon path={ICONS.earth} size={14} /> EuropeActive / Deloitte 2026
             </span>
-            <h1 className="mt-3 text-2xl font-bold text-white sm:text-4xl">Fitness Intelligence</h1>
-            <p className="mt-2 max-w-3xl text-sm text-white/80 sm:text-base">
-              Interactive maps and rankings of gym penetration, market size, membership and growth across Europe.
-              Click any country for a detailed breakdown of its operators and creators.
+            <p className="mt-6 font-display text-xs font-medium uppercase tracking-[0.25em] text-white/85 sm:text-sm">
+              Fitness Intelligence
             </p>
+            <h1 className="mt-2 max-w-4xl font-display text-4xl font-bold tracking-tight text-white sm:text-5xl lg:text-6xl">
+              Europe&apos;s fitness market, mapped
+            </h1>
+            <p className="mt-4 max-w-2xl text-sm text-white/85 sm:text-lg">
+              Gym penetration, market size, membership and growth across Europe. Click any country for its operators and creators.
+            </p>
+
+            {/* Key figures: 4 in a row on desktop, 2x2 on mobile */}
+            <div className="mt-8 grid grid-cols-2 gap-3 sm:gap-4 lg:grid-cols-4">
+              {[
+                {
+                  value: `${(EUROPE_TOTALS.total_members / 1000000).toFixed(1)}M`,
+                  label: 'Total members (FY2025)',
+                  note: 'All-time high; +5.8% YoY',
+                  accent: 'text-brand-primary',
+                },
+                {
+                  value: `€${(EUROPE_TOTALS.total_market_eur / 1000000000).toFixed(1)}B`,
+                  label: 'Market size (FY2025)',
+                  note: '+9% YoY growth',
+                  accent: 'text-emerald-700',
+                },
+                {
+                  value: `${EUROPE_TOTALS.total_clubs.toLocaleString()}+`,
+                  label: 'Fitness clubs (FY2025)',
+                  note: '+3% increase YoY',
+                  accent: 'text-orange-700',
+                },
+                {
+                  value: `${EUROPE_TOTALS.average_penetration}%`,
+                  label: 'Avg penetration',
+                  note: '100M members target by 2030',
+                  accent: 'text-purple-600',
+                },
+              ].map((stat) => (
+                <div key={stat.label} className="rounded-field bg-white/95 p-3 shadow-soft sm:p-5">
+                  <div className={`font-display text-2xl font-bold sm:text-3xl ${stat.accent}`}>{stat.value}</div>
+                  <div className="mt-0.5 text-xs text-muted-foreground sm:text-sm">{stat.label}</div>
+                  <div className="mt-1 text-xs text-green-700">{stat.note}</div>
+                </div>
+              ))}
+            </div>
           </div>
-        </div>
+
+          <div className="flex justify-center pb-5 sm:pb-7">
+            <ScrollCue targetId="map" label="Explore the map" ariaLabel="Explore the map: scroll to the map" />
+          </div>
+        </section>
       </div>
 
-      <div className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
-        {/* Stats Overview */}
-        <div className="-mt-14 mb-8 grid grid-cols-2 gap-4 md:grid-cols-4">
-          {[
-            {
-              value: `${(EUROPE_TOTALS.total_members / 1000000).toFixed(1)}M`,
-              label: 'Total members (FY2025)',
-              note: 'All-time high; +5.8% YoY',
-              accent: 'text-brand-primary',
-            },
-            {
-              value: `€${(EUROPE_TOTALS.total_market_eur / 1000000000).toFixed(1)}B`,
-              label: 'Market size (FY2025)',
-              note: '+9% YoY growth',
-              accent: 'text-emerald-600',
-            },
-            {
-              value: `${EUROPE_TOTALS.total_clubs.toLocaleString()}+`,
-              label: 'Fitness clubs (FY2025)',
-              note: '+3% increase YoY',
-              accent: 'text-orange-600',
-            },
-            {
-              value: `${EUROPE_TOTALS.average_penetration}%`,
-              label: 'Avg penetration',
-              note: '100M members target by 2030',
-              accent: 'text-purple-600',
-            },
-          ].map((stat, i) => (
-            <div
-              key={stat.label}
-              className="rounded-2xl border border-gray-100 bg-white p-4 shadow-sm transition-all duration-300 hover:-translate-y-1 hover:shadow-md animate-fade-in-up"
-              style={{ animationDelay: `${0.05 * i}s` }}
-            >
-              <div className={`text-xl font-bold sm:text-2xl ${stat.accent}`}>{stat.value}</div>
-              <div className="text-sm text-gray-500">{stat.label}</div>
-              <div className="mt-1 text-xs text-green-600">{stat.note}</div>
-            </div>
-          ))}
-        </div>
-
-        {/* Interactive Map */}
-        <div className="mb-8 overflow-hidden rounded-2xl border border-gray-200/70 bg-white shadow-sm animate-scale-in">
+      <div className="mx-auto max-w-7xl px-4 py-12 sm:px-6 lg:px-8">
+        {/* ════════ Map, as large as possible ════════ */}
+        <section id="map" className="scroll-mt-20">
           <FitnessMapSection data={EUROPE_FITNESS_DATA_2024} totalMarketEur={EUROPE_TOTALS.total_market_eur} />
-        </div>
+        </section>
+
+        {/* ════════ Rankings, two per row on desktop ════════ */}
+        <h2 className="mt-16 mb-6 font-display text-2xl font-bold tracking-tight text-brand-primary sm:text-3xl">Rankings</h2>
+        <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
 
         {/* Where Europeans Work Out */}
         <Section
@@ -262,7 +288,7 @@ export default function FitnessIntelligencePage() {
         </Section>
 
         {/* Top Operators */}
-        <div className="mt-8 rounded-2xl border border-gray-100 bg-white p-4 shadow-sm sm:p-6 animate-fade-in-up">
+        <div className="min-w-0 rounded-card bg-white p-4 shadow-soft sm:p-6 animate-fade-in-up lg:col-span-2">
           <h3 className="mb-4 text-base font-semibold text-brand-primary sm:text-lg">Top European Operators (2026)</h3>
           <div className="grid grid-cols-1 gap-3 sm:grid-cols-3 sm:gap-4">
             {[
@@ -402,6 +428,8 @@ export default function FitnessIntelligencePage() {
           <TikTokHashtagsTable data={TIKTOK_FITNESS_HASHTAGS_2024} />
         </Section>
 
+        </div>
+
         {/* EU Legal Framework */}
         <div className="mt-12">
           <div className="mb-6 flex items-center gap-3">
@@ -416,96 +444,162 @@ export default function FitnessIntelligencePage() {
 
           <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 sm:gap-6 lg:grid-cols-3">
             {/* Sports */}
-            <div className="group rounded-2xl border border-gray-100 bg-white p-4 shadow-sm transition-all duration-300 hover:-translate-y-1 hover:shadow-md sm:p-6">
-              <div className="mb-4 flex items-center gap-3">
+            <div className="group rounded-2xl bg-white p-4 shadow-sm transition-all duration-300 hover:-translate-y-1 hover:shadow-md sm:p-6">
+              {/* Desktop header unchanged; on mobile the title row is the toggle and the list folds */}
+              <div className="mb-4 hidden md:flex items-center gap-3">
                 <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-green-100 transition-all duration-300 group-hover:scale-110 group-hover:bg-green-200">
                   <Icon path={ICONS.run} size={20} className="text-green-600" />
                 </div>
                 <h3 className="font-semibold text-gray-900">Sports &amp; Physical Activity</h3>
               </div>
-              <ul className="space-y-2 text-sm text-gray-600">
+              <MobileCollapsible
+                trigger="title"
+                hideDesktopTitle
+                title="Sports & Physical Activity"
+                titleAs="h3"
+                titleClassName="font-semibold text-gray-900"
+                icon={<span aria-hidden="true" className="flex h-10 w-10 items-center justify-center rounded-lg bg-green-100"><Icon path={ICONS.run} size={20} className="text-green-600" /></span>}
+                contentClassName="pt-3 md:pt-0"
+              >
+                <ul className="space-y-2 text-sm text-gray-600">
                 <li><strong>TFEU Art. 165</strong> - EU sports competence</li>
                 <li><a href="https://eur-lex.europa.eu/eli/reg/2021/817/oj/eng" target="_blank" rel="noopener noreferrer" className="text-brand-primary hover:underline"><strong>Erasmus+ (2021/817)</strong></a> - Grassroots funding</li>
                 <li>Health-enhancing physical activity</li>
               </ul>
+              </MobileCollapsible>
             </div>
 
             {/* Supplements */}
-            <div className="group rounded-2xl border border-gray-100 bg-white p-4 shadow-sm transition-all duration-300 hover:-translate-y-1 hover:shadow-md sm:p-6">
-              <div className="mb-4 flex items-center gap-3">
+            <div className="group rounded-2xl bg-white p-4 shadow-sm transition-all duration-300 hover:-translate-y-1 hover:shadow-md sm:p-6">
+              {/* Desktop header unchanged; on mobile the title row is the toggle and the list folds */}
+              <div className="mb-4 hidden md:flex items-center gap-3">
                 <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-orange-100 transition-all duration-300 group-hover:scale-110 group-hover:bg-orange-200">
                   <Icon path={ICONS.shield} size={20} className="text-orange-600" />
                 </div>
                 <h3 className="font-semibold text-gray-900">Health &amp; Supplements</h3>
               </div>
-              <ul className="space-y-2 text-sm text-gray-600">
+              <MobileCollapsible
+                trigger="title"
+                hideDesktopTitle
+                title="Health & Supplements"
+                titleAs="h3"
+                titleClassName="font-semibold text-gray-900"
+                icon={<span aria-hidden="true" className="flex h-10 w-10 items-center justify-center rounded-lg bg-orange-100"><Icon path={ICONS.shield} size={20} className="text-orange-600" /></span>}
+                contentClassName="pt-3 md:pt-0"
+              >
+                <ul className="space-y-2 text-sm text-gray-600">
                 <li><a href="https://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX%3A02006R1924-20141213" target="_blank" rel="noopener noreferrer" className="text-brand-primary hover:underline"><strong>Reg. 1924/2006</strong></a> - Health claims pre-auth</li>
                 <li><a href="https://eur-lex.europa.eu/legal-content/EN/TXT/HTML/?uri=CELEX:32011R1169" target="_blank" rel="noopener noreferrer" className="text-brand-primary hover:underline"><strong>FIC 1169/2011</strong></a> - Mandatory labelling</li>
                 <li><a href="https://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX%3A02015R2283-20210327" target="_blank" rel="noopener noreferrer" className="text-brand-primary hover:underline"><strong>Novel Foods 2015/2283</strong></a> - New ingredients</li>
                 <li><a href="https://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX%3A02017R0745-20250110" target="_blank" rel="noopener noreferrer" className="text-brand-primary hover:underline"><strong>MDR 2017/745</strong></a> - Fitness devices</li>
               </ul>
+              </MobileCollapsible>
             </div>
 
             {/* Consumer */}
-            <div className="group rounded-2xl border border-gray-100 bg-white p-4 shadow-sm transition-all duration-300 hover:-translate-y-1 hover:shadow-md sm:p-6">
-              <div className="mb-4 flex items-center gap-3">
+            <div className="group rounded-2xl bg-white p-4 shadow-sm transition-all duration-300 hover:-translate-y-1 hover:shadow-md sm:p-6">
+              {/* Desktop header unchanged; on mobile the title row is the toggle and the list folds */}
+              <div className="mb-4 hidden md:flex items-center gap-3">
                 <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-blue-100 transition-all duration-300 group-hover:scale-110 group-hover:bg-blue-200">
                   <Icon path={ICONS.shield} size={20} className="text-blue-600" />
                 </div>
                 <h3 className="font-semibold text-gray-900">Consumer &amp; Product Safety</h3>
               </div>
-              <ul className="space-y-2 text-sm text-gray-600">
+              <MobileCollapsible
+                trigger="title"
+                hideDesktopTitle
+                title="Consumer & Product Safety"
+                titleAs="h3"
+                titleClassName="font-semibold text-gray-900"
+                icon={<span aria-hidden="true" className="flex h-10 w-10 items-center justify-center rounded-lg bg-blue-100"><Icon path={ICONS.shield} size={20} className="text-blue-600" /></span>}
+                contentClassName="pt-3 md:pt-0"
+              >
+                <ul className="space-y-2 text-sm text-gray-600">
                 <li><a href="https://eur-lex.europa.eu/eli/reg/2023/988/oj/eng" target="_blank" rel="noopener noreferrer" className="text-brand-primary hover:underline"><strong>GPSR 2023/988</strong></a> - Equipment safety</li>
                 <li><a href="https://europa.eu/youreurope/business/product-requirements/labels-markings/ce-marking/index_en.htm" target="_blank" rel="noopener noreferrer" className="text-brand-primary hover:underline"><strong>CE Marking</strong></a> - Required</li>
                 <li><a href="https://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX%3A02011L0083-20220528" target="_blank" rel="noopener noreferrer" className="text-brand-primary hover:underline"><strong>Consumer Rights Dir.</strong></a> - Contracts</li>
               </ul>
+              </MobileCollapsible>
             </div>
 
             {/* Influencer */}
-            <div className="group rounded-2xl border border-gray-100 bg-white p-4 shadow-sm transition-all duration-300 hover:-translate-y-1 hover:shadow-md sm:p-6">
-              <div className="mb-4 flex items-center gap-3">
+            <div className="group rounded-2xl bg-white p-4 shadow-sm transition-all duration-300 hover:-translate-y-1 hover:shadow-md sm:p-6">
+              {/* Desktop header unchanged; on mobile the title row is the toggle and the list folds */}
+              <div className="mb-4 hidden md:flex items-center gap-3">
                 <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-pink-100 transition-all duration-300 group-hover:scale-110 group-hover:bg-pink-200">
                   <Icon path={ICONS.earth} size={20} className="text-pink-600" />
                 </div>
                 <h3 className="font-semibold text-gray-900">Influencer Marketing</h3>
               </div>
-              <ul className="space-y-2 text-sm text-gray-600">
+              <MobileCollapsible
+                trigger="title"
+                hideDesktopTitle
+                title="Influencer Marketing"
+                titleAs="h3"
+                titleClassName="font-semibold text-gray-900"
+                icon={<span aria-hidden="true" className="flex h-10 w-10 items-center justify-center rounded-lg bg-pink-100"><Icon path={ICONS.earth} size={20} className="text-pink-600" /></span>}
+                contentClassName="pt-3 md:pt-0"
+              >
+                <ul className="space-y-2 text-sm text-gray-600">
                 <li><a href="https://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX%3A02005L0029-20220528" target="_blank" rel="noopener noreferrer" className="text-brand-primary hover:underline"><strong>UCPD 2005/29</strong></a> - Disclose relationships</li>
                 <li><a href="https://eur-lex.europa.eu/eli/reg/2022/2065/oj/eng" target="_blank" rel="noopener noreferrer" className="text-brand-primary hover:underline"><strong>DSA 2022/2065</strong></a> - Ad transparency</li>
                 <li><a href="https://eur-lex.europa.eu/eli/dir/2018/1808/oj/eng" target="_blank" rel="noopener noreferrer" className="text-brand-primary hover:underline"><strong>AVMSD 2018/1808</strong></a> - Clear identification</li>
                 <li><a href="https://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX%3A02016R0679-20160504" target="_blank" rel="noopener noreferrer" className="text-brand-primary hover:underline"><strong>GDPR</strong></a> - Consent for targeted ads</li>
               </ul>
+              </MobileCollapsible>
             </div>
 
             {/* Anti-Doping */}
-            <div className="group rounded-2xl border border-gray-100 bg-white p-4 shadow-sm transition-all duration-300 hover:-translate-y-1 hover:shadow-md sm:p-6">
-              <div className="mb-4 flex items-center gap-3">
+            <div className="group rounded-2xl bg-white p-4 shadow-sm transition-all duration-300 hover:-translate-y-1 hover:shadow-md sm:p-6">
+              {/* Desktop header unchanged; on mobile the title row is the toggle and the list folds */}
+              <div className="mb-4 hidden md:flex items-center gap-3">
                 <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-red-100 transition-all duration-300 group-hover:scale-110 group-hover:bg-red-200">
                   <Icon path={ICONS.shield} size={20} className="text-red-600" />
                 </div>
                 <h3 className="font-semibold text-gray-900">Anti-Doping</h3>
               </div>
-              <ul className="space-y-2 text-sm text-gray-600">
+              <MobileCollapsible
+                trigger="title"
+                hideDesktopTitle
+                title="Anti-Doping"
+                titleAs="h3"
+                titleClassName="font-semibold text-gray-900"
+                icon={<span aria-hidden="true" className="flex h-10 w-10 items-center justify-center rounded-lg bg-red-100"><Icon path={ICONS.shield} size={20} className="text-red-600" /></span>}
+                contentClassName="pt-3 md:pt-0"
+              >
+                <ul className="space-y-2 text-sm text-gray-600">
                 <li><a href="https://rm.coe.int/168007b0d8" target="_blank" rel="noopener noreferrer" className="text-brand-primary hover:underline"><strong>CoE Convention (1989)</strong></a> - Obligations</li>
                 <li><a href="https://www.wada-ama.org/en/what-we-do/world-anti-doping-code" target="_blank" rel="noopener noreferrer" className="text-brand-primary hover:underline"><strong>WADA Code</strong></a> - Via federations</li>
                 <li><a href="https://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX%3A02019R1148-20190711" target="_blank" rel="noopener noreferrer" className="text-brand-primary hover:underline"><strong>Reg. 2019/1148</strong></a> - Precursors</li>
               </ul>
+              </MobileCollapsible>
             </div>
 
             {/* Penalties */}
             <div className="group rounded-2xl border border-gray-100 bg-gradient-to-br from-brand-secondary to-brand-secondary-dark p-4 shadow-sm transition-all duration-300 hover:-translate-y-1 hover:shadow-md sm:p-6">
-              <div className="mb-4 flex items-center gap-3">
+              {/* Desktop header unchanged; on mobile the title row is the toggle and the list folds */}
+              <div className="mb-4 hidden md:flex items-center gap-3">
                 <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-gray-200 transition-all duration-300 group-hover:scale-110 group-hover:bg-gray-300">
                   <Icon path={ICONS.shield} size={20} className="text-gray-600" />
                 </div>
                 <h3 className="font-semibold text-gray-900">Enforcement &amp; Penalties</h3>
               </div>
-              <ul className="space-y-2 text-sm text-gray-600">
+              <MobileCollapsible
+                trigger="title"
+                hideDesktopTitle
+                title="Enforcement & Penalties"
+                titleAs="h3"
+                titleClassName="font-semibold text-gray-900"
+                icon={<span aria-hidden="true" className="flex h-10 w-10 items-center justify-center rounded-lg bg-gray-200"><Icon path={ICONS.shield} size={20} className="text-gray-600" /></span>}
+                contentClassName="pt-3 md:pt-0"
+              >
+                <ul className="space-y-2 text-sm text-gray-600">
                 <li><a href="https://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX%3A02005L0029-20220528" target="_blank" rel="noopener noreferrer" className="text-brand-primary hover:underline"><strong>UCPD:</strong></a> Up to 4% turnover</li>
                 <li><a href="https://eur-lex.europa.eu/eli/reg/2022/2065/oj/eng" target="_blank" rel="noopener noreferrer" className="text-brand-primary hover:underline"><strong>DSA:</strong></a> Up to 6% global turnover</li>
                 <li><a href="https://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX%3A02016R0679-20160504" target="_blank" rel="noopener noreferrer" className="text-brand-primary hover:underline"><strong>GDPR:</strong></a> Up to €20M or 4%</li>
                 <li><a href="https://eur-lex.europa.eu/eli/reg/2023/988/oj/eng" target="_blank" rel="noopener noreferrer" className="text-brand-primary hover:underline"><strong>Product safety:</strong></a> Criminal liability</li>
               </ul>
+              </MobileCollapsible>
             </div>
           </div>
 

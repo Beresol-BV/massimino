@@ -138,7 +138,7 @@ export function MessagesDropdown({ userId }: MessagesDropdownProps) {
       </Button>
 
       {isOpen && (
-        <div className="absolute right-0 mt-2 w-80 max-w-[calc(100vw-2rem)] bg-white rounded-lg shadow-lg border border-gray-200 z-50 max-h-96 overflow-hidden sm:right-0 -right-2">
+        <div className="absolute right-0 mt-2 w-80 max-w-[calc(100vw-2rem)] bg-white rounded-lg shadow-lg z-50 max-h-96 overflow-hidden sm:right-0 -right-2">
           <div className="p-4 border-b border-gray-200 flex items-center justify-between">
             <h3 className="font-semibold text-gray-900">Messages</h3>
             <Button
@@ -200,7 +200,7 @@ export function MessagesDropdown({ userId }: MessagesDropdownProps) {
                             <p className="text-sm font-medium text-gray-900 truncate">
                               {conversationName}
                             </p>
-                            <p className="text-xs text-gray-400">
+                            <p className="text-xs text-muted-foreground">
                               {conversation.lastMessage
                                 ? formatTime(conversation.lastMessage.createdAt)
                                 : formatTime(conversation.updatedAt)
@@ -216,7 +216,7 @@ export function MessagesDropdown({ userId }: MessagesDropdownProps) {
                           )}
 
                           {conversation.type === 'GROUP' && (
-                            <p className="text-xs text-gray-400 mt-1">
+                            <p className="text-xs text-muted-foreground mt-1">
                               {conversation.participants.length} participants
                             </p>
                           )}

@@ -309,7 +309,7 @@ export default function NutritionPage() {
                       </div>
                       <div>
                         <h3 className="font-semibold text-gray-900">{config.label}</h3>
-                        <p className="text-xs text-gray-400">
+                        <p className="text-xs text-muted-foreground">
                           {mealLogs.length} item{mealLogs.length !== 1 ? 's' : ''} &middot; {mealCalories} kcal
                         </p>
                       </div>
@@ -333,14 +333,14 @@ export default function NutritionPage() {
                         <div key={log.id} className="flex items-center gap-3 px-4 py-3 group">
                           <div className="flex-1 min-w-0">
                             <p className="text-sm font-medium text-gray-900 truncate">{log.foodName}</p>
-                            <p className="text-xs text-gray-400">
+                            <p className="text-xs text-muted-foreground">
                               {log.quantity} {log.unit}
                               {log.notes ? ` — ${log.notes}` : ''}
                             </p>
                           </div>
                           <div className="text-right flex-shrink-0">
                             <p className="text-sm font-semibold text-gray-900">{log.calories} kcal</p>
-                            <p className="text-xs text-gray-400">
+                            <p className="text-xs text-muted-foreground">
                               P:{Math.round(log.protein)}g C:{Math.round(log.carbs)}g F:{Math.round(log.fat)}g
                             </p>
                           </div>
@@ -363,7 +363,7 @@ export default function NutritionPage() {
                         setAddingMeal(mealKey);
                         resetForm();
                       }}
-                      className="w-full p-4 text-sm text-gray-400 hover:text-[#2b5069] hover:bg-gray-50 transition-colors text-center"
+                      className="w-full p-4 text-sm text-muted-foreground hover:text-[#2b5069] hover:bg-gray-50 transition-colors text-center"
                     >
                       + Add {config.label.toLowerCase()}
                     </button>
@@ -475,7 +475,7 @@ export default function NutritionPage() {
           {/* ── Right Column: Sidebar ── */}
           <div className="flex flex-col gap-4">
             {/* Macro Targets */}
-            <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-5">
+            <div className="bg-white rounded-2xl shadow-sm p-5">
               <div className="flex items-center gap-2 mb-4">
                 <Target className="w-4 h-4 text-[#2b5069]" />
                 <h3 className="text-base font-semibold text-gray-900">
@@ -484,7 +484,7 @@ export default function NutritionPage() {
               </div>
 
               {plan && (
-                <p className="text-xs text-gray-400 mb-3 -mt-2">
+                <p className="text-xs text-muted-foreground mb-3 -mt-2">
                   Plan: {plan.name}
                 </p>
               )}
@@ -534,14 +534,14 @@ export default function NutritionPage() {
               </div>
 
               {!plan && (
-                <p className="text-xs text-gray-400 mt-4 pt-3 border-t border-gray-100">
+                <p className="text-xs text-muted-foreground mt-4 pt-3 border-t border-gray-100">
                   No active nutrition plan. Set targets via your trainer or create a plan to track against goals.
                 </p>
               )}
             </div>
 
             {/* Hydration Quick Ref */}
-            <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-5">
+            <div className="bg-white rounded-2xl shadow-sm p-5">
               <div className="flex items-center gap-2 mb-3">
                 <Droplets className="w-4 h-4 text-cyan-500" />
                 <h3 className="text-sm font-semibold text-gray-900">Hydration (NASM)</h3>
@@ -555,7 +555,7 @@ export default function NutritionPage() {
             </div>
 
             {/* NASM Guidelines Accordion */}
-            <div className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
+            <div className="bg-white rounded-2xl shadow-sm overflow-hidden">
               <button
                 onClick={() => setShowGuidelines(!showGuidelines)}
                 className="w-full flex items-center justify-between p-5 hover:bg-gray-50 transition-colors"
@@ -594,7 +594,7 @@ export default function NutritionPage() {
             </div>
 
             {/* Nutrient Timing Accordion */}
-            <div className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
+            <div className="bg-white rounded-2xl shadow-sm overflow-hidden">
               <button
                 onClick={() => setShowTiming(!showTiming)}
                 className="w-full flex items-center justify-between p-5 hover:bg-gray-50 transition-colors"
@@ -617,7 +617,7 @@ export default function NutritionPage() {
                       <p className="text-xs text-gray-600">{t.recommendations}</p>
                     </div>
                   ))}
-                  <p className="text-[10px] text-gray-400 pt-2 border-t border-gray-100">
+                  <p className="text-[10px] text-muted-foreground pt-2 border-t border-gray-100">
                     Source: NASM Certified Nutrition Coach (CNC) — Chapter 11: Nutrient Timing
                   </p>
                 </div>
@@ -625,7 +625,7 @@ export default function NutritionPage() {
             </div>
 
             {/* Energy Stores Reference */}
-            <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-5">
+            <div className="bg-white rounded-2xl shadow-sm p-5">
               <h3 className="text-sm font-semibold text-gray-900 mb-3">Energy Stores in the Body</h3>
               <div className="overflow-x-auto">
                 <table className="w-full text-xs">
@@ -661,7 +661,7 @@ export default function NutritionPage() {
                   </tbody>
                 </table>
               </div>
-              <p className="text-[10px] text-gray-400 mt-2">
+              <p className="text-[10px] text-muted-foreground mt-2">
                 Source: NASM CNC — Estimated Energy Stores in Humans
               </p>
             </div>
@@ -699,7 +699,7 @@ function MacroRow({
             {value} {unit}
           </span>
           {target && (
-            <span className="text-xs text-gray-400 ml-1">/ {target} {unit}</span>
+            <span className="text-xs text-muted-foreground ml-1">/ {target} {unit}</span>
           )}
         </div>
       </div>

@@ -10,6 +10,7 @@ import { notify, confirmAction } from '@/lib/notify';
 
 import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
+import { TeamCover } from '@/components/teams/team_cover';
 import { useSession } from 'next-auth/react';
 import {
   Team, TeamType, TeamDiscoveryFilters, TeamApplication,
@@ -211,7 +212,7 @@ export function TeamInterface({
         animate={!prefersReducedMotion ? "visible" : undefined}
         transition={{ delay: 0.1 }}
       >
-        <div className="bg-white rounded-2xl shadow-lg border border-gray-100 p-6">
+        <div className="bg-white rounded-2xl shadow-lg p-6">
           {/* Search input */}
           <div className="relative">
             <Search size={18} className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400" />
@@ -284,7 +285,7 @@ export function TeamInterface({
       {loading ? (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {[...Array(6)].map((_, i) => (
-            <div key={i} className="bg-white rounded-2xl overflow-hidden shadow-sm border border-gray-100 animate-pulse">
+            <div key={i} className="bg-white rounded-2xl overflow-hidden shadow-sm animate-pulse">
               <div className="h-0.5 bg-gray-200" />
               <div className="p-5 space-y-4">
                 <div className="h-4 bg-gray-200 rounded w-2/3" />
@@ -334,6 +335,12 @@ export function TeamInterface({
             const primary = aesthetic.primaryColor || aesthetic.primary_colour || '#2b5069';
             const capacityPercent = team.maxMembers > 0 ? (team.memberCount / team.maxMembers) * 100 : 0;
             const isNearFull = capacityPercent >= 90;
+            // Edit/Delete only for the team owner or an admin. Both sides must be real ids:
+            // comparing undefined === undefined showed the buttons to signed-out visitors.
+            // UI only; the server must enforce this too (see notes for Victor).
+            const viewerId = session?.user?.id;
+            const ownerId = team.trainerId || team.trainer?.id;
+            const canManageTeam = session?.user?.role === 'ADMIN' || (!!viewerId && !!ownerId && viewerId === ownerId);
 
             return (
               <motion.div
@@ -343,9 +350,9 @@ export function TeamInterface({
                 transition={{ type: 'spring', stiffness: 400, damping: 17 }}
                 className="group"
               >
-                <div className="bg-white rounded-2xl overflow-hidden shadow-sm border border-gray-100 hover:shadow-xl transition-shadow duration-300 h-full flex flex-col">
-                  {/* Accent stripe */}
-                  <div className="h-0.5" style={{ backgroundColor: primary }} />
+                <div className="bg-white rounded-2xl overflow-hidden shadow-sm hover:shadow-xl transition-shadow duration-300 h-full flex flex-col">
+                  {/* Cover: the team photo, or a default with its initials */}
+                  <TeamCover name={team.name} color={primary} coverImage={aesthetic.coverImage || null} />
 
                   <div className="p-5 flex-1 flex flex-col">
                     {/* Header: name + type */}
@@ -353,7 +360,7 @@ export function TeamInterface({
                       <h3 className="font-display text-lg font-bold text-[#2b5069] leading-tight">
                         {team.name}
                       </h3>
-                      <p className="text-[10px] font-body uppercase tracking-wider text-gray-400 mt-0.5">
+                      <p className="text-[10px] font-body uppercase tracking-wider text-muted-foreground mt-0.5">
                         {team.type.toLowerCase().replace('_', ' ')}
                       </p>
                     </div>
@@ -366,7 +373,7 @@ export function TeamInterface({
                     {/* Member progress bar */}
                     <div className="mb-4">
                       <div className="flex justify-between items-center mb-1">
-                        <span className="text-xs font-body text-gray-400">{team.memberCount}/{team.maxMembers} members</span>
+                        <span className="text-xs font-body text-muted-foreground">{team.memberCount}/{team.maxMembers} members</span>
                         {team.memberCount >= team.maxMembers && (
                           <span className="text-[10px] font-display uppercase tracking-wider text-red-500">Full</span>
                         )}
@@ -459,9 +466,9 @@ export function TeamInterface({
                     </div>
 
                     {/* Trainer/Admin quick actions */}
-                    {(session?.user?.role === 'ADMIN' || session?.user?.id === team.trainer?.id) && (
+                    {canManageTeam && (
                       <div className="flex gap-3 justify-end pt-2 mt-2 border-t border-gray-50">
-                        <a href="/dashboard" className="text-xs font-body text-gray-400 hover:text-[#2b5069] transition-colors">Edit</a>
+                        <a href="/dashboard" className="text-xs font-body text-muted-foreground hover:text-[#2b5069] transition-colors">Edit</a>
                         <button
                           className="text-xs font-body text-red-400 hover:text-red-600 transition-colors"
                           onClick={async () => {

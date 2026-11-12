@@ -63,7 +63,7 @@ export default async function TeamPage({ params }: { params: Promise<{ id: strin
 
   if (!team) {
     return (
-      <div className="min-h-screen bg-[#fcfaf5] flex items-center justify-center px-4">
+      <div className="min-h-screen bg-brand-secondary flex items-center justify-center px-4">
         <div className="text-center">
           <div className="w-16 h-16 rounded-full bg-gray-100 flex items-center justify-center mx-auto mb-4">
             <Users className="h-8 w-8 text-gray-400" />
@@ -84,7 +84,7 @@ export default async function TeamPage({ params }: { params: Promise<{ id: strin
 
   const aesthetic = team.aestheticSettings || team.aesthetic_settings || {};
   const primary = aesthetic.primaryColor || aesthetic.primary_colour || '#2b5069';
-  const secondary = aesthetic.secondaryColor || aesthetic.secondary_colour || '#93c5fd';
+  const secondary = aesthetic.secondaryColor || aesthetic.secondary_colour || '#94b2c6';
   const background = aesthetic.backgroundColor || aesthetic.background_colour || '#ffffff';
   const coverImage: string | null = aesthetic.coverImage || null;
   const social = aesthetic.socialLinks || aesthetic.social_links || {};
@@ -109,7 +109,7 @@ export default async function TeamPage({ params }: { params: Promise<{ id: strin
   };
 
   return (
-    <div className="min-h-screen bg-[#fcfaf5]">
+    <div className="min-h-screen bg-brand-secondary">
       {/* Hero section */}
       <div className="relative overflow-hidden" style={{ backgroundColor: primary }}>
         {/* Cover image */}
@@ -223,8 +223,8 @@ export default async function TeamPage({ params }: { params: Promise<{ id: strin
             { label: 'Visibility', value: formatVisibility(team.visibility) },
             { label: 'Trainer', value: trainer.name || '—' },
           ].map((stat) => (
-            <div key={stat.label} className="bg-white rounded-2xl border border-gray-100 shadow-sm p-5 text-center">
-              <p className="text-xs font-body text-gray-400 uppercase tracking-wider mb-1">{stat.label}</p>
+            <div key={stat.label} className="bg-white rounded-2xl shadow-sm p-5 text-center">
+              <p className="text-xs font-body text-muted-foreground uppercase tracking-wider mb-1">{stat.label}</p>
               <p className="font-display text-lg font-bold capitalize" style={{ color: primary }}>{stat.value}</p>
             </div>
           ))}
@@ -232,14 +232,14 @@ export default async function TeamPage({ params }: { params: Promise<{ id: strin
 
         {/* Spotify bar */}
         {team.spotifyPlaylistUrl && (
-          <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-5 mb-8 flex items-center justify-between">
+          <div className="bg-white rounded-2xl shadow-sm p-5 mb-8 flex items-center justify-between">
             <div className="flex items-center gap-3">
               <div className="w-10 h-10 rounded-xl flex items-center justify-center" style={{ backgroundColor: primary + '15' }}>
                 <Music size={18} style={{ color: primary }} />
               </div>
               <div>
                 <p className="font-display text-sm font-bold text-[#2b5069]">Team Playlist</p>
-                <p className="font-body text-xs text-gray-400">Listen while you train</p>
+                <p className="font-body text-xs text-muted-foreground">Listen while you train</p>
               </div>
             </div>
             <a
@@ -327,7 +327,7 @@ export default async function TeamPage({ params }: { params: Promise<{ id: strin
 
         {/* Team Program Workouts */}
         {teamProgram?.training_days && teamProgram.training_days.length > 0 && (
-          <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-6">
+          <div className="bg-white rounded-2xl shadow-sm p-6">
             <div className="flex items-center justify-between mb-1">
               <h3 className="font-display text-sm font-bold text-[#2b5069] uppercase tracking-wider">
                 Team Workouts
@@ -340,7 +340,7 @@ export default async function TeamPage({ params }: { params: Promise<{ id: strin
                 View full program →
               </Link>
             </div>
-            <p className="font-body text-xs text-gray-400 mb-5">
+            <p className="font-body text-xs text-muted-foreground mb-5">
               {teamProgram.program || teamProgram.program_name} · {teamProgram.duration_weeks} weeks · {teamProgram.frequency_per_week}×/week
             </p>
 
@@ -380,7 +380,7 @@ export default async function TeamPage({ params }: { params: Promise<{ id: strin
                           {day.position}
                         </span>
                       )}
-                      <span className="inline-flex items-center gap-1 text-[10px] font-body text-gray-400 uppercase tracking-wider px-2 py-0.5 rounded-full bg-gray-50">
+                      <span className="inline-flex items-center gap-1 text-[10px] font-body text-muted-foreground uppercase tracking-wider px-2 py-0.5 rounded-full bg-gray-50">
                         <Dumbbell size={10} />
                         {day.exercises?.length || 0} exercises
                       </span>
@@ -401,14 +401,14 @@ export default async function TeamPage({ params }: { params: Promise<{ id: strin
                             <p className="font-body text-xs text-gray-700 truncate">
                               {ex.exercise_name}
                             </p>
-                            <p className="font-body text-[10px] text-gray-400">
+                            <p className="font-body text-[10px] text-muted-foreground">
                               {ex.sets}×{ex.reps}{ex.rest_seconds ? ` · ${ex.rest_seconds}s rest` : ''}
                             </p>
                           </div>
                         </div>
                       ))}
                       {(day.exercises?.length || 0) > 5 && (
-                        <p className="font-body text-[10px] text-gray-400 pl-5">
+                        <p className="font-body text-[10px] text-muted-foreground pl-5">
                           +{day.exercises.length - 5} more exercises
                         </p>
                       )}
@@ -449,7 +449,7 @@ export default async function TeamPage({ params }: { params: Promise<{ id: strin
         {/* Fallback workouts + Members — 2 column grid */}
         {(!teamProgram?.training_days || teamProgram.training_days.length === 0) && (
           <div className="grid md:grid-cols-2 gap-6">
-            <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-6">
+            <div className="bg-white rounded-2xl shadow-sm p-6">
               <h3 className="font-display text-sm font-bold text-[#2b5069] uppercase tracking-wider mb-3">Team Workouts</h3>
               <p className="font-body text-sm text-gray-500 mb-4">
                 Team workouts are managed by the trainer. Members can complete team sessions from the dashboard.
