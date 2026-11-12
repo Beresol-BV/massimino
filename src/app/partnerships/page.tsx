@@ -28,11 +28,13 @@ import {
 } from 'lucide-react';
 import { LeadDialog, KitDownloadButton } from './lead_dialogs';
 import { HeroSection, AnimatedSection, StaggerContainer, StaggerItem, AnimatedCard } from '@/components/ui/animated_section';
+import { MobileCollapsible } from '@/components/ui/mobile_collapsible';
 
 export default function PartnershipsPage() {
   return (
     <>
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+      {/* Presentation only: on mobile the summary shows first and long lists fold; copy unchanged */}
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 flex flex-col md:block">
         {/* Featured Partners */}
         <AnimatedSection className="mb-10">
           <h2 className="text-2xl font-semibold text-gray-900 text-center mb-6">Featured Partners</h2>
@@ -106,11 +108,13 @@ export default function PartnershipsPage() {
                   <CardDescription className="mb-3">
                     Quality sports supplements — protein, pre‑workout, and recovery essentials.
                   </CardDescription>
-                  <ul className="list-disc list-inside text-sm text-gray-700 space-y-1 mb-4">
+                  <MobileCollapsible>
+                    <ul className="list-disc list-inside text-sm text-gray-700 space-y-1 mb-4">
                     <li>Wide range of evidence‑based products</li>
                     <li>Supports training performance and recovery</li>
                     <li>Trusted by athletes and coaches</li>
                   </ul>
+                  </MobileCollapsible>
                   <a href="https://amix.com/?utm_source=massimino&utm_medium=partnerships_page&utm_campaign=amix" target="_blank" rel="noopener" className="inline-block text-brand-primary hover:underline">Visit Amix →</a>
                 </CardContent>
               </Card>
@@ -127,11 +131,13 @@ export default function PartnershipsPage() {
                   <CardDescription className="mb-3">
                     Bo is a social network that links visitors to local producers from all over Europe, whom are called hosts in Bo. Local producers of any category (i.e., wine, beer, vegetables, fruit, fish, crafts, etc.). Bo also shows the geographical indications (GIs) of Europe.
                   </CardDescription>
-                  <ul className="list-disc list-inside text-sm text-gray-700 space-y-1 mb-4">
+                  <MobileCollapsible>
+                    <ul className="list-disc list-inside text-sm text-gray-700 space-y-1 mb-4">
                     <li>Connects visitors with local producer "hosts" across Europe</li>
                     <li>Covers all categories: wine, beer, produce, fish, crafts</li>
                     <li>Highlights Europe's geographical indications (GIs)</li>
                   </ul>
+                  </MobileCollapsible>
                   <a href="http://app.hellobo.eu?utm_source=massimino&utm_medium=partnerships_page&utm_campaign=bo" target="_blank" rel="noopener" className="inline-block text-brand-primary hover:underline">Visit Bo →</a>
                 </CardContent>
               </Card>
@@ -148,11 +154,13 @@ export default function PartnershipsPage() {
                   <CardDescription className="mb-3">
                     Whey protein supplements with unique Mediterranean flavors, crafted in Barcelona for healthy supplementation.
                   </CardDescription>
-                  <ul className="list-disc list-inside text-sm text-gray-700 space-y-1 mb-4">
+                  <MobileCollapsible>
+                    <ul className="list-disc list-inside text-sm text-gray-700 space-y-1 mb-4">
                     <li>24g protein per serving with complete amino acid profile</li>
                     <li>Unique flavors like Crema Catalana</li>
                     <li>Focus on healthy habits and sustainable nutrition</li>
                   </ul>
+                  </MobileCollapsible>
                   <a href="https://www.quotavita.com/en?utm_source=massimino&utm_medium=partnerships_page&utm_campaign=quotavita" target="_blank" rel="noopener" className="inline-block text-brand-primary hover:underline">Visit Quota Vita &#x2192;</a>
                 </CardContent>
               </Card>
@@ -169,11 +177,13 @@ export default function PartnershipsPage() {
                   <CardDescription className="mb-3">
                     Luxury fitness apparel from Amsterdam. Premium athleisure designed for athletes who train hard and dress sharp.
                   </CardDescription>
-                  <ul className="list-disc list-inside text-sm text-gray-700 space-y-1 mb-4">
+                  <MobileCollapsible>
+                    <ul className="list-disc list-inside text-sm text-gray-700 space-y-1 mb-4">
                     <li>Exclusive luxury athleisure brand</li>
                     <li>Signature hoodies, pants, and training looks</li>
                     <li>Minimalist design with a premium edge</li>
                   </ul>
+                  </MobileCollapsible>
                   <a href="https://muscleupstore.nl/?utm_source=massimino&utm_medium=partnerships_page&utm_campaign=mu_amsterdam" target="_blank" rel="noopener" className="inline-block text-brand-primary hover:underline">Visit MU Amsterdam &#x2192;</a>
                 </CardContent>
               </Card>
@@ -190,11 +200,13 @@ export default function PartnershipsPage() {
                   <CardDescription className="mb-3">
                     Dutch fitness apparel brand focused on comfort and style. From oversized tees to joggers — gym wear that looks as good as it feels.
                   </CardDescription>
-                  <ul className="list-disc list-inside text-sm text-gray-700 space-y-1 mb-4">
+                  <MobileCollapsible>
+                    <ul className="list-disc list-inside text-sm text-gray-700 space-y-1 mb-4">
                     <li>Comfortable, stylish gym clothing for men</li>
                     <li>Oversized and muscle-fit cuts</li>
                     <li>Growing Dutch brand with a passionate community</li>
                   </ul>
+                  </MobileCollapsible>
                   <a href="https://pumpgymwear.com/en?utm_source=massimino&utm_medium=partnerships_page&utm_campaign=pump_gymwear" target="_blank" rel="noopener" className="inline-block text-brand-primary hover:underline">Visit Pump Gymwear &#x2192;</a>
                 </CardContent>
               </Card>
@@ -213,11 +225,13 @@ export default function PartnershipsPage() {
                   <CardDescription className="mb-3">
                     Accessible gym network with multiple locations and flexible memberships.
                   </CardDescription>
-                  <ul className="list-disc list-inside text-sm text-gray-700 space-y-1 mb-4">
+                  <MobileCollapsible>
+                    <ul className="list-disc list-inside text-sm text-gray-700 space-y-1 mb-4">
                     <li>Convenient locations across Belgium</li>
                     <li>Great value membership options</li>
                     <li>Friendly, supportive environment</li>
                   </ul>
+                  </MobileCollapsible>
                   <a href="https://www.jims.be/nl?utm_source=massimino&utm_medium=partnerships_page&utm_campaign=jims" target="_blank" rel="noopener" className="inline-block text-brand-primary hover:underline">Visit Jims →</a>
                 </CardContent>
               </Card>
@@ -228,11 +242,11 @@ export default function PartnershipsPage() {
         </section>
 
         {/* Hero Section */}
-        <HeroSection className="text-center mb-16">
-          <h1 className="text-4xl font-bold text-gray-900 mb-4">
+        <HeroSection className="order-first md:order-none text-center mb-10 md:mb-16">
+          <h1 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
             Partner with Massimino
           </h1>
-          <p className="text-xl text-gray-600 max-w-3xl mx-auto mb-8">
+          <p className="text-lg md:text-xl text-gray-600 max-w-3xl mx-auto mb-6 md:mb-8">
             Join the future of fitness technology. Partner with Massimino to reach
             millions of fitness enthusiasts and professionals worldwide.
           </p>
@@ -289,9 +303,9 @@ export default function PartnershipsPage() {
         </section>
 
         {/* Partnership Types */}
-        <section className="mb-16">
+        <section className="mb-10 md:mb-16">
           <AnimatedSection>
-            <h2 className="text-3xl font-bold text-gray-900 text-center mb-12">
+            <h2 className="text-2xl md:text-3xl font-bold text-gray-900 text-center mb-6 md:mb-12">
               Partnership Opportunities
             </h2>
           </AnimatedSection>
@@ -317,7 +331,9 @@ export default function PartnershipsPage() {
                   Your trainers and athletes can seamlessly access Massimino's features.
                 </CardDescription>
                 
-                <div className="space-y-3 mb-6">
+                <MobileCollapsible moreLabel="See what is included">
+                
+                  <div className="space-y-3 mb-6">
                   <div className="flex items-center">
                     <CheckCircle className="h-5 w-5 text-green-500 mr-3" />
                     <span>White-label integration options</span>
@@ -335,6 +351,8 @@ export default function PartnershipsPage() {
                     <span>Revenue sharing opportunities</span>
                   </div>
                 </div>
+                
+                </MobileCollapsible>
 
                 <LeadDialog variant="gym" fullWidth />
               </CardContent>
@@ -361,7 +379,9 @@ export default function PartnershipsPage() {
                   supplements, equipment, apparel, and fitness services.
                 </CardDescription>
                 
-                <div className="space-y-3 mb-6">
+                <MobileCollapsible moreLabel="See what is included">
+                
+                  <div className="space-y-3 mb-6">
                   <div className="flex items-center">
                     <CheckCircle className="h-5 w-5 text-green-500 mr-3" />
                     <span>Highly targeted fitness audience</span>
@@ -379,6 +399,8 @@ export default function PartnershipsPage() {
                     <span>Flexible budget options</span>
                   </div>
                 </div>
+                
+                </MobileCollapsible>
 
                 <LeadDialog variant="ad" fullWidth />
               </CardContent>
@@ -388,9 +410,9 @@ export default function PartnershipsPage() {
         </section>
 
         {/* Features Section */}
-        <section className="mb-16">
+        <section className="mb-10 md:mb-16">
           <AnimatedSection>
-            <h2 className="text-3xl font-bold text-gray-900 text-center mb-12">
+            <h2 className="text-2xl md:text-3xl font-bold text-gray-900 text-center mb-6 md:mb-12">
               Why Partner with Massimino?
             </h2>
           </AnimatedSection>
@@ -463,9 +485,9 @@ export default function PartnershipsPage() {
         </section>
 
         {/* How It Works */}
-        <section className="mb-16">
+        <section className="mb-10 md:mb-16">
           <AnimatedSection>
-            <h2 className="text-3xl font-bold text-gray-900 text-center mb-12">How It Works</h2>
+            <h2 className="text-2xl md:text-3xl font-bold text-gray-900 text-center mb-6 md:mb-12">How It Works</h2>
           </AnimatedSection>
           <StaggerContainer className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <StaggerItem>
@@ -476,7 +498,8 @@ export default function PartnershipsPage() {
                 </CardTitle>
               </CardHeader>
               <CardContent>
-                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                <MobileCollapsible moreLabel="Show the steps">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
                   <div>
                     <div className="flex items-center gap-2 text-sm font-medium"><Globe className="h-4 w-4 text-blue-600" />Explore</div>
                     <CardDescription>Scoping call + sandbox access</CardDescription>
@@ -490,6 +513,7 @@ export default function PartnershipsPage() {
                     <CardDescription>Pilot → rollout with analytics</CardDescription>
                   </div>
                 </div>
+                </MobileCollapsible>
               </CardContent>
             </Card>
             </StaggerItem>
@@ -501,7 +525,8 @@ export default function PartnershipsPage() {
                 </CardTitle>
               </CardHeader>
               <CardContent>
-                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4">
+                <MobileCollapsible moreLabel="Show the steps">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4">
                   <div>
                     <div className="flex items-center gap-2 text-sm font-medium"><Mail className="h-4 w-4 text-amber-600" />Brief</div>
                     <CardDescription>Goals + placements + dates</CardDescription>
@@ -519,6 +544,7 @@ export default function PartnershipsPage() {
                     <CardDescription>Impressions, clicks, CTR</CardDescription>
                   </div>
                 </div>
+                </MobileCollapsible>
               </CardContent>
             </Card>
             </StaggerItem>
@@ -527,8 +553,8 @@ export default function PartnershipsPage() {
 
         {/* Integration Examples — commented out for later */}
         {/*
-        <section className="mb-16">
-          <h2 className="text-3xl font-bold text-gray-900 text-center mb-12">
+        <section className="mb-10 md:mb-16">
+          <h2 className="text-2xl md:text-3xl font-bold text-gray-900 text-center mb-6 md:mb-12">
             Integration Examples
           </h2>
           
@@ -595,8 +621,8 @@ export default function PartnershipsPage() {
 
         {/* Success Stories — commented out for later */}
         {/*
-        <section className="mb-16">
-          <h2 className="text-3xl font-bold text-gray-900 text-center mb-12">
+        <section className="mb-10 md:mb-16">
+          <h2 className="text-2xl md:text-3xl font-bold text-gray-900 text-center mb-6 md:mb-12">
             Success Stories
           </h2>
           
