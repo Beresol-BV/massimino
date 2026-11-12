@@ -11,17 +11,19 @@
 
 import { useState, useEffect } from 'react'
 import { useSession } from 'next-auth/react'
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+import { Card, CardContent } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
 import { Avatar, AvatarImage, AvatarFallback } from '@/components/ui/avatar'
 import {
   MapPin, Map, List, Loader2, Filter,
-  X, User, Award, Instagram, Music, Youtube, Facebook, Linkedin, Star, Camera
+  X, User, Award, Instagram, Music, Youtube, Facebook, Linkedin, Star, Camera,
+  SlidersHorizontal, ShieldCheck
 } from 'lucide-react'
 import { UserPublicProfile } from '@/components/layout/user_public_profile'
 import { calculateLevel, LEVEL_NAMES } from '@/components/profile/XPLevelProgress'
 import { PageHero } from '@/components/layout/page_hero'
+import { GuestIntro } from '@/components/layout/guest_intro'
 
 // ===== TYPES =====
 
@@ -461,8 +463,7 @@ function ProfileModal({
 
 // ===== MAIN PAGE COMPONENT =====
 
-export default function MassiminosPage() {
-  const { data: session } = useSession()
+function MassiminosContent() {
 
   const [filters, setFilters] = useState<DiscoveryFilters>({
     distance: 10,
@@ -475,24 +476,6 @@ export default function MassiminosPage() {
   const [selectedUserId, setSelectedUserId] = useState<string | null>(null)
 
   const { users, loading: usersLoading, error: usersError } = useDiscovery(filters)
-
-  if (!session) {
-    return (
-      <div className="min-h-screen flex items-center justify-center bg-gray-50">
-        <Card className="max-w-md w-full">
-          <CardHeader>
-            <CardTitle>Sign In Required</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <p className="text-gray-600 mb-4">Please sign in to discover nearby fitness enthusiasts.</p>
-            <Button className="w-full" onClick={() => window.location.href = '/login'}>
-              Sign In
-            </Button>
-          </CardContent>
-        </Card>
-      </div>
-    )
-  }
 
   return (
     <div className="min-h-screen bg-brand-secondary">
@@ -602,4 +585,32 @@ export default function MassiminosPage() {
       )}
     </div>
   )
+}
+
+export default function MassiminosPage() {
+  const { status } = useSession()
+  if (status === 'loading') {
+    return (
+      <div className="min-h-[60vh] flex items-center justify-center">
+        <div className="animate-spin rounded-full h-8 w-8 border-2 border-gray-200 border-t-[#2b5069]" />
+      </div>
+    )
+  }
+  // Signed-out visitors get a presentation of Discover instead of a "Sign In Required" card
+  if (status === 'unauthenticated') {
+    return (
+      <GuestIntro
+        image="/images/background/athletism_blue.jpg"
+        eyebrow="Discover"
+        title="Find your training people"
+        description="Discover fitness enthusiasts and trainers near you, filtered by role, experience and goals."
+        features={[
+          { icon: MapPin, title: 'People near you', text: 'Find athletes and trainers who train close to where you are.' },
+          { icon: SlidersHorizontal, title: 'Filter by what matters', text: 'Narrow the list by role, experience level and fitness goals.' },
+          { icon: ShieldCheck, title: 'A safe community', text: 'Connect with verified trainers in a community built on respect and safety.' },
+        ]}
+      />
+    )
+  }
+  return <MassiminosContent />
 }
