@@ -443,7 +443,7 @@ export default function HomePage() {
 
           <div className="text-center mt-10">
             <Link
-              href="/massiminos"
+              href="/workout-log?tab=programs"
               className="rounded-full inline-flex items-center gap-2 px-8 py-3 border border-brand-primary text-brand-primary font-display text-sm font-semibold uppercase tracking-wider hover:bg-brand-primary hover:text-white transition-all"
             >
               View All Programs <ArrowRight className="w-4 h-4" />
