@@ -10,6 +10,7 @@ import { notify, confirmAction } from '@/lib/notify';
 
 import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
+import { TeamCover } from '@/components/teams/team_cover';
 import { useSession } from 'next-auth/react';
 import {
   Team, TeamType, TeamDiscoveryFilters, TeamApplication,
@@ -344,8 +345,8 @@ export function TeamInterface({
                 className="group"
               >
                 <div className="bg-white rounded-2xl overflow-hidden shadow-sm hover:shadow-xl transition-shadow duration-300 h-full flex flex-col">
-                  {/* Accent stripe */}
-                  <div className="h-0.5" style={{ backgroundColor: primary }} />
+                  {/* Cover: the team photo, or a default with its initials */}
+                  <TeamCover name={team.name} color={primary} coverImage={aesthetic.coverImage || null} />
 
                   <div className="p-5 flex-1 flex flex-col">
                     {/* Header: name + type */}
