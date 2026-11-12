@@ -190,6 +190,63 @@ function LoginContent() {
               </div>
             )}
 
+            {/* Social Login Buttons */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+              <Button
+                variant="outline"
+                onClick={() => handleSocialLogin('Google')}
+                disabled={isLoading}
+                className="h-11 border-brand-primary-light hover:border-brand-primary hover:bg-brand-secondary-dark bg-white/50"
+              >
+                <Chrome className="h-4 w-4 mr-2 text-red-500" />
+                Google
+              </Button>
+              
+              <Button
+                variant="outline"
+                onClick={() => handleSocialLogin('LinkedIn')}
+                disabled={isLoading}
+                className="h-11 border-brand-primary-light hover:border-brand-primary hover:bg-brand-secondary-dark bg-white/50"
+              >
+                <Linkedin className="h-4 w-4 mr-2 text-blue-600" />
+                LinkedIn
+              </Button>
+              
+              <Button
+                variant="outline"
+                disabled
+                className="h-11 border-brand-primary-light bg-white/30 cursor-not-allowed relative"
+                title="Coming soon"
+              >
+                <Facebook className="h-4 w-4 mr-2 text-blue-700 opacity-50" />
+                <span className="opacity-50">Facebook</span>
+                <span className="absolute -top-1 -right-1 bg-brand-primary text-white text-[10px] px-1.5 py-0.5 rounded-full">
+                  Soon
+                </span>
+              </Button>
+
+              <Button
+                variant="outline"
+                disabled
+                className="h-11 border-brand-primary-light bg-white/30 cursor-not-allowed relative"
+                title="Coming soon"
+              >
+                <Instagram className="h-4 w-4 mr-2 text-pink-500 opacity-50" />
+                <span className="opacity-50">Instagram</span>
+                <span className="absolute -top-1 -right-1 bg-brand-primary text-white text-[10px] px-1.5 py-0.5 rounded-full">
+                  Soon
+                </span>
+              </Button>
+            </div>
+
+            {/* Divider */}
+            <div className="relative">
+              <Separator className="my-6" />
+              <div className="absolute inset-0 flex items-center justify-center">
+                <span className="bg-brand-secondary px-4 text-sm text-brand-primary-light">Or sign in with email</span>
+              </div>
+            </div>
+
             {/* Email/Password Form */}
             <form onSubmit={handleEmailLogin} className="space-y-4">
               <div className="space-y-2">
@@ -265,61 +322,6 @@ function LoginContent() {
                 {!isLoading && <ArrowRight className="ml-2 h-4 w-4" />}
               </Button>
             </form>
-
-            {/* Divider */}
-            <div className="relative">
-              <Separator className="my-6" />
-              <div className="absolute inset-0 flex items-center justify-center">
-                <span className="bg-brand-secondary px-4 text-sm text-brand-primary-light">Or continue with</span>
-              </div>
-            </div>
-
-            {/* Social Login Buttons */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-              <Button
-                variant="outline"
-                onClick={() => handleSocialLogin('Google')}
-                className="h-11 border-brand-primary-light hover:border-brand-primary hover:bg-brand-secondary-dark bg-white/50"
-              >
-                <Chrome className="h-4 w-4 mr-2 text-red-500" />
-                Google
-              </Button>
-              
-              <Button
-                variant="outline"
-                onClick={() => handleSocialLogin('LinkedIn')}
-                className="h-11 border-brand-primary-light hover:border-brand-primary hover:bg-brand-secondary-dark bg-white/50"
-              >
-                <Linkedin className="h-4 w-4 mr-2 text-blue-600" />
-                LinkedIn
-              </Button>
-              
-              <Button
-                variant="outline"
-                disabled
-                className="h-11 border-brand-primary-light bg-white/30 cursor-not-allowed relative"
-                title="Coming soon"
-              >
-                <Facebook className="h-4 w-4 mr-2 text-blue-700 opacity-50" />
-                <span className="opacity-50">Facebook</span>
-                <span className="absolute -top-1 -right-1 bg-brand-primary text-white text-[10px] px-1.5 py-0.5 rounded-full">
-                  Soon
-                </span>
-              </Button>
-
-              <Button
-                variant="outline"
-                disabled
-                className="h-11 border-brand-primary-light bg-white/30 cursor-not-allowed relative"
-                title="Coming soon"
-              >
-                <Instagram className="h-4 w-4 mr-2 text-pink-500 opacity-50" />
-                <span className="opacity-50">Instagram</span>
-                <span className="absolute -top-1 -right-1 bg-brand-primary text-white text-[10px] px-1.5 py-0.5 rounded-full">
-                  Soon
-                </span>
-              </Button>
-            </div>
 
             {/* Sign Up Link */}
             <div className="text-center pt-4">
