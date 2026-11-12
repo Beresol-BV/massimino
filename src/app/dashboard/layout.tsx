@@ -6,6 +6,7 @@ import { DashboardSidebar } from '@/components/dashboard/DashboardSidebar';
 import { DashboardHeader } from '@/components/dashboard/DashboardHeader';
 import Header from '@/components/layout/Header';
 import Footer from '@/components/layout/Footer';
+import { AppFooter } from '@/components/layout/app_footer';
 import { GuestIntro } from '@/components/layout/guest_intro';
 import { BarChart3, CalendarDays, Utensils } from 'lucide-react';
 
@@ -82,6 +83,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
         <main className="flex-1 p-4 sm:p-5 md:p-6 lg:p-8">
           {children}
         </main>
+        <AppFooter />
       </div>
 
       {/* Mobile FAB */}

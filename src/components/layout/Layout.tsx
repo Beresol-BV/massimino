@@ -5,6 +5,7 @@ import { usePathname } from 'next/navigation';
 import { useState } from 'react';
 import Header from './Header';
 import Footer from './Footer';
+import { AppFooter } from './app_footer';
 import DynamicBackground from './dynamic_background';
 import { CookieConsent } from '@/components/ui/cookie_consent';
 import { DashboardSidebar } from '@/components/dashboard/DashboardSidebar';
@@ -85,6 +86,7 @@ export default function Layout({ children }: LayoutProps) {
           <main className="flex-1 p-4 sm:p-5 md:p-6 lg:p-8">
             {children}
           </main>
+          <AppFooter />
         </div>
 
         {/* Mobile FAB */}
