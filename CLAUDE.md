@@ -28,10 +28,9 @@ Massimino **must be fully responsive** across all screen sizes: smartphone (sm: 
 
 ### Typography
 
-- **Primary font:** Nunito Sans (`font-family: "Nunito Sans", sans-serif`)
-- **Secondary font:** Lato (`font-family: "Lato", sans-serif`)
-- Self-hosted with `next/font/google` in `src/app/layout.tsx` (CSS variables `--font-nunito-sans`, `--font-lato`, used by the Tailwind `font-sans`, `font-display` and `font-body` families). Never add a Google Fonts `<link>`: the CSP blocks it and it sends visitor IPs to Google.
-- Nunito Sans variable settings: `font-variation-settings: "wdth" 100, "YTLC" 500;`
+- **Headings:** Inter Tight (Tailwind `font-display`; `h1`–`h6` get it by default in `globals.css`)
+- **Body text:** Inter (Tailwind `font-sans` and `font-body`)
+- Self-hosted with `next/font/google` in `src/app/layout.tsx` (CSS variables `--font-inter-tight`, `--font-inter`). Never add a Google Fonts `<link>`: the CSP blocks it and it sends visitor IPs to Google.
 
 ---
 
