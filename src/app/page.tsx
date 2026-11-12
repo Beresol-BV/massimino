@@ -36,12 +36,13 @@ const HOME_EXTRA_PARTNERS = [
 ];
 
 const FEATURED_PROGRAMS = [
-  { name: 'The Golden Six', category: 'Classic', tag: 'Strength' },
-  { name: 'HIIT Workout', category: 'Modality', tag: 'Cardio' },
-  { name: 'Hyrox Training', category: 'Competition', tag: 'Endurance' },
-  { name: 'NASM Fat Loss', category: 'Goal-Based', tag: 'Weight Loss' },
-  { name: 'Classic Physique PPL', category: 'Classic', tag: 'Hypertrophy' },
-  { name: 'Postpartum Recovery', category: 'Lifestyle', tag: 'Wellness' },
+  // href only where a programme detail page exists (/workout-log/programs/[template id])
+  { name: 'The Golden Six', category: 'Classic', tag: 'Strength', href: '/workout-log/programs/arnold-golden-six' },
+  { name: 'HIIT Workout', category: 'Modality', tag: 'Cardio', href: '/workout-log/programs/hiit-workout' },
+  { name: 'Hyrox Training', category: 'Competition', tag: 'Endurance', href: '/workout-log/programs/hyrox-training' },
+  { name: 'NASM Fat Loss', category: 'Goal-Based', tag: 'Weight Loss', href: undefined },
+  { name: 'Classic Physique PPL', category: 'Classic', tag: 'Hypertrophy', href: '/workout-log/programs/cbum-classic-ppl' },
+  { name: 'Postpartum Recovery', category: 'Lifestyle', tag: 'Wellness', href: undefined },
 ];
 
 /* ─── Animated counter hook ─── */
@@ -404,21 +405,38 @@ export default function HomePage() {
             {FEATURED_PROGRAMS.map((program, i) => (
               <motion.div
                 key={program.name}
-                className="grid grid-cols-1 md:grid-cols-[180px_1fr_180px] items-center p-5 md:px-8 bg-white/80 hover:bg-brand-primary/[0.06] transition-colors cursor-pointer"
                 initial={{ opacity: 0, y: 20 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
                 transition={{ delay: i * 0.05 }}
               >
-                <span className="font-display text-xs font-medium uppercase tracking-wider text-brand-primary/80 mb-1 md:mb-0">
-                  {program.category}
-                </span>
-                <span className="font-display text-lg md:text-xl font-semibold uppercase tracking-wide text-[#2b5069] text-center">
-                  {program.name}
-                </span>
-                <span className="font-body text-xs uppercase tracking-wider text-[#2b5069]/80 text-right mt-1 md:mt-0">
-                  {program.tag}
-                </span>
+                {(() => {
+                  const rowClass = 'grid grid-cols-1 md:grid-cols-[180px_1fr_180px] items-center p-5 md:px-8 bg-white/80';
+                  const cells = (
+                    <>
+                      <span className="font-display text-xs font-medium uppercase tracking-wider text-brand-primary/80 mb-1 md:mb-0">
+                        {program.category}
+                      </span>
+                      <span className="font-display text-lg md:text-xl font-semibold uppercase tracking-wide text-[#2b5069] text-center">
+                        {program.name}
+                      </span>
+                      <span className="font-body text-xs uppercase tracking-wider text-[#2b5069]/80 text-right mt-1 md:mt-0">
+                        {program.tag}
+                      </span>
+                    </>
+                  );
+                  // Rows with a programme page are links; the others are plain rows with no clickable look
+                  return program.href ? (
+                    <Link
+                      href={program.href}
+                      className={`${rowClass} hover:bg-brand-primary/[0.06] transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-brand-primary`}
+                    >
+                      {cells}
+                    </Link>
+                  ) : (
+                    <div className={rowClass}>{cells}</div>
+                  );
+                })()}
               </motion.div>
             ))}
           </div>
