@@ -7,6 +7,7 @@ import { motion } from 'framer-motion';
 import { scrollRevealVariants } from '@/lib/animations/variants';
 import { Shield, TrendingUp, Users, Dumbbell, ArrowRight } from 'lucide-react';
 import { ScrollCue } from '@/components/ui/scroll_cue';
+import { MobileCollapsible } from '@/components/ui/mobile_collapsible';
 
 /* ─── Pexels fallback image URLs (stable, publicly accessible) ─── */
 const FALLBACK_IMAGES = {
@@ -295,7 +296,7 @@ export default function HomePage() {
       </div>
 
       {/* ════════ STATS ════════ */}
-      <section className="py-24 md:py-28 px-6 md:px-12 bg-[#2b5069] text-center">
+      <section className="py-14 md:py-28 px-6 md:px-12 bg-[#2b5069] text-center">
         <motion.p
           className="font-display text-sm font-medium uppercase tracking-[0.2em] text-brand-secondary/80 mb-6"
           initial="hidden"
@@ -325,7 +326,7 @@ export default function HomePage() {
       </section>
 
       {/* ════════ ABOUT / INTRO ════════ */}
-      <section id="about" className="py-28 md:py-36 px-6 md:px-12 bg-brand-secondary">
+      <section id="about" className="py-16 md:py-36 px-6 md:px-12 bg-brand-secondary">
         <div className="max-w-[1200px] mx-auto grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
           <motion.div
             initial="hidden"
@@ -342,6 +343,8 @@ export default function HomePage() {
             <p className="font-body text-base text-[#2b5069]/80 leading-relaxed mb-4">
               Massimino is the professional-grade fitness platform built to protect personal trainers and athletes while enabling evidence-based, NASM-aligned programming. Our mission is to foster a respectful, secure, and effective training environment for all.
             </p>
+            {/* Mobile: the rest folds under "Read more"; desktop unchanged */}
+            <MobileCollapsible>
             <p className="font-body text-base text-[#2b5069]/80 leading-relaxed mb-6">
               Connect with verified trainers, access 30+ curated training programs, and track your progress with our intelligent workout logging system.
             </p>
@@ -359,10 +362,11 @@ export default function HomePage() {
                 <span className="font-body text-sm text-[#2b5069]/80">Evidence-Based Programs</span>
               </div>
             </div>
+            </MobileCollapsible>
           </motion.div>
 
           <motion.div
-            className="relative overflow-hidden rounded-xl"
+            className="hidden md:block relative overflow-hidden rounded-xl"
             initial="hidden"
             whileInView="visible"
             viewport={{ once: true, amount: 0.3 }}
@@ -386,7 +390,7 @@ export default function HomePage() {
       </section>
 
       {/* ════════ FEATURED PROGRAMS (Schedule-style) ════════ */}
-      <section id="programs" className="scroll-mt-16 py-28 md:py-36 px-6 md:px-12 bg-[#2b5069]/[0.04]">
+      <section id="programs" className="scroll-mt-16 py-16 md:py-36 px-6 md:px-12 bg-[#2b5069]/[0.04]">
         <div className="max-w-[1200px] mx-auto">
           <motion.div
             className="text-center mb-14"
@@ -407,6 +411,7 @@ export default function HomePage() {
             {FEATURED_PROGRAMS.map((program, i) => (
               <motion.div
                 key={program.name}
+                className={i >= 3 ? 'hidden md:block' : undefined}
                 initial={{ opacity: 0, y: 20 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
@@ -455,7 +460,7 @@ export default function HomePage() {
       </section>
 
       {/* ════════ GALLERY ════════ */}
-      <section id="gallery" className="py-28 md:py-36">
+      <section id="gallery" className="py-16 md:py-36">
         <motion.div
           className="text-center mb-10 px-6"
           initial="hidden"
@@ -472,7 +477,7 @@ export default function HomePage() {
         </motion.div>
         <div className="grid grid-cols-2 md:grid-cols-5 gap-1 sm:gap-2">
           {pexelsImages.gallery.map((src, i) => (
-            <div key={i} className="overflow-hidden aspect-square rounded-xl">
+            <div key={i} className={`overflow-hidden aspect-square rounded-xl ${i >= 2 ? 'hidden md:block' : ''}`}>
               <Image
                 src={i === 0 ? '/victor/16_assistedpullup.png' : src}
                 alt={`Fitness gallery ${i + 1}`}
@@ -487,7 +492,7 @@ export default function HomePage() {
       </section>
 
       {/* ════════ FEATURE CARDS (Venues-style) ════════ */}
-      <section className="py-28 md:py-36 px-6 md:px-12 bg-[#2b5069]/[0.04]">
+      <section className="py-16 md:py-36 px-6 md:px-12 bg-[#2b5069]/[0.04]">
         <div className="max-w-[1200px] mx-auto">
           <motion.div
             className="text-center mb-14"
@@ -504,7 +509,7 @@ export default function HomePage() {
             </h2>
           </motion.div>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-3 md:gap-6">
             {[
               { title: 'Safety First', detail: 'AI moderation & anti-harassment', tag: 'Protection', icon: Shield, img: pexelsImages.features[0], href: '/safety' },
               { title: 'Expert Guidance', detail: 'NASM-certified programming', tag: 'Coaching', icon: Users, img: pexelsImages.features[1], href: '#programs' },
@@ -520,7 +525,7 @@ export default function HomePage() {
               >
                 {/* The whole card links to its section */}
                 <Link href={feature.href} className="block focus-visible:outline-none" aria-label={`${feature.title}: ${feature.detail}`}>
-                <div className="aspect-[3/4] overflow-hidden">
+                <div className="hidden md:block aspect-[3/4] overflow-hidden">
                   <Image
                     src={feature.img}
                     alt={feature.title}
@@ -530,13 +535,19 @@ export default function HomePage() {
                     sizes="(max-width: 768px) 100vw, 33vw"
                   />
                 </div>
-                <div className="absolute bottom-0 left-0 right-0 p-8 bg-gradient-to-t from-[#2b5069]/95 to-transparent">
-                  <h3 className="font-display text-2xl font-bold uppercase tracking-wide text-white mb-1">
-                    {feature.title}
-                  </h3>
-                  <p className="font-body text-sm text-white/80">{feature.detail}</p>
+                {/* On mobile: a compact petrol card with the icon instead of the photo */}
+                <div className="flex items-center gap-4 p-5 bg-brand-primary md:block md:absolute md:bottom-0 md:left-0 md:right-0 md:p-8 md:bg-transparent md:bg-gradient-to-t from-[#2b5069]/95 to-transparent">
+                  <span aria-hidden="true" className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-white/15 md:hidden">
+                    <feature.icon className="h-5 w-5 text-white" />
+                  </span>
+                  <div>
+                    <h3 className="font-display text-lg md:text-2xl font-bold uppercase tracking-wide text-white mb-1">
+                      {feature.title}
+                    </h3>
+                    <p className="font-body text-sm text-white/80">{feature.detail}</p>
+                  </div>
                 </div>
-                <span className="absolute top-4 left-4 rounded-full px-3 py-1.5 bg-brand-primary text-white font-display text-[0.65rem] font-bold uppercase tracking-wider">
+                <span className="hidden md:block absolute top-4 left-4 rounded-full px-3 py-1.5 bg-brand-primary text-white font-display text-[0.65rem] font-bold uppercase tracking-wider">
                   {feature.tag}
                 </span>
                 </Link>
@@ -547,7 +558,7 @@ export default function HomePage() {
       </section>
 
       {/* ════════ PARTNERS ════════ */}
-      <div className="py-16 md:py-20 px-6 border-t border-b border-[#2b5069]/10 overflow-hidden bg-brand-secondary">
+      <div className="py-10 md:py-20 px-6 border-t border-b border-[#2b5069]/10 overflow-hidden bg-brand-secondary">
         <p className="text-center font-display text-xs uppercase tracking-[0.15em] text-[#2b5069]/80 mb-8">
           Trusted Partners
         </p>
@@ -571,7 +582,7 @@ export default function HomePage() {
       </div>
 
       {/* ════════ NEWSLETTER ════════ */}
-      <section id="contact" className="py-28 md:py-36 px-6 bg-brand-secondary">
+      <section id="contact" className="py-16 md:py-36 px-6 bg-brand-secondary">
         <motion.div
           className="max-w-[700px] mx-auto text-center"
           initial="hidden"
@@ -609,7 +620,7 @@ export default function HomePage() {
       </section>
 
       {/* ════════ CTA ════════ */}
-      <section className="relative py-36 md:py-44 px-6 text-center overflow-hidden">
+      <section className="relative py-20 md:py-44 px-6 text-center overflow-hidden">
         <div className="absolute inset-0">
           <Image
             src={pexelsImages.cta!}
