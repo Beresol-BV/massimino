@@ -7,6 +7,7 @@ import { EUROPE_FITNESS_DATA_2024, getByPenetrationRate, getByMarketSize, getByG
 import { EUROPE_TOTALS } from '@/types/fitness_data';
 import { FitnessMapSection } from './components/fitness_map_section';
 import { ScrollCue } from '@/components/ui/scroll_cue';
+import { MobileCollapsible } from '@/components/ui/mobile_collapsible';
 import {
   PenetrationTable,
   MarketTable,
@@ -444,95 +445,161 @@ export default function FitnessIntelligencePage() {
           <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 sm:gap-6 lg:grid-cols-3">
             {/* Sports */}
             <div className="group rounded-2xl bg-white p-4 shadow-sm transition-all duration-300 hover:-translate-y-1 hover:shadow-md sm:p-6">
-              <div className="mb-4 flex items-center gap-3">
+              {/* Desktop header unchanged; on mobile the title row is the toggle and the list folds */}
+              <div className="mb-4 hidden md:flex items-center gap-3">
                 <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-green-100 transition-all duration-300 group-hover:scale-110 group-hover:bg-green-200">
                   <Icon path={ICONS.run} size={20} className="text-green-600" />
                 </div>
                 <h3 className="font-semibold text-gray-900">Sports &amp; Physical Activity</h3>
               </div>
-              <ul className="space-y-2 text-sm text-gray-600">
+              <MobileCollapsible
+                trigger="title"
+                hideDesktopTitle
+                title="Sports & Physical Activity"
+                titleAs="h3"
+                titleClassName="font-semibold text-gray-900"
+                icon={<span aria-hidden="true" className="flex h-10 w-10 items-center justify-center rounded-lg bg-green-100"><Icon path={ICONS.run} size={20} className="text-green-600" /></span>}
+                contentClassName="pt-3 md:pt-0"
+              >
+                <ul className="space-y-2 text-sm text-gray-600">
                 <li><strong>TFEU Art. 165</strong> - EU sports competence</li>
                 <li><a href="https://eur-lex.europa.eu/eli/reg/2021/817/oj/eng" target="_blank" rel="noopener noreferrer" className="text-brand-primary hover:underline"><strong>Erasmus+ (2021/817)</strong></a> - Grassroots funding</li>
                 <li>Health-enhancing physical activity</li>
               </ul>
+              </MobileCollapsible>
             </div>
 
             {/* Supplements */}
             <div className="group rounded-2xl bg-white p-4 shadow-sm transition-all duration-300 hover:-translate-y-1 hover:shadow-md sm:p-6">
-              <div className="mb-4 flex items-center gap-3">
+              {/* Desktop header unchanged; on mobile the title row is the toggle and the list folds */}
+              <div className="mb-4 hidden md:flex items-center gap-3">
                 <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-orange-100 transition-all duration-300 group-hover:scale-110 group-hover:bg-orange-200">
                   <Icon path={ICONS.shield} size={20} className="text-orange-600" />
                 </div>
                 <h3 className="font-semibold text-gray-900">Health &amp; Supplements</h3>
               </div>
-              <ul className="space-y-2 text-sm text-gray-600">
+              <MobileCollapsible
+                trigger="title"
+                hideDesktopTitle
+                title="Health & Supplements"
+                titleAs="h3"
+                titleClassName="font-semibold text-gray-900"
+                icon={<span aria-hidden="true" className="flex h-10 w-10 items-center justify-center rounded-lg bg-orange-100"><Icon path={ICONS.shield} size={20} className="text-orange-600" /></span>}
+                contentClassName="pt-3 md:pt-0"
+              >
+                <ul className="space-y-2 text-sm text-gray-600">
                 <li><a href="https://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX%3A02006R1924-20141213" target="_blank" rel="noopener noreferrer" className="text-brand-primary hover:underline"><strong>Reg. 1924/2006</strong></a> - Health claims pre-auth</li>
                 <li><a href="https://eur-lex.europa.eu/legal-content/EN/TXT/HTML/?uri=CELEX:32011R1169" target="_blank" rel="noopener noreferrer" className="text-brand-primary hover:underline"><strong>FIC 1169/2011</strong></a> - Mandatory labelling</li>
                 <li><a href="https://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX%3A02015R2283-20210327" target="_blank" rel="noopener noreferrer" className="text-brand-primary hover:underline"><strong>Novel Foods 2015/2283</strong></a> - New ingredients</li>
                 <li><a href="https://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX%3A02017R0745-20250110" target="_blank" rel="noopener noreferrer" className="text-brand-primary hover:underline"><strong>MDR 2017/745</strong></a> - Fitness devices</li>
               </ul>
+              </MobileCollapsible>
             </div>
 
             {/* Consumer */}
             <div className="group rounded-2xl bg-white p-4 shadow-sm transition-all duration-300 hover:-translate-y-1 hover:shadow-md sm:p-6">
-              <div className="mb-4 flex items-center gap-3">
+              {/* Desktop header unchanged; on mobile the title row is the toggle and the list folds */}
+              <div className="mb-4 hidden md:flex items-center gap-3">
                 <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-blue-100 transition-all duration-300 group-hover:scale-110 group-hover:bg-blue-200">
                   <Icon path={ICONS.shield} size={20} className="text-blue-600" />
                 </div>
                 <h3 className="font-semibold text-gray-900">Consumer &amp; Product Safety</h3>
               </div>
-              <ul className="space-y-2 text-sm text-gray-600">
+              <MobileCollapsible
+                trigger="title"
+                hideDesktopTitle
+                title="Consumer & Product Safety"
+                titleAs="h3"
+                titleClassName="font-semibold text-gray-900"
+                icon={<span aria-hidden="true" className="flex h-10 w-10 items-center justify-center rounded-lg bg-blue-100"><Icon path={ICONS.shield} size={20} className="text-blue-600" /></span>}
+                contentClassName="pt-3 md:pt-0"
+              >
+                <ul className="space-y-2 text-sm text-gray-600">
                 <li><a href="https://eur-lex.europa.eu/eli/reg/2023/988/oj/eng" target="_blank" rel="noopener noreferrer" className="text-brand-primary hover:underline"><strong>GPSR 2023/988</strong></a> - Equipment safety</li>
                 <li><a href="https://europa.eu/youreurope/business/product-requirements/labels-markings/ce-marking/index_en.htm" target="_blank" rel="noopener noreferrer" className="text-brand-primary hover:underline"><strong>CE Marking</strong></a> - Required</li>
                 <li><a href="https://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX%3A02011L0083-20220528" target="_blank" rel="noopener noreferrer" className="text-brand-primary hover:underline"><strong>Consumer Rights Dir.</strong></a> - Contracts</li>
               </ul>
+              </MobileCollapsible>
             </div>
 
             {/* Influencer */}
             <div className="group rounded-2xl bg-white p-4 shadow-sm transition-all duration-300 hover:-translate-y-1 hover:shadow-md sm:p-6">
-              <div className="mb-4 flex items-center gap-3">
+              {/* Desktop header unchanged; on mobile the title row is the toggle and the list folds */}
+              <div className="mb-4 hidden md:flex items-center gap-3">
                 <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-pink-100 transition-all duration-300 group-hover:scale-110 group-hover:bg-pink-200">
                   <Icon path={ICONS.earth} size={20} className="text-pink-600" />
                 </div>
                 <h3 className="font-semibold text-gray-900">Influencer Marketing</h3>
               </div>
-              <ul className="space-y-2 text-sm text-gray-600">
+              <MobileCollapsible
+                trigger="title"
+                hideDesktopTitle
+                title="Influencer Marketing"
+                titleAs="h3"
+                titleClassName="font-semibold text-gray-900"
+                icon={<span aria-hidden="true" className="flex h-10 w-10 items-center justify-center rounded-lg bg-pink-100"><Icon path={ICONS.earth} size={20} className="text-pink-600" /></span>}
+                contentClassName="pt-3 md:pt-0"
+              >
+                <ul className="space-y-2 text-sm text-gray-600">
                 <li><a href="https://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX%3A02005L0029-20220528" target="_blank" rel="noopener noreferrer" className="text-brand-primary hover:underline"><strong>UCPD 2005/29</strong></a> - Disclose relationships</li>
                 <li><a href="https://eur-lex.europa.eu/eli/reg/2022/2065/oj/eng" target="_blank" rel="noopener noreferrer" className="text-brand-primary hover:underline"><strong>DSA 2022/2065</strong></a> - Ad transparency</li>
                 <li><a href="https://eur-lex.europa.eu/eli/dir/2018/1808/oj/eng" target="_blank" rel="noopener noreferrer" className="text-brand-primary hover:underline"><strong>AVMSD 2018/1808</strong></a> - Clear identification</li>
                 <li><a href="https://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX%3A02016R0679-20160504" target="_blank" rel="noopener noreferrer" className="text-brand-primary hover:underline"><strong>GDPR</strong></a> - Consent for targeted ads</li>
               </ul>
+              </MobileCollapsible>
             </div>
 
             {/* Anti-Doping */}
             <div className="group rounded-2xl bg-white p-4 shadow-sm transition-all duration-300 hover:-translate-y-1 hover:shadow-md sm:p-6">
-              <div className="mb-4 flex items-center gap-3">
+              {/* Desktop header unchanged; on mobile the title row is the toggle and the list folds */}
+              <div className="mb-4 hidden md:flex items-center gap-3">
                 <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-red-100 transition-all duration-300 group-hover:scale-110 group-hover:bg-red-200">
                   <Icon path={ICONS.shield} size={20} className="text-red-600" />
                 </div>
                 <h3 className="font-semibold text-gray-900">Anti-Doping</h3>
               </div>
-              <ul className="space-y-2 text-sm text-gray-600">
+              <MobileCollapsible
+                trigger="title"
+                hideDesktopTitle
+                title="Anti-Doping"
+                titleAs="h3"
+                titleClassName="font-semibold text-gray-900"
+                icon={<span aria-hidden="true" className="flex h-10 w-10 items-center justify-center rounded-lg bg-red-100"><Icon path={ICONS.shield} size={20} className="text-red-600" /></span>}
+                contentClassName="pt-3 md:pt-0"
+              >
+                <ul className="space-y-2 text-sm text-gray-600">
                 <li><a href="https://rm.coe.int/168007b0d8" target="_blank" rel="noopener noreferrer" className="text-brand-primary hover:underline"><strong>CoE Convention (1989)</strong></a> - Obligations</li>
                 <li><a href="https://www.wada-ama.org/en/what-we-do/world-anti-doping-code" target="_blank" rel="noopener noreferrer" className="text-brand-primary hover:underline"><strong>WADA Code</strong></a> - Via federations</li>
                 <li><a href="https://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX%3A02019R1148-20190711" target="_blank" rel="noopener noreferrer" className="text-brand-primary hover:underline"><strong>Reg. 2019/1148</strong></a> - Precursors</li>
               </ul>
+              </MobileCollapsible>
             </div>
 
             {/* Penalties */}
             <div className="group rounded-2xl border border-gray-100 bg-gradient-to-br from-brand-secondary to-brand-secondary-dark p-4 shadow-sm transition-all duration-300 hover:-translate-y-1 hover:shadow-md sm:p-6">
-              <div className="mb-4 flex items-center gap-3">
+              {/* Desktop header unchanged; on mobile the title row is the toggle and the list folds */}
+              <div className="mb-4 hidden md:flex items-center gap-3">
                 <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-gray-200 transition-all duration-300 group-hover:scale-110 group-hover:bg-gray-300">
                   <Icon path={ICONS.shield} size={20} className="text-gray-600" />
                 </div>
                 <h3 className="font-semibold text-gray-900">Enforcement &amp; Penalties</h3>
               </div>
-              <ul className="space-y-2 text-sm text-gray-600">
+              <MobileCollapsible
+                trigger="title"
+                hideDesktopTitle
+                title="Enforcement & Penalties"
+                titleAs="h3"
+                titleClassName="font-semibold text-gray-900"
+                icon={<span aria-hidden="true" className="flex h-10 w-10 items-center justify-center rounded-lg bg-gray-200"><Icon path={ICONS.shield} size={20} className="text-gray-600" /></span>}
+                contentClassName="pt-3 md:pt-0"
+              >
+                <ul className="space-y-2 text-sm text-gray-600">
                 <li><a href="https://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX%3A02005L0029-20220528" target="_blank" rel="noopener noreferrer" className="text-brand-primary hover:underline"><strong>UCPD:</strong></a> Up to 4% turnover</li>
                 <li><a href="https://eur-lex.europa.eu/eli/reg/2022/2065/oj/eng" target="_blank" rel="noopener noreferrer" className="text-brand-primary hover:underline"><strong>DSA:</strong></a> Up to 6% global turnover</li>
                 <li><a href="https://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX%3A02016R0679-20160504" target="_blank" rel="noopener noreferrer" className="text-brand-primary hover:underline"><strong>GDPR:</strong></a> Up to €20M or 4%</li>
                 <li><a href="https://eur-lex.europa.eu/eli/reg/2023/988/oj/eng" target="_blank" rel="noopener noreferrer" className="text-brand-primary hover:underline"><strong>Product safety:</strong></a> Criminal liability</li>
               </ul>
+              </MobileCollapsible>
             </div>
           </div>
 

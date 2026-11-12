@@ -34,6 +34,8 @@ interface MobileCollapsibleProps {
   contentClassName?: string;
   /** Tone of the read-more button on dark backgrounds */
   tone?: 'light' | 'dark';
+  /** trigger="title": skip the desktop heading because the caller keeps its own (desktop-only) header */
+  hideDesktopTitle?: boolean;
 }
 
 export function MobileCollapsible({
@@ -48,6 +50,7 @@ export function MobileCollapsible({
   className,
   contentClassName,
   tone = 'light',
+  hideDesktopTitle = false,
 }: MobileCollapsibleProps) {
   const [open, setOpen] = useState(false);
   const panelId = useId();
@@ -104,8 +107,8 @@ export function MobileCollapsible({
             {chevron}
           </button>
         </Heading>
-        {/* Desktop: the same title as a plain heading */}
-        <Heading className={cn('hidden md:block', titleClassName)}>{title}</Heading>
+        {/* Desktop: the same title as a plain heading (unless the caller renders its own) */}
+        {!hideDesktopTitle && <Heading className={cn('hidden md:block', titleClassName)}>{title}</Heading>}
         {panel}
       </div>
     );

@@ -30,6 +30,8 @@ interface DataTableProps<T> {
   initialLimit?: number;
   /** Plural noun for the rows, used in the "Show all 41 countries" button */
   itemLabel?: string;
+  /** Rows shown on phones (below md) before "Show all". Default 5 */
+  mobileLimit?: number;
 }
 
 type SortState = { key: string; dir: 'asc' | 'desc' } | null;
@@ -66,6 +68,7 @@ export function DataTable<T>({
   caption,
   initialLimit = 10,
   itemLabel = 'rows',
+  mobileLimit = 5,
 }: DataTableProps<T>) {
   const [sort, setSort] = useState<SortState>(initialSort ?? null);
   const [query, setQuery] = useState('');
@@ -92,6 +95,9 @@ export function DataTable<T>({
 
   const searching = query.trim().length > 0;
   const canCollapse = !searching && sorted.length > initialLimit;
+  // Phones show fewer rows: rows past mobileLimit are hidden below md while collapsed
+  const canCollapseMobile = !searching && sorted.length > mobileLimit;
+  const mobileOnlyButton = canCollapseMobile && !canCollapse;
   const visible = canCollapse && !showAll ? sorted.slice(0, initialLimit) : sorted;
   const mobileClass = (col: DataColumn<T>) => (col.hideOnMobile ? 'hidden sm:table-cell' : '');
 
@@ -161,7 +167,9 @@ export function DataTable<T>({
             {visible.map((row, idx) => (
               <tr
                 key={rowKey(row)}
-                className="border-b border-gray-100 transition-colors hover:bg-brand-secondary"
+                className={`border-b border-gray-100 transition-colors hover:bg-brand-secondary ${
+                  !showAll && canCollapseMobile && idx >= mobileLimit ? 'hidden md:table-row' : ''
+                }`}
               >
                 {columns.map((col) => (
                   <td key={col.key} className={`p-3 ${mobileClass(col)} ${alignClass(col.align)} ${col.cellClassName ?? ''}`}>
@@ -180,8 +188,8 @@ export function DataTable<T>({
           </tbody>
         </table>
       </div>
-      {canCollapse && (
-        <div className="mt-4 flex justify-center">
+      {(canCollapse || canCollapseMobile) && (
+        <div className={`mt-4 flex justify-center ${mobileOnlyButton ? 'md:hidden' : ''}`}>
           <button
             type="button"
             onClick={() => setShowAll((v) => !v)}
