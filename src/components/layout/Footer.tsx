@@ -74,9 +74,21 @@ export default function Footer() {
               <p className="hidden md:block text-sm text-gray-500">
                 Massimino is a product of Beresol BV. Copyright of Beresol BV
               </p>
+              {/* Contact links stay visible on mobile too (outside the folded columns) */}
               <p className="md:mt-2 text-sm">
-                <a href="mailto:hello@beresol.eu" className="text-brand-primary hover:underline">
+                <a
+                  href="mailto:hello@beresol.eu"
+                  className="rounded-sm text-brand-primary underline underline-offset-2 hover:decoration-2 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-primary"
+                >
                   hello@beresol.eu
+                </a>
+              </p>
+              <p className="mt-1 text-sm">
+                <a
+                  href="tel:+32493365423"
+                  className="rounded-sm text-brand-primary underline underline-offset-2 hover:decoration-2 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-primary"
+                >
+                  +32 493 36 5423
                 </a>
               </p>
             </div>
