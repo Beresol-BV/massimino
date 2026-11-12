@@ -72,6 +72,11 @@ export default function Footer() {
               <p className="text-sm text-gray-500">
                 Massimino is a product of Beresol BV. Copyright of Beresol BV
               </p>
+              <p className="mt-2 text-sm">
+                <a href="mailto:hello@beresol.eu" className="text-brand-primary hover:underline">
+                  hello@beresol.eu
+                </a>
+              </p>
             </div>
 
             {/* Quick Links */}
@@ -98,6 +103,16 @@ export default function Footer() {
                 <li>
                   <Link href="/community" className="text-gray-600 hover:text-brand-primary transition-colors">
                     Community
+                  </Link>
+                </li>
+                <li>
+                  <Link href="/about" className="text-gray-600 hover:text-brand-primary transition-colors">
+                    About
+                  </Link>
+                </li>
+                <li>
+                  <Link href="/contact" className="text-gray-600 hover:text-brand-primary transition-colors">
+                    Contact
                   </Link>
                 </li>
               </ul>
