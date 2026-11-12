@@ -10,6 +10,7 @@ import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { openCookieSettings } from '@/components/ui/cookie_consent';
+import { MobileCollapsible } from '@/components/ui/mobile_collapsible';
 
 export default function Footer() {
   const [open, setOpen] = useState(false);
@@ -60,19 +61,20 @@ export default function Footer() {
     <footer className="bg-brand-secondary-dark border-t border-brand-primary-dark">
       {/* Footer content - always visible */}
       <div>
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 md:py-8">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-0 md:gap-8">
             {/* Brand */}
-            <div className="col-span-1 md:col-span-2">
-              <h3 className="text-lg font-semibold text-brand-primary mb-4">Massimino</h3>
-              <p className="text-gray-600 mb-4">
+            <div className="col-span-1 md:col-span-2 pb-4 md:pb-0">
+              <h3 className="text-lg font-semibold text-brand-primary mb-1 md:mb-4">Massimino</h3>
+              {/* Mobile: long description and ownership line hidden; name and email stay */}
+              <p className="hidden md:block text-gray-600 mb-4">
                 The safety-first fitness community platform for trainers and enthusiasts.
                 Safe workouts for everyone.
               </p>
-              <p className="text-sm text-gray-500">
+              <p className="hidden md:block text-sm text-gray-500">
                 Massimino is a product of Beresol BV. Copyright of Beresol BV
               </p>
-              <p className="mt-2 text-sm">
+              <p className="md:mt-2 text-sm">
                 <a href="mailto:hello@beresol.eu" className="text-brand-primary hover:underline">
                   hello@beresol.eu
                 </a>
@@ -80,10 +82,15 @@ export default function Footer() {
             </div>
 
             {/* Quick Links */}
-            <div>
-              <h4 className="text-sm font-semibold text-brand-primary uppercase tracking-wider mb-4">
-                Quick Links
-              </h4>
+            {/* Mobile: folded column with the title as the toggle; desktop unchanged */}
+            <MobileCollapsible
+              trigger="title"
+              title="Quick Links"
+              titleAs="h4"
+              titleClassName="text-sm font-semibold text-brand-primary uppercase tracking-wider md:mb-4"
+              className="border-t border-gray-200 md:border-0"
+              contentClassName="pb-3 md:pb-0"
+            >
               <ul className="space-y-2">
                 <li>
                   <Link href="/dashboard" className="text-gray-600 hover:text-brand-primary transition-colors">
@@ -116,13 +123,18 @@ export default function Footer() {
                   </Link>
                 </li>
               </ul>
-            </div>
+            </MobileCollapsible>
 
             {/* Partnerships */}
-            <div>
-              <h4 className="text-sm font-semibold text-brand-primary uppercase tracking-wider mb-4">
-                Partnerships
-              </h4>
+            {/* Mobile: folded column with the title as the toggle; desktop unchanged */}
+            <MobileCollapsible
+              trigger="title"
+              title="Partnerships"
+              titleAs="h4"
+              titleClassName="text-sm font-semibold text-brand-primary uppercase tracking-wider md:mb-4"
+              className="border-t border-gray-200 md:border-0"
+              contentClassName="pb-3 md:pb-0"
+            >
               <ul className="space-y-2">
                 <li>
                   <Link href="/partnerships" className="text-gray-600 hover:text-brand-primary transition-colors">
@@ -145,35 +157,37 @@ export default function Footer() {
                   </button>
                 </li>
               </ul>
-            </div>
+            </MobileCollapsible>
           </div>
 
-          <div className="mt-8 pt-8 border-t border-gray-200">
-            <div className="flex flex-col md:flex-row justify-between items-center">
-              <p className="text-sm text-gray-500">
-                © 2025–2026 Beresol BV. All rights reserved.
+          {/* Mobile: one compact block with the copyright and the legal links */}
+          <div className="mt-0 pt-4 md:mt-8 md:pt-8 border-t border-gray-200">
+            <div className="flex flex-wrap justify-center gap-x-3 gap-y-1 text-xs md:text-sm md:flex-nowrap md:justify-between md:gap-0 items-center">
+              <p className="text-xs md:text-sm text-gray-500">
+                <span className="md:hidden">© Beresol BV</span>
+                <span className="hidden md:inline">© 2025–2026 Beresol BV. All rights reserved.</span>
               </p>
-              <div className="flex flex-wrap justify-center gap-2 sm:gap-4 md:gap-6 mt-4 md:mt-0">
-                <Link href="/privacy" className="text-sm text-gray-500 hover:text-gray-700">
+              <div className="contents md:flex md:flex-wrap md:justify-center md:gap-6 md:mt-0">
+                <Link href="/privacy" className="text-xs md:text-sm text-gray-500 hover:text-gray-700">
                   Privacy Policy
                 </Link>
-                <Link href="/terms" className="text-sm text-gray-500 hover:text-gray-700">
+                <Link href="/terms" className="text-xs md:text-sm text-gray-500 hover:text-gray-700">
                   Terms of Service
                 </Link>
-                <Link href="/safety" className="text-sm text-gray-500 hover:text-gray-700">
+                <Link href="/safety" className="text-xs md:text-sm text-gray-500 hover:text-gray-700">
                   Safety Guidelines
                 </Link>
-                <Link href="/cookies" className="text-sm text-gray-500 hover:text-gray-700">
+                <Link href="/cookies" className="text-xs md:text-sm text-gray-500 hover:text-gray-700">
                   Cookies
                 </Link>
                 <button
                   type="button"
                   onClick={openCookieSettings}
-                  className="text-sm text-gray-500 hover:text-gray-700"
+                  className="text-xs md:text-sm text-gray-500 hover:text-gray-700"
                 >
                   Cookie Settings
                 </button>
-                <Link href="/legal/subprocessors" className="text-sm text-gray-500 hover:text-gray-700">
+                <Link href="/legal/subprocessors" className="text-xs md:text-sm text-gray-500 hover:text-gray-700">
                   Subprocessors
                 </Link>
               </div>
