@@ -19,8 +19,12 @@ Massimino **must be fully responsive** across all screen sizes: smartphone (sm: 
 
 ### Brand Colors
 
-- **Primary:** `#2b5069` — headings, buttons, accents
-- **Background:** `#fcfaf5` — page backgrounds, surfaces
+- **Primary (petrol):** `#2B5069` — headings, buttons, links, shadcn `--primary`. Hover: `#1E3D52` (`--primary-hover`, Tailwind `bg-primary-hover`)
+- **Background (cream):** `#FBF8F2` — page background (`--background`, Tailwind `brand-secondary`)
+- **Cards (warm white):** `#FFFDF8` — cards and surfaces (`--card`). Tailwind `white` is remapped to this value, so `bg-white` is warm white too
+- **No electric blue.** Tailwind's `blue-*` scale is remapped to a petrol scale in `tailwind.config.js` (`blue-600` = `#2B5069`). Purple/violet/indigo are untouched
+- Change colours through the CSS variables in `src/app/globals.css` and `tailwind.config.js`, not with hex values in components. Never write `bg-[#fcfaf5]`; use `bg-brand-secondary`
+- Text must pass WCAG AA (4.5:1) on cream. `text-gray-400` does not (2.4:1): use `text-gray-500` or darker for readable text
 
 ### Typography
 
