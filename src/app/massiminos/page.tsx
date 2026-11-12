@@ -21,6 +21,7 @@ import {
 } from 'lucide-react'
 import { UserPublicProfile } from '@/components/layout/user_public_profile'
 import { calculateLevel, LEVEL_NAMES } from '@/components/profile/XPLevelProgress'
+import { PageHero } from '@/components/layout/page_hero'
 
 // ===== TYPES =====
 
@@ -496,13 +497,16 @@ export default function MassiminosPage() {
   return (
     <div className="min-h-screen bg-brand-secondary">
       {/* Header */}
-      <header className="bg-white border-b border-brand-primary/10 sticky top-0 z-10 shadow-sm">
-        <div className="max-w-7xl mx-auto px-4 py-4">
-          <div className="flex items-center justify-between">
-            <div>
-              <h1 className="text-2xl font-bold text-brand-primary">Massiminos</h1>
-              <p className="text-sm text-brand-primary-light">Discover fitness enthusiasts</p>
-            </div>
+      <div className="max-w-7xl mx-auto px-4 pt-6">
+        <PageHero
+          image="/images/background/athletism_blue.jpg"
+          eyebrow="Discover"
+          title="Massiminos"
+          description="Discover fitness enthusiasts and trainers near you, filtered by role, experience and goals."
+        />
+      </div>
+      <div className="max-w-7xl mx-auto px-4 pt-5">
+          <div className="flex items-center justify-end">
             <div className="flex gap-2">
               <Button
                 variant={viewMode === 'list' ? 'default' : 'outline'}
@@ -524,8 +528,7 @@ export default function MassiminosPage() {
               </Button>
             </div>
           </div>
-        </div>
-      </header>
+      </div>
 
       {/* Main Content */}
       <main className="max-w-7xl mx-auto px-4 py-6">

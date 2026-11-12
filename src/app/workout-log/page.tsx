@@ -35,6 +35,7 @@ import { FormGuideModal } from '@/components/workout-log/form_guide_modal';
 import { MyPrograms } from '@/components/programs/my_programs';
 import { UserProgram } from '@/types/program';
 import { AthleteGallery } from '@/components/periodization/athlete_gallery';
+import { PageHero } from '@/components/layout/page_hero';
 // Use a relaxed exercise type matching what the UI actually uses
 type ExerciseListItem = {
   id: string;
@@ -1699,17 +1700,20 @@ function WorkoutLogPageContent() {
     <>
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {/* Header */}
-        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-8">
-          <div>
-            <h1 className="text-3xl font-bold text-gray-900">Workout Log</h1>
-            <p className="text-gray-600 mt-2">
-              {activeTab === 'today' ? (
-                <>Today &mdash; {new Date().toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric', year: 'numeric' })}</>
-              ) : (
-                'Track your workouts and see coach feedback'
-              )}
-            </p>
-          </div>
+        <PageHero
+          image="/images/programs/performance.jpg"
+          imagePosition="center 60%"
+          title="Workout Log"
+          description={
+            activeTab === 'today' ? (
+              <>Today &mdash; {new Date().toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric', year: 'numeric' })}</>
+            ) : (
+              'Track your workouts and see coach feedback'
+            )
+          }
+          className="mb-5"
+        />
+        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-end gap-4 mb-8">
           <div className="flex flex-wrap gap-2">
             {selectedEntries.size > 0 && (
               <Button onClick={() => setShowSaveTemplateModal(true)} variant="outline" size="sm" className="text-xs sm:text-sm">
