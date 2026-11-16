@@ -285,7 +285,7 @@ export const authOptions: NextAuthOptions = {
 
   // Database session strategy for better security
   session: {
-    // Email and password sign-in requires AUTH_SESSION_STRATEGY=jwt (see .env.example).
+    // Email and password sign-in requires AUTH_SESSION_STRATEGY=jwt (see the README).
     strategy: process.env.AUTH_SESSION_STRATEGY === 'jwt' ? 'jwt' : 'database',
     // Session expires after 30 days of inactivity
     maxAge: 30 * 24 * 60 * 60, // 30 days

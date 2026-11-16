@@ -2,6 +2,7 @@
 
 'use client';
 
+import { exerciseImageUrl } from '@/lib/exercise-image';
 import { useState, useEffect, useRef, useCallback } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -425,7 +426,7 @@ export default function ExercisesPage() {
               Browse and search through our comprehensive database of fitness exercises
             </p>
           </div>
-          <Button asChild className="bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 self-start flex-shrink-0">
+          <Button asChild className="bg-gradient-to-r from-brand-primary to-brand-primary-dark hover:from-brand-primary-dark hover:to-blue-900 self-start flex-shrink-0">
             <a href="/exercises/contribute">
               🏋️ Fill the Gym
             </a>
@@ -718,7 +719,7 @@ export default function ExercisesPage() {
                 key={currentPage}
               >
                 {currentExercises.map((exercise) => {
-                  const coverUrl = (exercise as any).coverUrl as string | undefined
+                  const coverUrl = exerciseImageUrl((exercise as any).coverUrl as string | undefined)
                   const mediaCount = (exercise as any).mediaCount as number | undefined
                   return (
                     <motion.div
@@ -736,7 +737,7 @@ export default function ExercisesPage() {
                           // eslint-disable-next-line @next/next/no-img-element
                           <img src={coverUrl} alt={exercise.name} className="absolute inset-0 h-full w-full object-cover" />
                         ) : (
-                          <div className="absolute inset-0 flex items-center justify-center text-gray-400">No image</div>
+                          <div className="absolute inset-0 flex items-center justify-center text-muted-foreground">No image</div>
                         )}
                         <div className="absolute top-2 right-2 flex items-center gap-1">
                           {mediaCount !== undefined && mediaCount > 0 && (

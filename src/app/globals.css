@@ -9,27 +9,33 @@
 @tailwind utilities;
 
 @layer base {
+  /* Massimino palette: petrol #2B5069 on cream #FBF8F2, cards in warm white #FFFDF8 */
   :root {
-    --background: 0 0% 100%;
-    --foreground: 222.2 84% 4.9%;
-    --card: 0 0% 100%;
-    --card-foreground: 222.2 84% 4.9%;
-    --popover: 0 0% 100%;
-    --popover-foreground: 222.2 84% 4.9%;
-    --primary: 221.2 83.2% 53.3%;
-    --primary-foreground: 210 40% 98%;
-    --secondary: 210 40% 96%;
-    --secondary-foreground: 222.2 84% 4.9%;
-    --muted: 210 40% 96%;
-    --muted-foreground: 215.4 16.3% 46.9%;
-    --accent: 210 40% 96%;
-    --accent-foreground: 222.2 84% 4.9%;
-    --destructive: 0 84.2% 60.2%;
-    --destructive-foreground: 210 40% 98%;
-    --border: 214.3 31.8% 91.4%;
-    --input: 214.3 31.8% 91.4%;
-    --ring: 221.2 83.2% 53.3%;
-    --radius: 0.5rem;
+    --background: 40 53% 97%;          /* #FBF8F2 cream */
+    --foreground: 205 35% 13%;         /* deep petrol ink */
+    --card: 40 100% 99%;               /* #FFFDF8 warm white */
+    --card-foreground: 205 35% 13%;
+    --popover: 40 100% 99%;
+    --popover-foreground: 205 35% 13%;
+    --primary: 204 42% 29%;            /* #2B5069 petrol */
+    --primary-hover: 204 46% 22%;      /* #1E3D52 darker petrol */
+    --primary-foreground: 40 53% 97%;
+    --secondary: 40 30% 93%;
+    --secondary-foreground: 204 42% 22%;
+    --muted: 40 25% 93%;
+    --muted-foreground: 205 12% 38%;
+    --accent: 204 30% 93%;
+    --accent-foreground: 204 42% 22%;
+    --destructive: 0 72% 45%;
+    --destructive-foreground: 40 53% 97%;
+    --border: 40 18% 87%;
+    --input: 40 18% 82%;
+    --ring: 204 42% 29%;
+    /* Radius scale: fields and small boxes 14px, images 18px, cards and large boxes 24px, buttons pill */
+    --radius: 14px;
+    --radius-field: 14px;
+    --radius-image: 18px;
+    --radius-card: 24px;
   }
 
   .dark {
@@ -39,8 +45,9 @@
     --card-foreground: 210 40% 98%;
     --popover: 222.2 84% 4.9%;
     --popover-foreground: 210 40% 98%;
-    --primary: 217.2 91.2% 59.8%;
-    --primary-foreground: 222.2 84% 4.9%;
+    --primary: 204 38% 58%;
+    --primary-hover: 204 38% 50%;
+    --primary-foreground: 205 35% 10%;
     --secondary: 217.2 32.6% 17.5%;
     --secondary-foreground: 210 40% 98%;
     --muted: 217.2 32.6% 17.5%;
@@ -51,7 +58,7 @@
     --destructive-foreground: 210 40% 98%;
     --border: 217.2 32.6% 17.5%;
     --input: 217.2 32.6% 17.5%;
-    --ring: 224.3 76.3% 94.1%;
+    --ring: 204 38% 58%;
   }
 }
 
@@ -59,15 +66,19 @@
   * {
     @apply border-border;
   }
+  /* overflow-x: clip (not hidden) so position: sticky keeps working for the headers */
   html {
-    overflow-x: hidden;
+    overflow-x: clip;
     max-width: 100vw;
   }
   body {
     @apply bg-background text-foreground;
-    overflow-x: hidden;
+    overflow-x: clip;
     max-width: 100vw;
-    font-variation-settings: "wdth" 100, "YTLC" 500;
+  }
+  /* Headings in Inter Tight; utility classes on the element still win */
+  h1, h2, h3, h4, h5, h6 {
+    @apply font-display;
   }
 }
 
@@ -78,19 +89,19 @@
   }
   
   .massimino-card {
-    @apply bg-white rounded-lg shadow-sm border border-gray-200;
+    @apply bg-white rounded-card shadow-soft;
   }
   
   .massimino-button-primary {
-    @apply bg-brand-primary hover:bg-brand-primary-dark text-white font-medium py-2 px-4 rounded-lg transition-colors;
+    @apply bg-brand-primary hover:bg-brand-primary-dark text-white font-medium py-2 px-4 rounded-full transition-colors;
   }
   
   .massimino-button-secondary {
-    @apply bg-brand-secondary hover:bg-brand-secondary-dark text-brand-primary font-medium py-2 px-4 rounded-lg transition-colors;
+    @apply bg-brand-secondary hover:bg-brand-secondary-dark text-brand-primary font-medium py-2 px-4 rounded-full transition-colors;
   }
   
   .massimino-input {
-    @apply w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-brand-primary focus:border-transparent;
+    @apply w-full px-3 py-2 border border-gray-300 rounded-field focus:outline-none focus:ring-2 focus:ring-brand-primary focus:border-transparent;
   }
   
   .massimino-badge {
@@ -119,29 +130,29 @@
   
   /* Enhanced button styles with brand colors */
   .btn-primary {
-    @apply bg-brand-primary hover:bg-brand-primary-dark text-white font-medium py-2 px-4 rounded-lg transition-all duration-200 shadow-sm hover:shadow-md;
+    @apply bg-brand-primary hover:bg-brand-primary-dark text-white font-medium py-2 px-4 rounded-full transition-all duration-200 shadow-sm hover:shadow-md;
   }
   
   .btn-secondary {
-    @apply bg-brand-secondary hover:bg-brand-secondary-dark text-brand-primary font-medium py-2 px-4 rounded-lg transition-all duration-200 border border-brand-primary;
+    @apply bg-brand-secondary hover:bg-brand-secondary-dark text-brand-primary font-medium py-2 px-4 rounded-full transition-all duration-200 border border-brand-primary;
   }
   
   .btn-outline {
-    @apply border border-brand-primary hover:bg-brand-secondary text-brand-primary font-medium py-2 px-4 rounded-lg transition-all duration-200;
+    @apply border border-brand-primary hover:bg-brand-secondary text-brand-primary font-medium py-2 px-4 rounded-full transition-all duration-200;
   }
   
   /* Enhanced card styles */
   .card-elevated {
-    @apply bg-white rounded-xl shadow-lg border border-gray-100 hover:shadow-xl transition-shadow duration-300;
+    @apply bg-white rounded-card shadow-soft hover:shadow-soft-lg transition-shadow duration-300;
   }
   
   .card-interactive {
-    @apply bg-white rounded-lg border border-gray-200 hover:border-gray-300 hover:shadow-md transition-all duration-200 cursor-pointer;
+    @apply bg-white rounded-card shadow-soft hover:shadow-soft-lg hover:-translate-y-0.5 transition-all duration-200 cursor-pointer;
   }
   
   /* Enhanced form styles with brand colors */
   .form-input {
-    @apply w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-brand-primary focus:border-transparent transition-all duration-200;
+    @apply w-full px-3 py-2 border border-gray-300 rounded-field focus:outline-none focus:ring-2 focus:ring-brand-primary focus:border-transparent transition-all duration-200;
   }
   
   .form-label {
@@ -178,19 +189,68 @@
   }
 
   .landing-eyebrow {
-    font-family: var(--font-nunito-sans), sans-serif;
+    font-family: var(--font-inter-tight), sans-serif;
     @apply text-sm font-medium uppercase tracking-[0.25em];
   }
 
   .landing-title {
-    font-family: var(--font-nunito-sans), sans-serif;
+    font-family: var(--font-inter-tight), sans-serif;
     @apply font-bold uppercase tracking-tight leading-none;
   }
 
   .landing-body {
-    font-family: var(--font-lato), sans-serif;
+    font-family: var(--font-inter), sans-serif;
     @apply leading-relaxed;
   }
+}
+
+/* Fitness Intelligence: full-screen hero and large map (svh with a vh fallback). 4rem = sticky header */
+@layer components {
+  .fi-hero-h {
+    min-height: calc(100vh - 4rem - 2rem);
+    min-height: calc(100svh - 4rem - 2rem);
+  }
+  .fi-map-h {
+    height: max(380px, 70vh);
+    height: max(380px, 70svh);
+  }
+  @media (min-width: 1024px) {
+    .fi-map-h {
+      height: clamp(520px, calc(100vh - 4rem - 8rem), 900px);
+      height: clamp(520px, calc(100svh - 4rem - 8rem), 900px);
+    }
+  }
+  .animate-scroll-cue {
+    animation: scrollCue 2s ease-in-out infinite;
+  }
+  /* Homepage hero entrance, played once on load */
+  .hero-rise {
+    animation: heroRise 0.9s ease-out both;
+  }
+  .hero-wordmark {
+    animation: heroWordmark 0.9s ease-out both;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .animate-scroll-cue,
+    .hero-rise,
+    .hero-wordmark { animation: none; }
+  }
+}
+
+@keyframes scrollCue {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(6px); }
+}
+
+@keyframes heroRise {
+  from { opacity: 0; transform: translate3d(0, 18px, 0); }
+  to { opacity: 1; transform: translate3d(0, 0, 0); }
+}
+
+/* Letters draw together; margin-right follows so the centred word stays centred */
+@keyframes heroWordmark {
+  from { opacity: 0; transform: translate3d(0, 18px, 0); letter-spacing: 0.5em; margin-right: -0.5em; }
+  to { opacity: 1; transform: translate3d(0, 0, 0); letter-spacing: 0.28em; margin-right: -0.28em; }
 }
 
 /* Custom animations */
@@ -264,11 +324,11 @@
 
 /* Fitness-specific styles */
 .fitness-card {
-  @apply bg-white rounded-xl shadow-lg border border-gray-100 hover:shadow-xl transition-shadow duration-300;
+  @apply bg-white rounded-card shadow-soft hover:shadow-soft-lg transition-shadow duration-300;
 }
 
 .fitness-card-header {
-  @apply bg-gradient-to-r from-blue-500 to-indigo-600 text-white p-6 rounded-t-xl;
+  @apply bg-gradient-to-r from-brand-primary to-brand-primary-dark text-white p-6 rounded-t-card;
 }
 
 .fitness-metric {
@@ -563,37 +623,37 @@
 
 /* ===== ONBOARDING TOUR (driver.js) ===== */
 .massimino-tour-popover {
-  background: #fcfaf5 !important;
-  border-radius: 16px !important;
+  background: #FBF8F2 !important;
+  border-radius: 24px !important;
   border: 1px solid rgba(43, 80, 105, 0.15) !important;
   box-shadow: 0 20px 40px rgba(0, 0, 0, 0.12) !important;
   max-width: 340px !important;
 }
 
 .massimino-tour-popover .driver-popover-title {
-  font-family: var(--font-nunito-sans), sans-serif !important;
+  font-family: var(--font-inter-tight), sans-serif !important;
   color: #2b5069 !important;
   font-size: 1rem !important;
   font-weight: 700 !important;
 }
 
 .massimino-tour-popover .driver-popover-description {
-  font-family: var(--font-lato), sans-serif !important;
+  font-family: var(--font-inter), sans-serif !important;
   color: #4b5563 !important;
   font-size: 0.875rem !important;
   line-height: 1.5 !important;
 }
 
 .massimino-tour-popover .driver-popover-progress-text {
-  font-family: var(--font-lato), sans-serif !important;
+  font-family: var(--font-inter), sans-serif !important;
   color: #9ca3af !important;
   font-size: 0.75rem !important;
 }
 
 .massimino-tour-popover .driver-popover-next-btn,
 .massimino-tour-popover .driver-popover-prev-btn {
-  font-family: var(--font-nunito-sans), sans-serif !important;
-  border-radius: 8px !important;
+  font-family: var(--font-inter-tight), sans-serif !important;
+  border-radius: 9999px !important;
   font-size: 0.8125rem !important;
   font-weight: 600 !important;
   padding: 6px 16px !important;

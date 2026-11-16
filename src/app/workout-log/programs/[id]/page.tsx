@@ -125,7 +125,7 @@ function transformApiResponse(apiData: any): {
   const goals: ProgramGoalsType = templateData.goals || {
     primary_goal: apiData.category || 'Improve fitness',
     outcome_goals: [
-      `Complete ${metadata.duration_weeks}-week ${metadata.goal} program`,
+      `Complete ${metadata.duration_weeks}-week ${/^[A-Z0-9_]+$/.test(metadata.goal || '') ? metadata.goal.toLowerCase().split('_').join(' ') : metadata.goal} program`,
       'Build strength and conditioning',
       'Improve overall fitness',
     ],
@@ -397,7 +397,7 @@ function transformApiResponse(apiData: any): {
       };
     });
   } else if (Array.isArray(templateData.workouts)) {
-    // Handle NASM format - workouts array with workout_structure
+    // Handle the goal-based format - workouts array with workout_structure
     workoutSessions = templateData.workouts.map((workout: any, index: number) => {
       const sections: any[] = [];
       const structure = workout.workout_structure || workout;
@@ -698,7 +698,8 @@ export default function ProgramDetailPage() {
       const res = await fetch(`/api/workout/programs/join?programId=${programId}`);
       if (res.ok) {
         const data = await res.json();
-        setIsFollowing(data.isJoined || false);
+        // The endpoint answers { hasJoined }; reading isJoined left every joined programme on 'Start Program'
+        setIsFollowing(Boolean(data.hasJoined ?? data.isJoined));
       }
     } catch (err) {
       console.error('Failed to check following status:', err);
@@ -722,7 +723,7 @@ export default function ProgramDetailPage() {
     return (
       <div className="min-h-screen bg-gray-50 flex items-center justify-center">
         <div className="text-center">
-          <span className="mdi mdi-alert-circle text-5xl text-gray-400 mb-4 block" />
+          <span className="mdi mdi-alert-circle text-5xl text-muted-foreground mb-4 block" />
           <h2 className="text-xl font-bold text-gray-900 mb-2">
             {error || 'Program not found'}
           </h2>

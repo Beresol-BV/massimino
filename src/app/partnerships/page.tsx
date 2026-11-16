@@ -1,4 +1,13 @@
 // src/app/partnerships/page.tsx
+import type { Metadata } from 'next';
+
+// Head metadata only; the page content is unchanged
+export const metadata: Metadata = {
+  title: 'Partnerships',
+  description: 'Partner with Massimino to reach athletes and personal trainers on a safety-first fitness platform.',
+  alternates: { canonical: '/partnerships' },
+};
+
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
@@ -65,6 +74,20 @@ export default function PartnershipsPage() {
                 <span className="sr-only">Pump Gymwear</span>
                 <span className="inline-block rounded-xl border bg-white transition-all group-hover:shadow-md group-hover:scale-[1.02]">
                   <img src="/images/pumpgymwear.png" alt="Pump Gymwear" className="h-12 md:h-14 w-auto object-contain rounded-xl p-2" />
+                </span>
+              </a>
+            </StaggerItem>
+            <StaggerItem>
+              {/* No link: verdabros.com does not resolve (checked 2026-11-16). Add one when the site is live. */}
+              <span className="inline-block rounded-xl border bg-white">
+                <img src="/images/verdabros-logo.svg" alt="Verdabros" className="h-12 md:h-14 w-auto object-contain rounded-xl p-2" />
+              </span>
+            </StaggerItem>
+            <StaggerItem>
+              <a href="https://www.pilates4life.es/?utm_source=massimino&utm_medium=partnerships_page&utm_campaign=pilates4life" target="_blank" rel="noopener" className="group">
+                <span className="sr-only">Pilates4Life</span>
+                <span className="inline-block rounded-xl border bg-white transition-all group-hover:shadow-md group-hover:scale-[1.02]">
+                  <img src="/images/pilates4life-logo.webp" alt="Pilates4Life" className="h-12 md:h-14 w-auto object-contain rounded-xl p-2" />
                 </span>
               </a>
             </StaggerItem>

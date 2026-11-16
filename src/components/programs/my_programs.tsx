@@ -33,6 +33,14 @@ const CATEGORY_ICONS: Record<ProgramCategory, string> = {
   modality: 'mdi-dumbbell',
 };
 
+// Database enums such as ATHLETIC_PERFORMANCE read as "Athletic performance"
+function humanise(value?: string | null): string {
+  if (!value) return '';
+  if (!/^[A-Z0-9_]+$/.test(value)) return value;
+  const words = value.toLowerCase().split('_').join(' ');
+  return words.charAt(0).toUpperCase() + words.slice(1);
+}
+
 const CATEGORY_LABELS: Record<ProgramCategory, string> = {
   celebrity: 'Celebrity',
   goal: 'Goal',
@@ -68,8 +76,8 @@ export function MyPrograms({ programs, onAddProgram, onChanged }: MyProgramsProp
           onClick={onAddProgram}
           className="bg-white border-2 border-dashed border-gray-200 rounded-2xl flex flex-col items-center justify-center min-h-[280px] transition-all hover:border-[#254967] hover:bg-[#fcf8f2] cursor-pointer"
         >
-          <span className="mdi mdi-plus-circle-outline text-5xl text-gray-400 mb-3" />
-          <span className="text-base font-semibold text-gray-400">Add Another Program</span>
+          <span className="mdi mdi-plus-circle-outline text-5xl text-muted-foreground mb-3" />
+          <span className="text-base font-semibold text-muted-foreground">Add Another Program</span>
         </button>
       </div>
     </div>
@@ -170,7 +178,7 @@ function ProgramCard({ userProgram, onChanged }: ProgramCardProps) {
           </div>
           <div className="text-xl font-bold mb-1">{program.metadata.program_name}</div>
           <div className="text-sm opacity-90">
-            {program.metadata.methodology || program.metadata.goal}
+            {humanise(program.metadata.methodology || program.metadata.goal)}
           </div>
         </div>
 
@@ -188,10 +196,12 @@ function ProgramCard({ userProgram, onChanged }: ProgramCardProps) {
             <span className="mdi mdi-calendar-check text-[#254967]" />
             Week {currentWeek} of {totalWeeks}
           </div>
-          <div className="flex items-center gap-1.5 text-sm text-gray-500">
-            <span className="mdi mdi-dumbbell text-[#254967]" />
-            {program.metadata.frequency_per_week} days/week
-          </div>
+          {program.metadata.frequency_per_week > 0 && (
+            <div className="flex items-center gap-1.5 text-sm text-gray-500">
+              <span className="mdi mdi-dumbbell text-[#254967]" />
+              {program.metadata.frequency_per_week} days/week
+            </div>
+          )}
         </div>
 
         {/* Next Workout */}

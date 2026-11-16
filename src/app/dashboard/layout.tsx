@@ -1,42 +1,51 @@
 'use client';
 
-import { useSession } from 'next-auth/react';
-import { useRouter } from 'next/navigation';
+import { useSession, getSession } from 'next-auth/react';
 import { useEffect, useState } from 'react';
 import { DashboardSidebar } from '@/components/dashboard/DashboardSidebar';
 import { DashboardHeader } from '@/components/dashboard/DashboardHeader';
 
 export default function DashboardLayout({ children }: { children: React.ReactNode }) {
-  const { data: session, status } = useSession();
-  const router = useRouter();
+  const { data: session, status, update } = useSession();
   const [sidebarOpen, setSidebarOpen] = useState(false);
 
+  // "unauthenticated" can also mean the first session request failed (it does right
+  // after an OAuth redirect or a dropped connection). Ask once more before sending the
+  // visitor to /login: with a valid cookie the middleware sends /login straight back
+  // here, which used to leave the dashboard stuck until a manual refresh.
   useEffect(() => {
-    if (status === 'unauthenticated') {
-      router.push('/login');
-    }
-  }, [status, router]);
+    if (status !== 'unauthenticated') return;
+    let cancelled = false;
+    (async () => {
+      const fresh = await getSession().catch(() => null);
+      if (cancelled) return;
+      if (fresh?.user) {
+        await update();
+      } else {
+        window.location.href = '/login';
+      }
+    })();
+    return () => { cancelled = true; };
+  }, [status, update]);
 
   // Close sidebar on route change (mobile)
   useEffect(() => {
     setSidebarOpen(false);
   }, []);
 
-  if (status === 'loading') {
+  if (status === 'loading' || !session) {
     return (
-      <div className="min-h-screen bg-[#fcfaf5] flex items-center justify-center font-sans">
+      <div className="min-h-screen bg-brand-secondary flex items-center justify-center font-sans">
         <div className="flex flex-col items-center gap-3">
           <div className="animate-spin rounded-full h-10 w-10 border-2 border-gray-200 border-t-[#2b5069]" />
-          <p className="text-sm text-gray-400">Loading...</p>
+          <p className="text-sm text-muted-foreground">Loading...</p>
         </div>
       </div>
     );
   }
 
-  if (!session) return null;
-
   return (
-    <div className="min-h-screen bg-[#fcfaf5] flex font-sans">
+    <div className="min-h-screen bg-brand-secondary flex font-sans">
       {/* Mobile overlay */}
       {sidebarOpen && (
         <div
@@ -55,7 +64,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
       />
 
       {/* Main content area */}
-      <div className="flex-1 min-w-0 lg:ml-[200px] md:ml-[70px] ml-0 min-h-screen flex flex-col transition-[margin] duration-300 overflow-x-hidden">
+      <div className="flex-1 min-w-0 lg:ml-[200px] md:ml-[70px] ml-0 min-h-screen flex flex-col transition-[margin] duration-300 overflow-x-clip">
         <DashboardHeader
           onMenuToggle={() => setSidebarOpen(!sidebarOpen)}
           userName={session.user?.name || ''}

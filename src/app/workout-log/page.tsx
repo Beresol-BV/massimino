@@ -1,5 +1,6 @@
 // src/app/workout-log/page.tsx
 'use client';
+import { exerciseImageUrl, hideBrokenImage } from '@/lib/exercise-image';
 import { notify, confirmAction } from '@/lib/notify';
 
 import { useState, useEffect, useMemo, Suspense } from 'react';
@@ -178,6 +179,10 @@ function WorkoutLogPageContent() {
   // New mobile UI state
   const [showAddEntryModal, setShowAddEntryModal] = useState(false);
   const [showRestTimerOverlay, setShowRestTimerOverlay] = useState(false);
+  const [endingSession, setEndingSession] = useState(false);
+  // Set when "Start Workout" is pressed on the programme card: the next (or current)
+  // session is that programme's session of the day.
+  const [programIntentSubId, setProgramIntentSubId] = useState<string | null>(null);
   const [restTimerSeconds, setRestTimerSeconds] = useState(90);
   const [currentSetNumber, setCurrentSetNumber] = useState(1);
   const [totalSetsCount, setTotalSetsCount] = useState(3);
@@ -421,11 +426,23 @@ function WorkoutLogPageContent() {
   // Filter exercises based on search
   useEffect(() => {
     if (exerciseSearch) {
+      const q = exerciseSearch.trim().toLowerCase();
       const filtered = exercises.filter(exercise =>
-        exercise.name.toLowerCase().includes(exerciseSearch.toLowerCase()) ||
-        exercise.category.toLowerCase().includes(exerciseSearch.toLowerCase()) ||
-        exercise.muscleGroups.some(mg => mg.toLowerCase().includes(exerciseSearch.toLowerCase()))
+        exercise.name.toLowerCase().includes(q) ||
+        exercise.category.toLowerCase().includes(q) ||
+        exercise.muscleGroups.some(mg => mg.toLowerCase().includes(q))
       );
+      // Best name matches first: "bench press" should list "Bench Press" before
+      // "30 Arms Close Grip Bench Press". Ties go to the shorter name.
+      const rank = (name: string) => {
+        const n = name.toLowerCase();
+        if (n === q) return 0;
+        if (n.startsWith(q)) return 1;
+        if (n.includes(` ${q}`)) return 2;
+        if (n.includes(q)) return 3;
+        return 4;
+      };
+      filtered.sort((a, b) => rank(a.name) - rank(b.name) || a.name.length - b.name.length);
       setFilteredExercises(filtered.slice(0, 20)); // Limit to 20 for performance
     } else {
       setFilteredExercises(exercises.slice(0, 20));
@@ -559,7 +576,9 @@ function WorkoutLogPageContent() {
       return [];
     }
 
-    const today = new Date().toISOString().split('T')[0]; // YYYY-MM-DD
+    // Local calendar day, not UTC: near midnight toISOString() is a different date
+    const now = new Date();
+    const today = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')}`;
     const groups = new Map<string, WorkoutEntry[]>();
 
     for (const entry of workoutEntries) {
@@ -587,6 +606,16 @@ function WorkoutLogPageContent() {
     }
     return Array.from(groups.values());
   }, [workoutEntries, activeTab, sessionCompletedToday]);
+
+  // "Same as Last": the most recent set of the selected exercise, or of any exercise
+  // when none is selected or it has never been logged.
+  const lastLoggedSet = useMemo(() => {
+    const time = (e: WorkoutEntry) => new Date(e.date).getTime();
+    const newestFirst = [...workoutEntries].sort((a, b) => time(b) - time(a) || b.setNumber - a.setNumber);
+    const sameExercise = selectedExercise ? newestFirst.find((e) => e.exerciseId === selectedExercise.id) : undefined;
+    const pick = sameExercise || newestFirst[0];
+    return pick ? { weight: pick.weight, reps: pick.reps } : null;
+  }, [workoutEntries, selectedExercise]);
 
   // Load saved pyramid settings (if opted-in)
   useEffect(() => {
@@ -723,7 +752,53 @@ function WorkoutLogPageContent() {
   };
 
   // Get current workout from active program subscription
-  const getCurrentProgramWorkout = () => {
+  // Programmes such as Hyrox and HIIT keep their sessions in templateData.training_days
+  // (a flat list named "Week 1 - Session 2: ...") and have no microcycles in the database.
+  // Returns the sessions of one week, in order.
+  const templateSessionsForWeek = (templateData: any, week: number): any[] => {
+    const days: any[] = Array.isArray(templateData?.training_days) ? templateData.training_days : [];
+    if (days.length === 0) return [];
+    const parsed = days.map((d) => {
+      const m = String(d.day_name || '').match(/Week\s+(\d+)\s*-\s*Session\s+(\d+)/i);
+      return m ? { week: parseInt(m[1], 10), session: parseInt(m[2], 10), day: d } : null;
+    });
+    if (parsed.every(Boolean)) {
+      return (parsed as { week: number; session: number; day: any }[])
+        .filter((x) => x.week === week)
+        .sort((a, b) => a.session - b.session)
+        .map((x) => x.day);
+    }
+    // No week in the names: split the list evenly over the programme's weeks
+    const weeks = Number(templateData?.duration_weeks) || 1;
+    const perWeek = Number(templateData?.frequency_per_week) || Math.ceil(days.length / weeks);
+    return days.slice((week - 1) * perWeek, week * perWeek);
+  };
+
+  const workoutFromTemplateDays = (activeSub: any, program: any, currentWeek: number, currentDay: number): any => {
+    const sessions = templateSessionsForWeek(program?.templateData, currentWeek);
+    if (sessions.length === 0) return null;
+    const base = { subscription: activeSub, program, phase: null, microcycle: null, exercises: [] as any[] };
+    const today = sessions[currentDay - 1];
+    if (!today) {
+      // Past the last session of this week
+      return { ...base, workout: null, templateExercises: [] as any[], isRestDay: true, currentDay, nextWorkoutDay: null };
+    }
+    return {
+      ...base,
+      workout: { dayNumber: currentDay, name: today.day_name, focus: today.focus },
+      templateExercises: (today.exercises || []).map((ex: any) => ({
+        exerciseName: ex.exercise_name || ex.exercise || ex.name,
+        sets: ex.sets,
+        repsMin: ex.reps,
+        repsMax: ex.reps,
+        rest: ex.rest_seconds,
+        notes: ex.notes,
+      })),
+      isRestDay: false,
+    };
+  };
+
+  const getCurrentProgramWorkout = (): any => {
     if (!programSubscriptions || programSubscriptions.length === 0) return null;
 
     // Prioritize the currently active subscription, fall back to first
@@ -731,8 +806,9 @@ function WorkoutLogPageContent() {
     const currentWeek = activeSub.currentWeek || 1;
     const currentDay = activeSub.currentDay || 1;
     const program = activeSub.program_templates;
-    if (!program || !program.program_phases || program.program_phases.length === 0) {
-      return null;
+    if (!program) return null;
+    if (!program.program_phases || program.program_phases.length === 0) {
+      return workoutFromTemplateDays(activeSub, program, currentWeek, currentDay);
     }
 
     // Find the phase that contains the current week
@@ -747,13 +823,13 @@ function WorkoutLogPageContent() {
     }
 
     if (!currentPhase) {
-      return null;
+      return workoutFromTemplateDays(activeSub, program, currentWeek, currentDay);
     }
 
     // Find the microcycle for current week
-    const currentMicrocycle = currentPhase.microcycles.find((micro: any) => micro.weekNumber === currentWeek);
+    const currentMicrocycle = (currentPhase.microcycles || []).find((micro: any) => micro.weekNumber === currentWeek);
     if (!currentMicrocycle || !currentMicrocycle.workouts) {
-      return null;
+      return workoutFromTemplateDays(activeSub, program, currentWeek, currentDay);
     }
 
     // Find the workout for current day
@@ -1010,7 +1086,8 @@ function WorkoutLogPageContent() {
     .map(w => w.trim())
     .filter(Boolean)
     .map(w => parseFloat(w))
-    .filter((n) => !isNaN(n) && n > 0);
+    // 0 kg is a valid entry: bodyweight exercises
+    .filter((n) => !isNaN(n) && n >= 0);
 
   const generatePyramidWeights = (setsNum: number): number[] => {
     const base = parseFloat(newEntry.pyramidBase || '');
@@ -1138,6 +1215,11 @@ function WorkoutLogPageContent() {
   // End the current session: close it on the server, award XP, and advance the
   // active programme by one day. Used by both "Complete Session" and "End Session".
   const handleEndSession = async () => {
+    if (endingSession) return;
+    setEndingSession(true);
+    // The rest countdown belongs to the session that is ending
+    setRestVisible(false);
+    setRestRemaining(0);
     try {
       const sessionIdFromEntries = workoutEntries.find(e => e.sessionId)?.sessionId;
       const sessionToEnd = activeSession?.id || sessionIdFromEntries;
@@ -1189,9 +1271,12 @@ function WorkoutLogPageContent() {
         }
       }
 
-      // Advance only the programme the user explicitly started (or their only one);
-      // never an arbitrary first subscription
-      const sub = subs.find((s: any) => s.isCurrentlyActive) || (subs.length === 1 ? subs[0] : null);
+      // Advance a programme only when this session is that programme's session of the day,
+      // i.e. it was started with "Start Workout" on the programme card. A free session
+      // (or a test) leaves every programme where it is.
+      const sub = sessionToEnd
+        ? subs.find((s: any) => s.progressData?.activeSessionId === sessionToEnd) || null
+        : null;
       if (sub) {
         const currentWeek = sub.currentWeek || 1;
         const currentDay = sub.currentDay || 1;
@@ -1199,6 +1284,9 @@ function WorkoutLogPageContent() {
         // Get total days from microcycle - default to 7 if not found
         const program = sub.program_templates;
         let totalDaysInWeek = 7;
+        // Template-only programmes (Hyrox, HIIT): the week is as long as its sessions
+        const templateSessions = templateSessionsForWeek(program?.templateData, currentWeek).length;
+        if (templateSessions > 0) totalDaysInWeek = templateSessions;
 
         if (program?.program_phases) {
           const currentPhase = program.program_phases.find((phase: any) =>
@@ -1236,11 +1324,17 @@ function WorkoutLogPageContent() {
 
         if (progressRes.ok) {
           // Update local state
-          setProgramSubscriptions(prev => prev.map(s =>
+          setProgramSubscriptions(prev => prev.map((s: any) =>
             s.id === sub.id
-              ? { ...s, currentWeek: nextWeek, currentDay: nextDay }
+              ? { ...s, currentWeek: nextWeek, currentDay: nextDay, progressData: { ...(s.progressData || {}), activeSessionId: null } }
               : s
           ));
+          // The link has done its job
+          fetch(`/api/workout/programs/subscriptions/${sub.id}`, {
+            method: 'PATCH',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ action: 'link-session', sessionId: null }),
+          }).catch(() => {});
         } else {
           console.error('Failed to advance program:', await progressRes.text());
         }
@@ -1254,6 +1348,55 @@ function WorkoutLogPageContent() {
     } catch (err) {
       console.error('Failed to end session:', err);
       notify('Failed to end session. Please try again.');
+    } finally {
+      setEndingSession(false);
+    }
+  };
+
+  // Throw away the running session and the sets logged in it. Nothing is completed,
+  // so no XP is awarded and the current programme stays on the same day.
+  // Link the running session to the programme once both are known. The link is stored
+  // on the subscription (progressData.activeSessionId), so it survives a reload.
+  useEffect(() => {
+    if (!programIntentSubId || !activeSession?.id) return;
+    const subId = programIntentSubId;
+    const sessionId = activeSession.id;
+    setProgramIntentSubId(null);
+    fetch(`/api/workout/programs/subscriptions/${subId}`, {
+      method: 'PATCH',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ action: 'link-session', sessionId }),
+    })
+      .then((r) => {
+        if (!r.ok) return;
+        setProgramSubscriptions((prev) => prev.map((s: any) =>
+          s.id === subId ? { ...s, progressData: { ...(s.progressData || {}), activeSessionId: sessionId } } : s
+        ));
+      })
+      .catch((err) => console.error('Failed to link session to programme:', err));
+  }, [programIntentSubId, activeSession?.id]);
+
+  const handleDiscardSession = async () => {
+    if (!activeSession?.id || endingSession) return;
+    if (!await confirmAction('Discard this session? The sets logged in it will be deleted. This cannot be undone.')) return;
+    setEndingSession(true);
+    setRestVisible(false);
+    setRestRemaining(0);
+    try {
+      const response = await fetch(`/api/workout/sessions?id=${encodeURIComponent(activeSession.id)}`, { method: 'DELETE' });
+      if (!response.ok) {
+        notify('We could not discard this session. Please try again.');
+        return;
+      }
+      setActiveSession(null);
+      setIsAddingEntry(false);
+      await fetchWorkoutEntries();
+      notify('Session discarded.');
+    } catch (err) {
+      console.error('Failed to discard session:', err);
+      notify('We could not discard this session. Please try again.');
+    } finally {
+      setEndingSession(false);
     }
   };
 
@@ -1300,7 +1443,18 @@ function WorkoutLogPageContent() {
       const setsNum = parseInt(newEntry.sets || '1', 10) || 1;
       const repsNum = parseInt(newEntry.reps || '0', 10) || 0;
       const weightsA = parseWeights(newEntry.weight);
-      const today = new Date().toISOString().split('T')[0];
+      // Local calendar day (the Today tab filters on the same value)
+      const nowLocal = new Date();
+      const today = `${nowLocal.getFullYear()}-${String(nowLocal.getMonth() + 1).padStart(2, '0')}-${String(nowLocal.getDate()).padStart(2, '0')}`;
+      // Continue the numbering when this exercise already has sets today: a second
+      // "LOG SET" used to create another "#1".
+      const setsLoggedToday = (exerciseId: string) =>
+        workoutEntries.reduce((max, e) => {
+          const d = e.date instanceof Date ? e.date.toISOString().split('T')[0] : String(e.date).split('T')[0];
+          return e.exerciseId === exerciseId && d === today ? Math.max(max, e.setNumber || 0) : max;
+        }, 0);
+      const setOffsetA = setsLoggedToday(newEntry.exerciseId);
+      const setOffsetB = newEntry.exerciseBId ? setsLoggedToday(newEntry.exerciseBId) : 0;
 
       const entries: any[] = [];
 
@@ -1322,7 +1476,7 @@ function WorkoutLogPageContent() {
           entries.push({
             date: today,
             exerciseId: newEntry.exerciseId,
-            setNumber: i + 1,
+            setNumber: setOffsetA + i + 1,
             setType: newEntry.setType as any,
             reps: repsNum,
             weight: wA,
@@ -1339,7 +1493,7 @@ function WorkoutLogPageContent() {
           entries.push({
             date: today,
             exerciseId: newEntry.exerciseBId,
-            setNumber: i + 1,
+            setNumber: setOffsetB + i + 1,
             setType: newEntry.setType as any,
             reps: repsNum,
             weight: wB,
@@ -1368,7 +1522,7 @@ function WorkoutLogPageContent() {
             entries.push({
               date: today,
               exerciseId: newEntry.exerciseId,
-              setNumber: i + 1,
+              setNumber: setOffsetA + i + 1,
               setType: newEntry.setType as any,
               reps: repsNum,
               weight: w,
@@ -1408,7 +1562,7 @@ function WorkoutLogPageContent() {
           entries.push({
             date: today,
             exerciseId: newEntry.exerciseId,
-            setNumber: i + 1,
+            setNumber: setOffsetA + i + 1,
             setType: newEntry.setType as any,
             reps: repsScheme[i] || repsNum,
             weight: w,
@@ -1426,7 +1580,7 @@ function WorkoutLogPageContent() {
       } else {
         // Default: one entry per set
         if (weightsA.length === 0) {
-          notify('Please enter a valid weight in kg (e.g., 60)');
+          notify('Please enter a weight in kg (e.g., 60, or 0 for bodyweight)');
           setLoading(false);
           return;
         }
@@ -1435,7 +1589,7 @@ function WorkoutLogPageContent() {
           entries.push({
             date: today,
             exerciseId: newEntry.exerciseId,
-            setNumber: i + 1,
+            setNumber: setOffsetA + i + 1,
             setType: newEntry.setType as any,
             reps: repsNum,
             weight: w,
@@ -1733,7 +1887,7 @@ function WorkoutLogPageContent() {
                   <span className="hidden sm:inline">Add Workout Entry</span>
                   <span className="sm:hidden">Add</span>
                 </Button>
-                <span className="text-xs text-gray-400 hidden sm:inline">Start a session first</span>
+                <span className="text-xs text-muted-foreground hidden sm:inline">Start a session first</span>
               </div>
             ) : (
               <Button onClick={() => setIsAddingEntry(true)} size="sm" className="text-xs sm:text-sm">
@@ -1773,12 +1927,25 @@ function WorkoutLogPageContent() {
                   </p>
                 </div>
               </div>
-              <Button
-                onClick={handleEndSession}
-                className="bg-white text-green-600 hover:bg-green-50 font-semibold whitespace-nowrap flex-shrink-0 w-full sm:w-auto"
-              >
-                Complete Session
-              </Button>
+              <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2 flex-shrink-0 w-full sm:w-auto">
+                {/* A session started by mistake could only be "completed", which also moved the
+                    current programme on a day. Discard removes it and its sets instead. */}
+                <button
+                  type="button"
+                  onClick={handleDiscardSession}
+                  disabled={endingSession}
+                  className="text-sm text-white/90 underline underline-offset-2 hover:text-white px-2 py-1 disabled:opacity-60"
+                >
+                  Discard session
+                </button>
+                <Button
+                  onClick={handleEndSession}
+                  disabled={endingSession}
+                  className="bg-white text-green-600 hover:bg-green-50 font-semibold whitespace-nowrap w-full sm:w-auto"
+                >
+                  {endingSession ? 'Saving…' : 'Complete Session'}
+                </Button>
+              </div>
             </div>
           </div>
         )}
@@ -1900,7 +2067,7 @@ function WorkoutLogPageContent() {
                         Rest Day - {program.name}
                       </CardTitle>
                       <CardDescription>
-                        {athleteName} • Week {subscription.currentWeek}, Day {subscription.currentDay}
+                        {program.legendary_athlete?.name ? `${athleteName} • ` : ''}Week {subscription.currentWeek}, Day {subscription.currentDay}
                       </CardDescription>
                     </CardHeader>
                     <CardContent>
@@ -1929,7 +2096,7 @@ function WorkoutLogPageContent() {
                           <Button
                             size="sm"
                             variant="ghost"
-                            className="text-gray-400 hover:text-red-500"
+                            className="text-muted-foreground hover:text-red-500"
                             onClick={() => setDismissedTodayWorkout(true)}
                           >
                             <Trash2 className="h-4 w-4 mr-1" />
@@ -1947,7 +2114,7 @@ function WorkoutLogPageContent() {
                   <CardHeader>
                     <CardTitle className="text-base">Today's Workout - {program.name}</CardTitle>
                     <CardDescription>
-                      {athleteName} • Week {subscription.currentWeek}, Day {subscription.currentDay}
+                      {program.legendary_athlete?.name ? `${athleteName} • ` : ''}Week {subscription.currentWeek}, Day {subscription.currentDay}
                     </CardDescription>
                   </CardHeader>
                   <CardContent>
@@ -1955,16 +2122,16 @@ function WorkoutLogPageContent() {
                       {/* Workout Info */}
                       <div className="flex items-start justify-between gap-3 pb-3 border-b">
                         <div>
-                          <div className="font-medium text-sm">{workout?.dayLabel || `Day ${workout?.dayNumber}`}</div>
+                          <div className="font-medium text-sm">{workout?.dayLabel || workout?.name || `Day ${workout?.dayNumber}`}</div>
                           <div className="text-xs text-muted-foreground mt-1">
-                            {phase?.title} • {phase?.description}
+                            {[phase?.title, phase?.description, workout?.focus].filter(Boolean).join(' • ')}
                           </div>
                         </div>
                         <div className="flex items-center gap-2">
                           <Button
                             size="sm"
                             variant="ghost"
-                            className="text-gray-400 hover:text-red-500 hover:bg-red-50 p-2"
+                            className="text-muted-foreground hover:text-red-500 hover:bg-red-50 p-2"
                             onClick={async () => {
                               if (await confirmAction('Dismiss today\'s workout? You can still access it from My Programs.')) {
                                 setDismissedTodayWorkout(true);
@@ -2026,6 +2193,8 @@ function WorkoutLogPageContent() {
                               }
 
                               setIsAddingEntry(true);
+                              // This session belongs to the programme: finishing it moves the programme on
+                              setProgramIntentSubId(subscription.id);
 
                               // Scroll to form
                               setTimeout(() => {
@@ -2123,7 +2292,7 @@ function WorkoutLogPageContent() {
                                     <div className="font-medium text-sm">{exerciseName}</div>
                                     <div className="text-xs text-muted-foreground mt-1">
                                       {ex.section && <span>{ex.section}</span>}
-                                      {ex.notes && <span className="ml-2 text-gray-400">• {ex.notes}</span>}
+                                      {ex.notes && <span className="ml-2 text-muted-foreground">• {ex.notes}</span>}
                                     </div>
                                   </div>
                                   <div className="text-sm font-medium text-gray-900 ml-4">
@@ -2177,10 +2346,16 @@ function WorkoutLogPageContent() {
                           key={ex.id}
                           type="button"
                           onClick={() => {
-                            const exercise = exercises.find(e => e.id === ex.id);
-                            if (exercise) {
-                              handleExerciseSelect(exercise);
-                            }
+                            // Not every logged exercise is in the loaded list (it is capped
+                            // and filtered); fall back to what the entry itself knows.
+                            const exercise = exercises.find(e => e.id === ex.id) || {
+                              id: ex.id,
+                              name: ex.name,
+                              category: '',
+                              muscleGroups: [],
+                              equipment: [],
+                            };
+                            handleExerciseSelect(exercise as ExerciseListItem);
                           }}
                           className="px-4 py-2 bg-white border-2 border-gray-300 rounded-full text-sm font-medium text-gray-700 hover:border-brand-primary hover:bg-brand-secondary transition-all"
                         >
@@ -2237,7 +2412,7 @@ function WorkoutLogPageContent() {
                               <div>
                                 <div className="font-medium text-gray-900">{exercise.name}</div>
                                 <div className="text-sm text-gray-500">
-                                  {exercise.category} • {exercise.muscleGroups.slice(0, 2).join(', ')}
+                                  {[exercise.category, exercise.muscleGroups.slice(0, 2).join(', ')].filter(Boolean).join(' • ')}
                                   {exercise.muscleGroups.length > 2 && ` +${exercise.muscleGroups.length - 2} more`}
                                 </div>
                               </div>
@@ -2261,7 +2436,8 @@ function WorkoutLogPageContent() {
                         {selectedExercise.imageUrl && (
                           <div className="w-20 h-20 rounded-lg overflow-hidden flex-shrink-0 bg-white border border-blue-200">
                             <img
-                              src={selectedExercise.imageUrl}
+                              src={exerciseImageUrl(selectedExercise.imageUrl)}
+                              onError={hideBrokenImage}
                               alt={selectedExercise.name}
                               className="w-full h-full object-cover"
                             />
@@ -2374,7 +2550,7 @@ function WorkoutLogPageContent() {
                   <Input
                     value={newEntry.weight}
                     onChange={(e) => setNewEntry({...newEntry, weight: e.target.value})}
-                    placeholder="e.g. 60"
+                    placeholder="e.g. 60 (0 for bodyweight)"
                     className="text-lg font-semibold"
                   />
                 </div>
@@ -2398,7 +2574,7 @@ function WorkoutLogPageContent() {
                   disabled={!selectedExercise || !newEntry.reps || !newEntry.weight}
                   className="w-full py-6 text-xl font-bold bg-brand-primary hover:bg-brand-primary-dark text-white shadow-lg"
                 >
-                  LOG SET {newEntry.sets || '1'}/{newEntry.sets || '1'}
+                  LOG SET
                 </Button>
 
                 {/* Quick Actions */}
@@ -2407,8 +2583,11 @@ function WorkoutLogPageContent() {
                     type="button"
                     variant="outline"
                     className="border-2 border-brand-primary text-brand-primary hover:bg-brand-primary hover:text-white font-semibold"
+                    disabled={!lastLoggedSet}
+                    title={lastLoggedSet ? `${lastLoggedSet.weight} kg x ${lastLoggedSet.reps}` : 'No earlier set to copy yet'}
                     onClick={() => {
-                      // TODO: Implement "Same as Last" logic
+                      if (!lastLoggedSet) return;
+                      setNewEntry({ ...newEntry, weight: String(lastLoggedSet.weight), reps: String(lastLoggedSet.reps) });
                     }}
                   >
                     Same as Last
@@ -2863,7 +3042,7 @@ function WorkoutLogPageContent() {
                       disabled={!selectedExercise || !newEntry.reps || !newEntry.weight}
                       className="w-full py-6 text-xl font-bold bg-brand-primary hover:bg-brand-primary-dark text-white shadow-lg mt-4"
                     >
-                      LOG SET {newEntry.sets || '1'}/{newEntry.sets || '1'}
+                      LOG SET
                     </Button>
                   </div>
                 )}
@@ -2881,8 +3060,8 @@ function WorkoutLogPageContent() {
 
                   {/* Form Validation Messages */}
                   {!selectedExercise && (
-                    <div className="text-sm text-red-600">
-                      Please select an exercise
+                    <div className="text-sm text-muted-foreground">
+                      Search for an exercise above to log a set
                     </div>
                   )}
                 </div>
@@ -3094,7 +3273,8 @@ function WorkoutLogPageContent() {
                           {firstEntry.exercise.imageUrl ? (
                             <div className="w-16 h-16 rounded-lg overflow-hidden flex-shrink-0 bg-gray-100 border border-gray-200">
                               <img
-                                src={firstEntry.exercise.imageUrl}
+                                src={exerciseImageUrl(firstEntry.exercise.imageUrl)}
+                                onError={hideBrokenImage}
                                 alt={firstEntry.exercise.name}
                                 className="w-full h-full object-cover"
                               />
@@ -3144,6 +3324,54 @@ function WorkoutLogPageContent() {
                                   <td className="py-2 px-2">
                                     <span className="font-medium">#{entry.setNumber}</span>
                                   </td>
+                                  {editingEntry === entry.id ? (
+                                    <>
+                                      {/* Inline edit: the pencil used to do nothing in this view */}
+                                      <td className="py-1 px-2">
+                                        <Input
+                                          type="number"
+                                          min="1"
+                                          inputMode="numeric"
+                                          aria-label="Reps"
+                                          value={editFormData.reps}
+                                          onChange={(e) => setEditFormData({ ...editFormData, reps: e.target.value })}
+                                          className="h-8 w-20"
+                                        />
+                                      </td>
+                                      <td className="py-1 px-2">
+                                        <Input
+                                          type="text"
+                                          inputMode="decimal"
+                                          aria-label="Weight in kg"
+                                          value={editFormData.weight}
+                                          onChange={(e) => setEditFormData({ ...editFormData, weight: e.target.value })}
+                                          className="h-8 w-24"
+                                        />
+                                      </td>
+                                      <td className="py-1 px-2">
+                                        <Input
+                                          type="number"
+                                          min="0"
+                                          inputMode="numeric"
+                                          aria-label="Rest in seconds"
+                                          value={editFormData.restSeconds}
+                                          onChange={(e) => setEditFormData({ ...editFormData, restSeconds: e.target.value })}
+                                          className="h-8 w-20"
+                                        />
+                                      </td>
+                                      <td className="py-1 px-2 text-right">
+                                        <div className="flex items-center justify-end gap-2">
+                                          <Button size="sm" onClick={() => handleEditEntry(entry.id)} disabled={loading} className="h-8">
+                                            Save
+                                          </Button>
+                                          <Button size="sm" variant="outline" onClick={() => setEditingEntry(null)} disabled={loading} className="h-8">
+                                            Cancel
+                                          </Button>
+                                        </div>
+                                      </td>
+                                    </>
+                                  ) : (
+                                    <>
                                   <td className="py-2 px-2">{entry.reps}</td>
                                   <td className="py-2 px-2">{entry.weight} {entry.unit}</td>
                                   <td className="py-2 px-2">{entry.restSeconds ? `${entry.restSeconds}s` : '-'}</td>
@@ -3154,21 +3382,27 @@ function WorkoutLogPageContent() {
                                         size="icon"
                                         onClick={() => startEditing(entry)}
                                         disabled={loading}
-                                        className="h-7 w-7 hover:bg-gray-100"
+                                        aria-label={`Edit set ${entry.setNumber}`}
+                                        title="Edit set"
+                                        className="h-9 w-9 hover:bg-gray-100"
                                       >
-                                        <Edit className="h-3 w-3 text-gray-600" />
+                                        <Edit className="h-4 w-4 text-gray-600" />
                                       </Button>
                                       <Button
                                         variant="ghost"
                                         size="icon"
                                         onClick={() => handleDeleteEntry(entry.id)}
                                         disabled={loading}
-                                        className="h-7 w-7 hover:bg-red-50 hover:text-red-600"
+                                        aria-label={`Delete set ${entry.setNumber}`}
+                                        title="Delete set"
+                                        className="h-9 w-9 hover:bg-red-50 hover:text-red-600"
                                       >
-                                        <Trash2 className="h-3 w-3" />
+                                        <Trash2 className="h-4 w-4" />
                                       </Button>
                                     </div>
                                   </td>
+                                    </>
+                                  )}
                                 </tr>
                               ))}
                             </tbody>
@@ -3190,10 +3424,11 @@ function WorkoutLogPageContent() {
                   <div className="flex flex-col sm:flex-row gap-3 mt-6 pt-4 border-t border-gray-200">
                     <Button
                       onClick={handleEndSession}
+                      disabled={endingSession}
                       className="flex-1 py-4 text-base font-semibold bg-green-600 hover:bg-green-700 text-white"
                     >
                       <span className="mdi mdi-check-circle mr-2" />
-                      End Session
+                      {endingSession ? 'Saving…' : 'End Session'}
                     </Button>
                     <Button
                       variant="outline"
@@ -3214,7 +3449,9 @@ function WorkoutLogPageContent() {
             {/* Table View */}
             {view_mode === 'table' && (
               <WorkoutSummaryTable
-                entries={workoutEntries}
+                // Same entries as the Cards view: on Today that means today's sets only
+                // (the table used to list every past day under a "1 entry" counter)
+                entries={groupedWorkoutEntries.flat()}
                 on_view_details={(date, entries) => {
                   set_workout_details_modal({
                     is_open: true,
@@ -3248,18 +3485,49 @@ function WorkoutLogPageContent() {
           </>
         )}
 
-        {!fetchingEntries && !error && workoutEntries.length === 0 && (
+        {/* Nothing to show today: either no entries at all, or none logged today.
+            The old check looked at every entry ever logged, so a returning user saw a blank tab. */}
+        {!fetchingEntries && !error && !isAddingEntry && groupedWorkoutEntries.length === 0 && (
           <Card className="text-center py-12">
             <CardContent>
-              <Dumbbell className="h-12 w-12 text-gray-400 mx-auto mb-4" />
-              <h3 className="text-lg font-medium text-gray-900 mb-2">No workout entries yet</h3>
-              <p className="text-gray-600 mb-6">
-                Start tracking your workouts and see your progress over time
+              <Dumbbell className="h-12 w-12 text-brand-primary/50 mx-auto mb-4" />
+              <h3 className="text-lg font-medium text-gray-900 mb-2">
+                {sessionCompletedToday
+                  ? 'Session complete. Well done!'
+                  : workoutEntries.length === 0
+                    ? 'No workout entries yet'
+                    : 'Nothing logged today yet'}
+              </h3>
+              <p className="text-gray-600 mb-6 max-w-md mx-auto">
+                {sessionCompletedToday
+                  ? 'Your sets are saved. You can find this session under History.'
+                  : activeSession
+                    ? 'Your session is running. Add your first exercise to start logging sets.'
+                    : 'Start a session to time your workout and log sets as you train, or pick a programme to follow.'}
               </p>
-              <Button onClick={() => setIsAddingEntry(true)}>
-                <Plus className="h-4 w-4 mr-2" />
-                Add Your First Workout
-              </Button>
+              <div className="flex flex-col sm:flex-row items-center justify-center gap-3">
+                {sessionCompletedToday ? (
+                  <Button onClick={() => setActiveTab('history')}>
+                    <Calendar className="h-4 w-4 mr-2" />
+                    View History
+                  </Button>
+                ) : activeSession ? (
+                  <Button onClick={() => setIsAddingEntry(true)}>
+                    <Plus className="h-4 w-4 mr-2" />
+                    Add Workout Entry
+                  </Button>
+                ) : (
+                  <>
+                    <Button onClick={() => setShowSessionCreationModal(true)}>
+                      <Zap className="h-4 w-4 mr-2" />
+                      Start Session
+                    </Button>
+                    <Button variant="outline" onClick={() => setActiveTab('programs')}>
+                      Browse Programs
+                    </Button>
+                  </>
+                )}
+              </div>
             </CardContent>
           </Card>
         )}
@@ -3906,7 +4174,7 @@ function WorkoutLogPageContent() {
               ) : (
                 /* For images and GIFs - GIFs will auto-animate */
                 <img
-                  src={selectedExercise.imageUrl}
+                  src={exerciseImageUrl(selectedExercise.imageUrl)}
                   alt={`${selectedExercise.name} demonstration`}
                   className="w-full h-auto rounded-lg"
                 />

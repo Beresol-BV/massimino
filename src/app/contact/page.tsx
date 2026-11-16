@@ -4,7 +4,7 @@ import type { Metadata } from 'next'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 
 export const metadata: Metadata = {
-  title: 'Contact | Massimino',
+  title: 'Contact',
   description: 'How to reach the Massimino team for support, privacy requests, safety reports and partnerships.',
   alternates: { canonical: '/contact' },
 }
@@ -14,7 +14,7 @@ export default function ContactPage() {
     <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
       <Card className="border-l-4 border-l-brand-primary">
         <CardHeader>
-          <CardTitle>Contact us</CardTitle>
+          <CardTitle as="h1">Contact us</CardTitle>
           <CardDescription>Massimino is built and run by Beresol BV.</CardDescription>
         </CardHeader>
         <CardContent className="space-y-6 text-gray-800 text-[15px]">

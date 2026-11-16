@@ -1,5 +1,6 @@
 'use client';
 
+import { exerciseImageUrl, hideBrokenImage } from '@/lib/exercise-image';
 import { useState } from 'react';
 import { cn } from '@/core/utils/common';
 import { Trophy, MessageCircle, ChevronDown, ChevronUp } from 'lucide-react';
@@ -172,7 +173,8 @@ export function WorkoutEntryCardV2({
             {entry.exercise.imageUrl && (
               <div className="w-14 h-14 rounded-lg overflow-hidden flex-shrink-0 bg-gray-100 border border-gray-200">
                 <img
-                  src={entry.exercise.imageUrl}
+                  src={exerciseImageUrl(entry.exercise.imageUrl)}
+                  onError={hideBrokenImage}
                   alt={entry.exercise.name}
                   className="w-full h-full object-cover"
                 />
@@ -197,7 +199,7 @@ export function WorkoutEntryCardV2({
               </div>
               <p className="text-sm text-gray-500 mt-0.5">{equipmentSummary}</p>
             </div>
-            <span className="text-xs text-gray-400 ml-2 flex-shrink-0">{formattedTime}</span>
+            <span className="text-xs text-muted-foreground ml-2 flex-shrink-0">{formattedTime}</span>
           </div>
 
           {/* Primary Metrics Row - Large & Prominent */}
@@ -291,7 +293,7 @@ export function WorkoutEntryCardV2({
         {/* Swipe Hint (only show on first card, first time) */}
         {!showActions && swipeOffset === 0 && (
           <div className="px-4 pb-3 flex justify-end md:hidden">
-            <span className="text-xs text-gray-400 flex items-center gap-1 animate-pulse">
+            <span className="text-xs text-muted-foreground flex items-center gap-1 animate-pulse">
               <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 19l-7-7 7-7m8 14l-7-7 7-7" />
               </svg>
@@ -334,7 +336,7 @@ export function WorkoutEntryCardCompact({ entry, onClick, className }: CompactCa
       </div>
       <div className="text-right flex-shrink-0">
         <p className="font-semibold text-brand-primary">{entry.weight} × {entry.reps}</p>
-        <p className="text-xs text-gray-400">Set {entry.setNumber}</p>
+        <p className="text-xs text-muted-foreground">Set {entry.setNumber}</p>
       </div>
     </button>
   );

@@ -69,25 +69,25 @@ export async function generateMetadata({ params }: TrainerPageProps): Promise<Me
 
   if (!trainer) {
     return {
-      title: 'Trainer Not Found - Massimino',
+      title: 'Trainer Not Found',
       description: 'The trainer profile you are looking for could not be found.',
     };
   }
 
   const trainerName = trainer.name || 'Professional Trainer';
-  // Only claim NASM certification for trainers whose credentials were verified
-  const trainerLabel = trainer.trainerVerified ? 'NASM Certified Trainer' : 'Personal Trainer';
+  // Only call a trainer verified when their credentials were checked
+  const trainerLabel = trainer.trainerVerified ? 'Verified Trainer' : 'Personal Trainer';
   const description = trainer.trainerBio
     ? trainer.trainerBio.slice(0, 160) + '...'
-    : `${trainerName} is a ${trainer.trainerVerified ? 'NASM-certified' : 'personal'} trainer on Massimino, the safety-first fitness platform.`;
+    : `${trainerName} is a ${trainer.trainerVerified ? 'verified personal' : 'personal'} trainer on Massimino, the safety-first fitness platform.`;
 
   return {
-    title: `${trainerName} - ${trainerLabel} | Massimino`,
+    title: `${trainerName} - ${trainerLabel}`,
     description,
     openGraph: {
       title: `${trainerName} - ${trainerLabel}`,
       description,
-      images: trainer.image ? [{ url: trainer.image }] : [],
+      images: trainer.image ? [{ url: trainer.image }] : ['/opengraph-image'],
       type: 'profile',
       url: `https://massimino.fitness/trainer/${params.username}`,
       siteName: 'Massimino - Safety-First Fitness Community',
@@ -96,7 +96,7 @@ export async function generateMetadata({ params }: TrainerPageProps): Promise<Me
       card: 'summary_large_image',
       title: `${trainerName} - ${trainerLabel}`,
       description,
-      images: trainer.image ? [trainer.image] : [],
+      images: trainer.image ? [trainer.image] : ['/twitter-image'],
     },
   };
 }
@@ -160,7 +160,7 @@ export default async function TrainerPage({ params }: TrainerPageProps) {
                   {trainer.trainerVerified && (
                     <Badge className="bg-green-100 text-green-800 border-green-200">
                       <CheckCircle className="w-3 h-3 mr-1" />
-                      NASM Verified
+                      Verified
                     </Badge>
                   )}
                 </div>
@@ -353,7 +353,7 @@ export default async function TrainerPage({ params }: TrainerPageProps) {
             🛡️ <strong>Massimino</strong> - The Safety-First Fitness Community
           </p>
           <p className="text-slate-400 text-xs mt-1">
-            NASM-certified trainers • Anti-creep protection • Professional standards
+            Verified trainers • Anti-creep protection • Professional standards
           </p>
         </div>
       </div>

@@ -41,13 +41,11 @@ Follow [Getting started](README.md#getting-started) in the README.
 - Use TypeScript and Tailwind, and follow the patterns already in `src/components/`.
 - Use `notify()` and `confirmAction()` from `@/lib/notify`, never `window.alert()` or `window.confirm()`.
 - New API routes should use `withAuth`, `ok` and `fail` from `@/lib/api`.
-- Use the brand colours `#2b5069` (primary) and `#fcfaf5` (background), and the Nunito Sans and Lato fonts through the existing Tailwind families.
-
-`CLAUDE.md` has the full project rules, and they apply whether or not you use an AI assistant.
+- Use the brand colours through the Tailwind tokens (`brand-primary` `#2B5069`, `brand-secondary` `#FBF8F2`), and the Inter Tight (headings) and Inter (body) fonts through the existing Tailwind families. Never add a Google Fonts `<link>`.
 
 ## What must never be committed
 
-- **Secrets:** API keys, passwords, tokens or `.env` files. Use `.env.example` to document a new variable, with an empty value.
+- **Secrets:** API keys, passwords, tokens or `.env` files. Document a new variable by name in the README, never with a value.
 - **Personal data:** real names, email addresses, photos or anything exported from a production database. Use `example.com` addresses in seeds and tests.
 - **Material you don't have rights to:** textbook or course content, paywalled articles, or images and video without a licence that allows redistribution. Exercise and training content should be your own or openly licensed, and its source should be credited.
 

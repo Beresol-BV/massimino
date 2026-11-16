@@ -32,8 +32,13 @@ git clone https://github.com/Beresol-BV/massimino.git
 cd massimino
 npm ci
 
-cp .env.example .env
-# In .env, set DATABASE_URL and NEXTAUTH_SECRET (openssl rand -base64 32)
+# Create .env with the four required settings
+cat > .env <<ENV
+DATABASE_URL="postgresql://postgres:postgres@localhost:5432/massimino"
+NEXTAUTH_URL="http://localhost:3000"
+NEXTAUTH_SECRET="$(openssl rand -base64 32)"
+AUTH_SESSION_STRATEGY="jwt"
+ENV
 
 npx prisma db push           # creates the tables
 npm run db:seed              # adds sample exercises and demo accounts
@@ -53,7 +58,7 @@ npx ts-node scripts/import-free-exercise-db.ts
 
 ### Optional features
 
-The app runs with only the required settings at the top of `.env.example`. Each of these needs its own keys, all listed in [`.env.example`](.env.example):
+The app runs with only the four required settings above (`AUTH_SESSION_STRATEGY="jwt"` is what makes email and password sign-in work). Every other feature switches itself off, or reports that it is not configured, until you add its keys to `.env`:
 
 | Feature | Variables |
 | --- | --- |
@@ -84,8 +89,6 @@ prisma           Database schema, migrations and seeds
 data/knowledge   Server-only knowledge files for the AI features
 public           Static files, served to anyone
 ```
-
-`CLAUDE.md` holds the project's design and coding rules.
 
 ## What this repository doesn't include
 

@@ -3,8 +3,10 @@
 import { usePathname } from 'next/navigation';
 import Image from 'next/image';
 import Link from 'next/link';
-import { Search, Menu } from 'lucide-react';
+import { Menu, User, Settings, LogOut } from 'lucide-react';
 import { useState } from 'react';
+import { signOut } from 'next-auth/react';
+import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import { NotificationsDropdown } from '@/components/layout/notifications_dropdown';
 import {
   Tooltip,
@@ -68,6 +70,7 @@ const pageTitles: Record<string, { title: string; subtitle: string }> = {
 
 export function DashboardHeader({ onMenuToggle, userName, userImage, userId }: DashboardHeaderProps) {
   const pathname = usePathname();
+  const [menuOpen, setMenuOpen] = useState(false);
   // Exact match first, then try progressively shorter prefixes for sub-routes
   const page = pageTitles[pathname || ''] || (() => {
     const p = pathname || '';
@@ -82,7 +85,7 @@ export function DashboardHeader({ onMenuToggle, userName, userImage, userId }: D
 
   return (
     <TooltipProvider>
-      <header className="sticky top-0 z-30 bg-[#fcfaf5]/90 backdrop-blur-md border-b border-gray-200/50">
+      <header className="sticky top-0 z-30 bg-brand-secondary/90 backdrop-blur-md border-b border-gray-200/50">
         <div className="flex items-center justify-between px-4 sm:px-5 md:px-6 lg:px-8 h-16">
           {/* Left: menu + title */}
           <div className="flex items-center gap-3 min-w-0">
@@ -94,7 +97,7 @@ export function DashboardHeader({ onMenuToggle, userName, userImage, userId }: D
               <Menu className="w-5 h-5 text-gray-600" />
             </button>
             <div className="min-w-0">
-              <h1 className="text-lg font-bold text-gray-900 truncate">{page.title}</h1>
+              <p className="font-display text-lg font-bold text-gray-900 truncate">{page.title}</p>
               <p className="text-xs text-gray-500 hidden sm:block truncate">{page.subtitle}</p>
             </div>
           </div>
@@ -170,16 +173,58 @@ export function DashboardHeader({ onMenuToggle, userName, userImage, userId }: D
             {/* Notifications */}
             <NotificationsDropdown userId={userId} />
 
-            {/* User avatar */}
-            <Link href="/profile" className="w-9 h-9 rounded-full bg-[#2b5069] flex items-center justify-center overflow-hidden ring-2 ring-[#2b5069]/10 hover:ring-[#2b5069]/30 transition-all">
-              {userImage ? (
-                <Image src={userImage} alt={userName} width={36} height={36} className="w-full h-full object-cover" />
-              ) : (
-                <span className="text-white font-semibold text-sm">
-                  {userName?.charAt(0)?.toUpperCase() || 'U'}
-                </span>
-              )}
-            </Link>
+            {/* User avatar: opens the account menu */}
+            <Popover open={menuOpen} onOpenChange={setMenuOpen}>
+              <PopoverTrigger asChild>
+                <button
+                  type="button"
+                  aria-label="Account menu"
+                  className="w-9 h-9 rounded-full bg-[#2b5069] flex items-center justify-center overflow-hidden ring-2 ring-[#2b5069]/10 hover:ring-[#2b5069]/30 transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-primary focus-visible:ring-offset-2"
+                >
+                  {userImage ? (
+                    <Image src={userImage} alt={userName} width={36} height={36} className="w-full h-full object-cover" />
+                  ) : (
+                    <span className="text-white font-semibold text-sm">
+                      {userName?.charAt(0)?.toUpperCase() || 'U'}
+                    </span>
+                  )}
+                </button>
+              </PopoverTrigger>
+              <PopoverContent align="end" sideOffset={8} className="w-56 p-1.5">
+                {userName && (
+                  <p className="px-3 py-2 text-sm font-semibold text-gray-900 truncate border-b border-gray-200/70 mb-1">
+                    {userName}
+                  </p>
+                )}
+                <Link
+                  href="/profile"
+                  onClick={() => setMenuOpen(false)}
+                  className="flex items-center gap-3 rounded-md px-3 py-2 text-sm text-gray-700 hover:bg-brand-primary/10 hover:text-brand-primary transition-colors"
+                >
+                  <User className="h-4 w-4" aria-hidden="true" />
+                  Profile
+                </Link>
+                <Link
+                  href="/dashboard/settings"
+                  onClick={() => setMenuOpen(false)}
+                  className="flex items-center gap-3 rounded-md px-3 py-2 text-sm text-gray-700 hover:bg-brand-primary/10 hover:text-brand-primary transition-colors"
+                >
+                  <Settings className="h-4 w-4" aria-hidden="true" />
+                  Settings
+                </Link>
+                <button
+                  type="button"
+                  onClick={() => {
+                    setMenuOpen(false);
+                    signOut({ callbackUrl: '/' });
+                  }}
+                  className="flex w-full items-center gap-3 rounded-md px-3 py-2 text-sm text-gray-700 hover:bg-red-50 hover:text-red-600 transition-colors"
+                >
+                  <LogOut className="h-4 w-4" aria-hidden="true" />
+                  Log out
+                </button>
+              </PopoverContent>
+            </Popover>
           </div>
         </div>
       </header>

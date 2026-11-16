@@ -41,31 +41,22 @@ type ProgramTemplate = {
 
 export function ProgramsTab() {
   const [programs, setPrograms] = useState<ProgramTemplate[]>([]);
-  const [userPrograms, setUserPrograms] = useState<UserProgram[]>([]);
   const [loading, setLoading] = useState(true);
-  const [loadingUserPrograms, setLoadingUserPrograms] = useState(true);
   const [filter, setFilter] = useState<string>('all');
   const [sortBy, setSortBy] = useState<'popularity' | 'duration' | 'difficulty' | 'new'>('popularity');
   const [equipmentFilters, setEquipmentFilters] = useState<string[]>([]);
   const browseRef = useRef<HTMLDivElement>(null);
-
-  // Fetch user's program subscriptions
+  // Programmes the user already follows, so their cards do not offer "Start Program" again
+  const [joinedIds, setJoinedIds] = useState<Set<string>>(new Set());
   useEffect(() => {
-    async function fetchUserPrograms() {
-      try {
-        const res = await fetch('/api/workout/programs?subscriptions=true');
-        if (res.ok) {
-          const data = await res.json();
-          setUserPrograms(Array.isArray(data) ? data : []);
-        }
-      } catch (error) {
-        console.error('Failed to fetch user programs:', error);
-      } finally {
-        setLoadingUserPrograms(false);
-      }
-    }
-    fetchUserPrograms();
+    fetch('/api/workout/programs?subscriptions=true')
+      .then((r) => (r.ok ? r.json() : []))
+      .then((subs) => {
+        if (Array.isArray(subs)) setJoinedIds(new Set(subs.map((s: any) => s.programId).filter(Boolean)));
+      })
+      .catch(() => {});
   }, []);
+
 
   // Initialize state from URL
   useEffect(() => {
@@ -86,10 +77,6 @@ export function ProgramsTab() {
     fetchPrograms();
   }, [filter]);
 
-  // Scroll to browse section when user clicks "Add Another Program"
-  const scrollToBrowse = () => {
-    browseRef.current?.scrollIntoView({ behavior: 'smooth' });
-  };
 
   const fetchPrograms = async () => {
     try {
@@ -211,33 +198,8 @@ export function ProgramsTab() {
 
   return (
     <div className="space-y-8">
-      {/* My Programs Section */}
-      {!loadingUserPrograms && (
-        <div className="mb-8">
-          {userPrograms.length > 0 ? (
-            <MyPrograms programs={userPrograms} onAddProgram={scrollToBrowse} />
-          ) : (
-            <div className="max-w-[1400px] mx-auto px-5 py-10">
-              <div className="mb-8">
-                <h1 className="text-3xl font-extrabold text-gray-900 mb-2">My Programs</h1>
-                <p className="text-gray-500">
-                  Start your fitness journey by choosing a program below.
-                </p>
-              </div>
-              <button
-                onClick={scrollToBrowse}
-                className="bg-white border-2 border-dashed border-gray-200 rounded-2xl flex flex-col items-center justify-center min-h-[180px] w-full max-w-[340px] transition-all hover:border-[#254967] hover:bg-[#fcf8f2] cursor-pointer"
-              >
-                <span className="mdi mdi-plus-circle-outline text-5xl text-gray-400 mb-3" />
-                <span className="text-base font-semibold text-gray-400">Browse Programs</span>
-              </button>
-            </div>
-          )}
-        </div>
-      )}
-
-      {/* Separator */}
-      <div className="border-t border-gray-200 pt-8" ref={browseRef}>
+      {/* The user's own programmes live in the My Programs tab; this tab is the catalogue. */}
+      <div ref={browseRef}>
         <div className="max-w-[1400px] mx-auto px-5">
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
             <div>
@@ -389,10 +351,15 @@ export function ProgramsTab() {
                     )}
                   </CardDescription>
                 </div>
-                <div className="flex items-center gap-1">
-                  <span className="text-yellow-500">★</span>
-                  <span className="font-medium">{program.rating?.toFixed(1) || 'New'}</span>
-                </div>
+                {/* A star score only when members have actually rated the programme;
+                    the stored default made every unrated programme read "5.0". */}
+                {program.ratingCount > 0 && program.rating ? (
+                  <div className="flex items-center gap-1" title={`${program.ratingCount} rating${program.ratingCount === 1 ? '' : 's'}`}>
+                    <span className="text-yellow-500" aria-hidden="true">★</span>
+                    <span className="font-medium">{program.rating.toFixed(1)}</span>
+                    <span className="text-xs text-muted-foreground">({program.ratingCount})</span>
+                  </div>
+                ) : null}
               </div>
             </CardHeader>
 
@@ -470,9 +437,17 @@ export function ProgramsTab() {
                 <Link href={`/workout-log/programs/${program.id}`} className="flex-1">
                   <Button variant="outline" className="w-full">View Details</Button>
                 </Link>
-                <Link href={`/workout-log/programs/${program.id}/join`} className="flex-1">
-                  <Button className="w-full">Start Program</Button>
-                </Link>
+                {joinedIds.has(program.id) ? (
+                  <Link href="/workout-log?tab=my-programs" className="flex-1">
+                    <Button variant="outline" className="w-full border-green-600 text-green-700 hover:bg-green-50">
+                      Following
+                    </Button>
+                  </Link>
+                ) : (
+                  <Link href={`/workout-log/programs/${program.id}/join`} className="flex-1">
+                    <Button className="w-full">Start Program</Button>
+                  </Link>
+                )}
               </div>
             </CardContent>
           </Card>

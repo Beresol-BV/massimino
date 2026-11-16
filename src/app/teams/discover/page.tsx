@@ -4,7 +4,14 @@
  */
 
 import Image from 'next/image';
+import type { Metadata } from 'next';
 import { TeamInterface } from '@/components/teams/team_interface';
+
+export const metadata: Metadata = {
+  title: 'Find Your Team',
+  description: 'Join a fitness community on Massimino, train together and push each other to new heights.',
+  alternates: { canonical: '/teams/discover' },
+};
 
 const PEXELS_API_KEY = process.env.PEXELS_API_KEY;
 
@@ -32,7 +39,7 @@ export default async function TeamsDiscoverPage() {
   const hero = await getHeroImage();
 
   return (
-    <div className="min-h-screen bg-[#fcfaf5]">
+    <div className="min-h-screen bg-brand-secondary">
       {/* Hero banner */}
       <div className="relative bg-[#2b5069] overflow-hidden">
         {/* Pexels background image */}
