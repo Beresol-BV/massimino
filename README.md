@@ -81,6 +81,8 @@ The app runs with only the four required settings above (`AUTH_SESSION_STRATEGY=
 
 Every instance serves an open, read-only JSON API at `/api/v1`: exercises, training programmes with their workouts, public teams and Eurostat fitness figures. No key is needed; a free key raises the rate limit.
 
+The same data is available to AI assistants through a Model Context Protocol server at `/api/mcp` (no key needed). `/api/mcp/me` adds the signed-in person's own workout log behind an OAuth 2.1 sign-in. The page at `/mcp` explains how to connect Claude, ChatGPT and others.
+
 ```bash
 curl "http://localhost:3000/api/v1/exercises?q=squat&page_size=2"
 ```
