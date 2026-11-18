@@ -90,6 +90,8 @@ curl "http://localhost:3000/api/v1/exercises?q=squat&page_size=2"
 - Code: `src/lib/public-api/` (plumbing, resources, contract) and `src/app/api/v1/` (routes)
 - Proof: `scripts/api-smoke.sh` checks every endpoint, the error paths, paging and that no response carries private data
 
+A signed-in user can also read their own workout log at `/api/v1/me/workout-sets` and `/api/v1/me/workout-sessions`, with a key they created with the workout log permission. It is opt-in per key and only ever returns the key owner's data.
+
 The API only serves content that may be redistributed, each record carrying its `source` and `license`. Keys live in the `api_keys` table (`prisma/manual/2026-11-18_api_keys.sql`, or `npx prisma db push`). The hosted instance is at `https://massimino.fitness/api/v1`.
 
 ## Project layout
