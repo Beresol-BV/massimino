@@ -77,6 +77,21 @@ The app runs with only the four required settings above (`AUTH_SESSION_STRATEGY=
 | `npm run build` | Build for production |
 | `npm run db:studio` | Browse the database |
 
+## Public API
+
+Every instance serves an open, read-only JSON API at `/api/v1`: exercises, training programmes with their workouts, public teams and Eurostat fitness figures. No key is needed; a free key raises the rate limit.
+
+```bash
+curl "http://localhost:3000/api/v1/exercises?q=squat&page_size=2"
+```
+
+- Reference and a live console: `/developers`
+- Contract (OpenAPI 3.1): `/api/v1/openapi.json`
+- Code: `src/lib/public-api/` (plumbing, resources, contract) and `src/app/api/v1/` (routes)
+- Proof: `scripts/api-smoke.sh` checks every endpoint, the error paths, paging and that no response carries private data
+
+The API only serves content that may be redistributed, each record carrying its `source` and `license`. Keys live in the `api_keys` table (`prisma/manual/2026-11-18_api_keys.sql`, or `npx prisma db push`). The hosted instance is at `https://massimino.fitness/api/v1`.
+
 ## Project layout
 
 ```
