@@ -33,6 +33,11 @@ const publicRoutes = [
   '/bio',
   '/trainer',
   '/oauth',
+  // Informational pages: keep the public header and footer for signed-in users too
+  '/partnerships',
+  '/fitness-intelligence',
+  '/developers',
+  '/mcp',
 ];
 
 function isPublicRoute(pathname: string): boolean {
