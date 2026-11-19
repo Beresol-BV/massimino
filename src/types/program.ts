@@ -364,8 +364,8 @@ export const PROGRAM_IMAGES: Record<string, string> = {
   'balance-workout': '/images/programs/balance.jpg',
   'cardio-workout': '/images/programs/cardio.jpg',
   'superday-workout': '/images/programs/superdayworkout.jpg',
-  'hiit-workout': '/images/programs/hiit.jpg',
-  'hyrox-training': '/images/programs/hyrox.jpg',
+  // hiit-workout and hyrox-training have no photo in public/images/programs yet,
+  // so they fall back to the category gradient instead of a 404
   // Sport-Specific
   'basketball-conditioning': '/images/programs/basketball.jpg',
   'football-conditioning': '/images/programs/football.jpg',

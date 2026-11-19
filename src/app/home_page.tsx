@@ -96,6 +96,9 @@ function PartnerLogo({ src, alt }: { src: string; alt: string }) {
       src={src}
       alt={alt}
       unoptimized={src.endsWith('.svg')}
+      // Eager: the band clips with overflow-hidden, so lazy logos only start
+      // downloading once they are already on screen and show up blank first
+      loading="eager"
       width={170}
       height={56}
       onLoad={(e) => readRatio(e.currentTarget)}
